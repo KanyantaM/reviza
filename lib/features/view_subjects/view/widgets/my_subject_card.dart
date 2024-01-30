@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:study_material_api/study_material_api.dart';
 
 class StudyMaterialCard extends StatelessWidget {
   final StudyMaterial studyMaterial;
   final Function(StudyMaterial) onTap;
-  const StudyMaterialCard({super.key, required this.studyMaterial, required this.onTap});
+  const StudyMaterialCard(
+      {super.key, required this.studyMaterial, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class StudyMaterialCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   onTap(studyMaterial);
                 },
                 child: Row(
@@ -61,66 +63,70 @@ class StudyMaterialCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.share))
+                    IconButton(
+                        onPressed: () {
+                          commingSoon(context);
+                        },
+                        icon: const Icon(Icons.share))
                   ],
                 ),
               ),
             ),
             // Divider
-            Divider(
-              height: 1.0,
-              color: Colors.grey.withOpacity(0.5),
-            ),
-            // Download & Report buttons
-            const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.arrow_upward,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        "0",
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Icon(
-                        Icons.arrow_downward,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "Download",
-                        style: TextStyle(fontSize: 16.0, color: Colors.blue),
-                      ),
-                      Icon(Icons.download_rounded, color: Colors.blue),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "Report",
-                        style: TextStyle(fontSize: 16.0, color: Colors.red),
-                      ),
-                      Icon(Icons.report_rounded, color: Colors.red),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            // Divider(
+            //   height: 1.0,
+            //   color: Colors.grey.withOpacity(0.5),
+            // ),
+            // // Download & Report buttons
+            // const Padding(
+            //   padding: EdgeInsets.all(15.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Row(
+            //         children: [
+            //           Icon(
+            //             Icons.arrow_upward,
+            //           ),
+            //           SizedBox(
+            //             width: 8,
+            //           ),
+            //           Text(
+            //             "0",
+            //             style: TextStyle(
+            //               fontSize: 16.0,
+            //               color: Colors.grey,
+            //             ),
+            //           ),
+            //           SizedBox(
+            //             width: 8,
+            //           ),
+            //           Icon(
+            //             Icons.arrow_downward,
+            //           ),
+            //         ],
+            //       ),
+            //       Row(
+            //         children: [
+            //           Text(
+            //             "Download",
+            //             style: TextStyle(fontSize: 16.0, color: Colors.blue),
+            //           ),
+            //           Icon(Icons.download_rounded, color: Colors.blue),
+            //         ],
+            //       ),
+            //       Row(
+            //         children: [
+            //           Text(
+            //             "Report",
+            //             style: TextStyle(fontSize: 16.0, color: Colors.red),
+            //           ),
+            //           Icon(Icons.report_rounded, color: Colors.red),
+            //         ],
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),

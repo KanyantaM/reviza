@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:reviza/features/subject_screen/subject_screen.dart';
 import 'package:reviza/features/view_subjects/view/widgets/my_subject_card.dart';
+import 'package:reviza/features/view_subjects/view/widgets/testing%20and%20should%20be%20deleted/custom_view.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/misc/course_info.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
@@ -90,10 +90,9 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen>
           return const CircularProgressIndicator.adaptive();
         }
         if (state is StudyMaterialOpened) {
-          StudyMaterial studyMaterial = state.studyMaterial;
-          return PDFView();
+          return CustomPDFViewer(state: state, viewOnline: true);
         }
-        return Wrap();
+        return const Wrap();
         },
     );
   }

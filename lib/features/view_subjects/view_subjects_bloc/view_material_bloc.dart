@@ -42,6 +42,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
     });
 
     on<DownLoadMaterial>((event, emit) async {
+      //TODO: prevent downloading the same material
       try {
         Future<String> getFilePath(String filename, String subjectName) async {
           final dir = await getApplicationDocumentsDirectory();

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:reviza/features/subject_screen/subject_screen.dart';
+import 'package:reviza/features/view_subjects/view/widgets/links_card.dart';
 import 'package:reviza/features/view_subjects/view/widgets/my_subject_card.dart';
-import 'package:reviza/features/view_subjects/view/widgets/testing%20and%20should%20be%20deleted/custom_view.dart';
+import 'package:reviza/features/view_subjects/view/widgets/custom_view.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/misc/course_info.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:study_material_api/study_material_api.dart';
 
 class SubjectDetailsScreen extends StatefulWidget {
-  const SubjectDetailsScreen({super.key, required this.uid, required this.courseName});
+  const SubjectDetailsScreen({super.key, required this.uid, this.courseName, required this.isDownloadedView});
   final String uid;
-  final String courseName;
+  final String? courseName;
+  final bool isDownloadedView;
 
   @override
   State<SubjectDetailsScreen> createState() => _SubjectDetailsScreenState();
@@ -105,6 +106,9 @@ Widget generateCards(
       shrinkWrap: true,
       itemCount: studyMaterials.length,
       itemBuilder: ((context, index) {
+        if (type == Types.links) {
+          // return ExpandingCard(title: title, subtitle: subtitle, onToggle: onToggle)
+        }
         return StudyMaterialCard(
             studyMaterial: studyMaterials[index],
             onTap: (studyMaterial) {

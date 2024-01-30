@@ -52,6 +52,9 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(_studyMaterial?.title ?? ''),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
@@ -103,27 +106,28 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
               ),
             ),
           ),
-         widget.viewOnline? VotingBar(
-            hasVotedUp: _hasVotedUp,
-            onUpVote: () {
-              context.read<ViewMaterialBloc>().add(
-                  VoteMaterial(material: _studyMaterial!, uid: _uid!, vote: 1));
-            },
-            onDownVote: () {
-              context.read<ViewMaterialBloc>().add(
-                  VoteMaterial(material: _studyMaterial!, uid: _uid!, vote: 0));
-            },
-            onDownload: () {
-              context
-                  .read<ViewMaterialBloc>()
-                  .add(DownLoadMaterial(course: _studyMaterial!));
-            },
-            onReport: () {
-              context
-                  .read<ViewMaterialBloc>()
-                  .add(ReportMaterial(material: _studyMaterial!, uid: _uid!));
-            },
-          ): const Wrap(),
+          widget.viewOnline
+              ? VotingBar(
+                  hasVotedUp: _hasVotedUp,
+                  onUpVote: () {
+                    context.read<ViewMaterialBloc>().add(VoteMaterial(
+                        material: _studyMaterial!, uid: _uid!, vote: 1));
+                  },
+                  onDownVote: () {
+                    context.read<ViewMaterialBloc>().add(VoteMaterial(
+                        material: _studyMaterial!, uid: _uid!, vote: 0));
+                  },
+                  onDownload: () {
+                    context
+                        .read<ViewMaterialBloc>()
+                        .add(DownLoadMaterial(course: _studyMaterial!));
+                  },
+                  onReport: () {
+                    context.read<ViewMaterialBloc>().add(
+                        ReportMaterial(material: _studyMaterial!, uid: _uid!));
+                  },
+                )
+              : const Wrap(),
         ],
       ),
     );
@@ -175,7 +179,7 @@ class _VotingBarState extends State<VotingBar> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
                   spreadRadius: 5,
                   blurRadius: 7,
                   offset: const Offset(0, 3),

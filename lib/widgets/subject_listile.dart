@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reviza/features/subject_screen/subject_screen.dart';
+import 'package:reviza/features/view_subjects/view/view_material_view.dart';
 import 'package:reviza/ui/custom_text.dart';
 
 class SubjectListTile extends StatefulWidget {
@@ -28,7 +28,7 @@ class _SubjectListTileState extends State<SubjectListTile> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const SubjectDetailsScreen()));
+                        builder: (context) => SubjectDetailsScreen()));
               },
               child: SizedBox(
                 height: 70,

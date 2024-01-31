@@ -17,7 +17,8 @@ class FetchCourseMaterials extends ViewMaterialEvent {
 
 class DownLoadMaterial extends ViewMaterialEvent{
   final StudyMaterial course;
-  const DownLoadMaterial({required this.course});
+  final String uid;
+  const DownLoadMaterial({required this.uid, required this.course});
 }
 
 class VoteMaterial extends ViewMaterialEvent{

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_storage_study_material_api/cloud_storage_study_material_api.dart';
 import 'package:dio/dio.dart';
@@ -21,13 +23,13 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
     on<FetchCourseMaterials>((event, emit) async {
       List<StudyMaterial> materials = [];
       List<String> courses = [];
+      List<String> myCourse = [event.course ?? ''];
       Map<String, List<StudyMaterial>> map = {};
       emit(FetchingMaterialsState());
       emit(LoadingState());
       try {
         if (event.online) {
-          map = await _materialOnlineDataRepository
-              .getStudyMaterials([event.course!]);
+          map = await _materialOnlineDataRepository.getStudyMaterials(myCourse);
         } else {
           List<String> myCourses = [];
           await HiveUserRepository()
@@ -35,61 +37,78 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
               .then((value) => myCourses = value?.myCourses ?? []);
           map = await _hiveStudyMaterialRepository.getStudyMaterials(myCourses);
         }
-        if(event.course != null) {
+        if (event.course != null) {
           materials = map[event.course] ?? [];
-        }else{
+        } else {
           for (String course in map.keys) {
             courses.add(course);
-          materials.addAll(map[course]??[]);
+            materials.addAll(map[course] ?? []);
+          }
         }
-        }
-        emit(MaterialsFetchedState(studyMaterials: materials, courses: courses));
+        emit(
+            MaterialsFetchedState(studyMaterials: materials, courses: courses));
       } catch (e) {
         emit(ErrorState(message: 'Failed to fetch user messages\n $e'));
       }
     });
 
     on<DownLoadMaterial>((event, emit) async {
-      //TODO: prevent downloading the same material
-      try {
-        Future<String> getFilePath(String filename, String subjectName) async {
-          final dir = await getApplicationDocumentsDirectory();
-          return "${dir.path}/$subjectName/$filename";
-        }
+  try {
+    Future<String> getFilePath(String filename, String subjectName) async {
+      final dir = await getApplicationDocumentsDirectory();
+      return "${dir.path}/$subjectName/$filename";
+    }
 
-        Dio dio = Dio();
-        double progress = 0.0;
+    String url = event.course.filePath!;
+    String fileName = event.course.title;
+    String subjectName = event.course.subjectName;
+    String path = await getFilePath(fileName, subjectName);
 
-        String url = event.course.filePath!;
-        String fileName = event.course.title;
-        String subjectName = event.course.subjectName;
-        String path = await getFilePath(fileName, subjectName);
+    // Check if the file already exists
+    if (await File(path).exists()) {
+      // File exists, emit StudyMaterialOpened directly
+      StudyMaterial oldMaterial = event.course;
+        oldMaterial.filePath = path;
+      emit(
+        StudyMaterialOpened(
+          studyMaterial: oldMaterial,
+          uid: event.uid,
+        ),
+      );
+    } else {
+      Dio dio = Dio();
 
-        await dio.download(
-          url,
-          path,
-          onReceiveProgress: (recivedBytes, totalBytes) {
-            progress = recivedBytes / totalBytes;
-            emit(DownloadingCourses(progress: progress));
-          },
-          deleteOnError: true,
-        ).then((response) {
-          StudyMaterial oldMaterial = event.course;
-          oldMaterial.filePath = path;
-          _hiveStudyMaterialRepository.addStudyMaterial(
-            oldMaterial,
-          );
-          emit(DownloadedCourse());
-        });
-      } catch (e) {
-        emit(ErrorState(message: 'Failed to download material\n $e'));
-      }
-    });
+      await dio.download(
+        url,
+        path,
+        onReceiveProgress: (receivedBytes, totalBytes) {
+          double progress = receivedBytes / totalBytes;
+          emit(DownloadingCourses(progress: progress));
+        },
+        deleteOnError: true,
+      ).then((response) {
+        StudyMaterial oldMaterial = event.course;
+        oldMaterial.filePath = path;
+        _hiveStudyMaterialRepository.addStudyMaterial(oldMaterial);
+        emit(DownloadedCourse());
+        emit(
+          StudyMaterialOpened(
+            studyMaterial: oldMaterial,
+            uid: event.uid,
+          ),
+        );
+      });
+    }
+  } catch (e) {
+    emit(ErrorState(message: 'Failed to download material\n $e'));
+  }
+});
+
 
     on<VoteMaterial>(
       (event, emit) async {
-        List<String> haters = event.material.haters;
-        List<String> fans = event.material.fans;
+        List haters = event.material.haters;
+        List fans = event.material.fans;
         StudyMaterial updateStudyMaterial = event.material;
         if (event.vote == 1) {
           if (fans.contains(event.uid)) {
@@ -117,7 +136,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
 
     on<ReportMaterial>(
       (event, emit) async {
-        List<String> reports = event.material.reports;
+        List reports = event.material.reports;
         StudyMaterial updateStudyMaterial = event.material;
         if (!(reports.contains(event.uid))) {
           updateStudyMaterial.reports.add(event.uid);

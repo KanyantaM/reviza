@@ -25,7 +25,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
   String? _uid;
   bool? _hasVotedUp;
   final GlobalKey<State<StatefulWidget>> pdfViewerKey = GlobalKey();
-  int currentPage = 0;
+  int currentPage = 1;
   int? totalPage;
 
   void _checkVoteStatus(StudyMaterial? studyMaterial, String? uid) {
@@ -76,6 +76,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
               });
             },
             onError: (error) {
+              print(error);
               showErrorDialog(context, error.toString());
             },
             onPageError: (page, error) {
@@ -89,7 +90,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                 currentPage = page ?? 0;
               });
 
-              showErrorDialog(context, 'page change: $page/$total');
+              // showErrorDialog(context, 'page change: $page/$total');
             },
           ),
           Positioned(
@@ -98,10 +99,10 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Text(
-                'Page $currentPage/${totalPage ?? ''}',
+                'Page ${currentPage+1}/${totalPage ?? ''}',
                 style: const TextStyle(
                   fontSize: 16.0,
-                  color: Colors.white,
+                  // color: Colors.white,
                 ),
               ),
             ),
@@ -117,11 +118,11 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                     context.read<ViewMaterialBloc>().add(VoteMaterial(
                         material: _studyMaterial!, uid: _uid!, vote: 0));
                   },
-                  onDownload: () {
-                    context
-                        .read<ViewMaterialBloc>()
-                        .add(DownLoadMaterial(course: _studyMaterial!));
-                  },
+                  // onDownload: () {
+                  //   context
+                  //       .read<ViewMaterialBloc>()
+                  //       .add(DownLoadMaterial(course: _studyMaterial!, uid: widget.state.uid));
+                  // },
                   onReport: () {
                     context.read<ViewMaterialBloc>().add(
                         ReportMaterial(material: _studyMaterial!, uid: _uid!));
@@ -138,14 +139,14 @@ class VotingBar extends StatefulWidget {
   final bool? hasVotedUp;
   final Function onUpVote;
   final Function onDownVote;
-  final Function onDownload;
+  // final Function onDownload;
   final Function onReport;
   const VotingBar({
     super.key,
     this.hasVotedUp,
     required this.onUpVote,
     required this.onDownVote,
-    required this.onDownload,
+    // required this.onDownload,
     required this.onReport,
   });
 
@@ -179,7 +180,7 @@ class _VotingBarState extends State<VotingBar> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.5),
+                  color: Colors.black.withOpacity(0.5),
                   spreadRadius: 5,
                   blurRadius: 7,
                   offset: const Offset(0, 3),
@@ -229,7 +230,7 @@ class _VotingBarState extends State<VotingBar> {
                       Icon(
                         Icons.thumb_down,
                         color:
-                            _hasVotedUp ?? false ? Colors.red : Colors.red[100],
+                            _hasVotedUp ?? true ? Colors.red[100]: Colors.red,
                         size: 30,
                       ),
                       const SizedBox(height: 8),
@@ -237,9 +238,9 @@ class _VotingBarState extends State<VotingBar> {
                   ),
                 ),
                 IconButton(
-                    onPressed: () => widget.onDownload,
+                    onPressed: (){},
                     icon: const Icon(
-                      Icons.download_rounded,
+                      Icons.storage,
                       color: Colors.blue,
                     )),
                 InkWell(

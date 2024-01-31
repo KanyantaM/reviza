@@ -12,13 +12,13 @@ class StudyMaterial {
   String title;
 
   ///The number of uid's that like the documents
-  List<String> fans;
+  List fans;
 
   ///The number of uid's that dislike the documents
-  List<String> haters;
+  List haters;
 
   ///Number of reports from a particular document
-  List<String> reports;
+  List reports;
 
   //info about the document such as year, author, or units
   String description;
@@ -38,6 +38,7 @@ class StudyMaterial {
       required this.reports});
 
   factory StudyMaterial.fromJson(Map<String, dynamic> json) {
+    print('================================================');
     return StudyMaterial(
       id: json['id'],
       title: json['title'],

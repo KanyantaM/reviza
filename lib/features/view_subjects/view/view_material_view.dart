@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:reviza/features/view_subjects/view/widgets/my_subject_card.dart';
 import 'package:reviza/features/view_subjects/view/widgets/custom_view.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/misc/course_info.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
+import 'package:reviza/widgets/no_data.dart';
 import 'package:study_material_api/study_material_api.dart';
 
 class ViewMaterialsView extends StatefulWidget {
@@ -103,7 +105,10 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                 generateCards(
                     widget.uid, widget.courseName, Types.papers, state),
                 generateCards(
+                    widget.uid, widget.courseName, Types.books, state),
+                generateCards(
                     widget.uid, widget.courseName, Types.links, state),
+
                 // SimilarSubjectsWidget(
                 //   similarSubjects: const [
                 //     'Mathematics',
@@ -193,47 +198,130 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
           }
         }
         if (state is LoadingState) {
-          
-            return Scaffold(
-            appBar: (!widget.isDownloadedView)?AppBar(
-              centerTitle: true,
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: const Text('ReviZa'),
-              bottom: TabBar(controller: _tabController, tabs: const [
-                Tab(
-                  child: Icon(Icons.note),
-                ),
-                Tab(
-                  icon: Icon(Icons.question_answer),
-                ),
-                Tab(
-                  child: Icon(Icons.book),
-                ),
-                Tab(
-                  icon: Icon(Icons.link),
-                ),
-              ]),
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      commingSoon(context);
-                    },
-                    icon: const Icon(Icons.notifications)),
-                SizedBox(
-                  width: 12.h,
-                )
-              ],
-            ): null,
+          return Scaffold(
+            appBar: (!widget.isDownloadedView)
+                ? AppBar(
+                    centerTitle: true,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.inversePrimary,
+                    title: const Text('ReviZa'),
+                    bottom: TabBar(controller: _tabController, tabs: const [
+                      Tab(
+                        child: Icon(Icons.note),
+                      ),
+                      Tab(
+                        icon: Icon(Icons.question_answer),
+                      ),
+                      Tab(
+                        child: Icon(Icons.book),
+                      ),
+                      Tab(
+                        icon: Icon(Icons.link),
+                      ),
+                    ]),
+                    actions: [
+                      IconButton(
+                          onPressed: () {
+                            commingSoon(context);
+                          },
+                          icon: const Icon(Icons.notifications)),
+                      SizedBox(
+                        width: 12.h,
+                      )
+                    ],
+                  )
+                : null,
             body: Container(
                 color: Colors.white,
                 child: const Center(child: CircularProgressIndicator())),
           );
-  
+        }
+        if (state is DownloadingCourses) {
+          // Show download progress UI
+          return Scaffold(
+              appBar: (!widget.isDownloadedView)
+                  ? AppBar(
+                      centerTitle: true,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.inversePrimary,
+                      title: const Text('ReviZa'),
+                      bottom: TabBar(controller: _tabController, tabs: const [
+                        Tab(
+                          child: Icon(Icons.note),
+                        ),
+                        Tab(
+                          icon: Icon(Icons.question_answer),
+                        ),
+                        Tab(
+                          child: Icon(Icons.book),
+                        ),
+                        Tab(
+                          icon: Icon(Icons.link),
+                        ),
+                      ]),
+                      actions: [
+                        IconButton(
+                            onPressed: () {
+                              commingSoon(context);
+                            },
+                            icon: const Icon(Icons.notifications)),
+                        SizedBox(
+                          width: 12.h,
+                        )
+                      ],
+                    )
+                  : null,
+              body: Container(
+                color: Colors.white,
+                child: Center(
+                  child: Column(
+                    children: [
+                      LottieBuilder.asset(
+                          'assets/lottie/downloading_cloud.json'),
+                      LinearProgressIndicator(
+                        value: state.progress,
+                      ),
+                    ],
+                  ),
+                ),
+              ));
         }
         if (state is StudyMaterialOpened) {
           return CustomPDFViewer(state: state, viewOnline: true);
         }
-        return const Wrap();
+        return Scaffold(
+          appBar: (!widget.isDownloadedView)
+              ? AppBar(
+                  centerTitle: true,
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  title: const Text('ReviZa'),
+                 
+                  actions: [
+                    IconButton(
+                        onPressed: () {
+                          commingSoon(context);
+                        },
+                        icon: const Icon(Icons.notifications)),
+                    SizedBox(
+                      width: 12.h,
+                    )
+                  ],
+                )
+              : null,
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Image.asset('assets/images/error404.png'),
+                  (state is ErrorState)
+                      ? Text(state.message)
+                      : Text(state.toString()),
+                ],
+              ),
+            ),
+          ),
+        );
       },
     );
   }
@@ -242,18 +330,26 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
 Widget generateCards(
     String uid, String? course, Types? type, MaterialsFetchedState state) {
   List<StudyMaterial> studyMaterials = state.filterByType(course, type);
-  return ListView.builder(
-      shrinkWrap: true,
-      itemCount: studyMaterials.length,
-      itemBuilder: ((context, index) {
-        if (type == Types.links) {
-          // return ExpandingCard(title: title, subtitle: subtitle, onToggle: onToggle)
-        }
-        return StudyMaterialCard(
-            studyMaterial: studyMaterials[index],
-            onTap: (studyMaterial) {
-              context.read<ViewMaterialBloc>().add(
-                  ReadStudyMaterial(studyMaterial: studyMaterial, uid: uid));
-            });
-      }));
+  if (studyMaterials.isNotEmpty) {
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: studyMaterials.length,
+        itemBuilder: ((context, index) {
+          if (type == Types.links) {
+            // return ExpandingCard(title: title, subtitle: subtitle, onToggle: onToggle)
+          }
+          // print(studyMaterials[index]);
+          return StudyMaterialCard(
+              studyMaterial: studyMaterials[index],
+              onTap: (studyMaterial) {
+                context.read<ViewMaterialBloc>().add(
+                    DownLoadMaterial(course: studyMaterials[index], uid: uid));
+              });
+        }));
+  } else {
+    return Center(
+      child: NoDataCuate(
+          issue: 'No ${type!.name} have been found, help us by uploading some'),
+    );
+  }
 }

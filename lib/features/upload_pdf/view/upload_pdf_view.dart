@@ -102,14 +102,17 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
       body: BlocConsumer<UploadPdfBloc, UploadPdfState>(
         builder: ((context, state) {
           if (state is UploadingPdfState) {
-            const Center(child: CircularProgressIndicator(),);
+            const Center(
+              child: CircularProgressIndicator(),
+            );
           }
           return Container(
             padding: const EdgeInsets.all(16),
             child: ListView(
               children: [
-                _buildSearchableDropdown(
-                    'Course', _myCourses, (selected) {_courseName = selected;}),
+                _buildSearchableDropdown('Course', _myCourses, (selected) {
+                  _courseName = selected;
+                }),
                 const Spacer(
                   flex: 1,
                 ),
@@ -250,7 +253,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                   ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
                                       child: Image.asset(
-                                       'assets/images/pdf.png' ,
+                                        'assets/images/pdf.png',
                                         width: 70,
                                       )),
                                   const SizedBox(
@@ -280,16 +283,17 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                           height: 5,
                                         ),
                                         Container(
-                                            height: 5,
-                                            clipBehavior: Clip.hardEdge,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: Colors.blue.shade50,
-                                            ),
-                                            child: LinearProgressIndicator(
-                                              value: loadingController.value,
-                                            )),
+                                          height: 5,
+                                          clipBehavior: Clip.hardEdge,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: Colors.blue.shade50,
+                                          ),
+                                          child: LinearProgressIndicator(
+                                            value: loadingController.value,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),

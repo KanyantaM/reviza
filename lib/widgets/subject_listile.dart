@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reviza/features/view_subjects/view/view_material_view.dart';
+import 'package:reviza/features/view_subjects/view_subjects.dart';
 import 'package:reviza/ui/custom_text.dart';
 
 class SubjectListTile extends StatefulWidget {
@@ -8,10 +8,12 @@ class SubjectListTile extends StatefulWidget {
     required this.isDelete,
     required this.subject,
     required this.isSelected,
+    required this.uid,
   });
   final bool isDelete;
   final String subject;
   final bool isSelected;
+  final String uid;
 
   @override
   State<SubjectListTile> createState() => _SubjectListTileState();
@@ -28,7 +30,7 @@ class _SubjectListTileState extends State<SubjectListTile> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SubjectDetailsScreen()));
+                        builder: (context) => ViewMaterialPage(isDownloadedView: false, uid: widget.uid, courseName: widget.subject,)));
               },
               child: SizedBox(
                 height: 70,

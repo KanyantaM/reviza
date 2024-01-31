@@ -53,11 +53,12 @@ class _MySubjectState extends State<MySubjectsView> {
                 '${_subjectsToDelete.length} Selected',
                 IconButton(
                   onPressed: () {
-                    context.read<EditMyCoursesBloc>().add(DeleteCourses(student: student, coursesToDelete: _subjectsToDelete));
+                    context.read<EditMyCoursesBloc>().add(DeleteCourses(
+                        student: student, coursesToDelete: _subjectsToDelete));
                     setState(() {
                       isEditSubjects = false;
                     });
-                    
+
                     // customDeleteDialogue(context, _subjectsToDelete, student);
                   },
                   icon: const Icon(Icons.delete),
@@ -96,11 +97,13 @@ class _MySubjectState extends State<MySubjectsView> {
                       isDelete: isEditSubjects,
                       subject: courses[index],
                       isSelected: _subjectsToDelete.contains(courses[index]),
+                      uid: student.userId,
                     ))
                 : SubjectListTile(
                     isDelete: isEditSubjects,
                     subject: courses[index],
                     isSelected: true,
+                    uid: student.userId,
                   );
           },
         ),

@@ -12,7 +12,9 @@ final class ViewMaterialInitial extends ViewMaterialState {}
 final class FetchingMaterialsState extends ViewMaterialState {}
 
 final class MaterialsFetchedState extends ViewMaterialState {
+  ///This should all the materials that can be fetched if they are form the device else it is the list per subject if it is coming from an online source
   final List<StudyMaterial> studyMaterials;
+  final List<String> courses;
 
   List<StudyMaterial> filterByType(String? course, Types? type) {
     List<StudyMaterial> filteredResults = [];
@@ -65,7 +67,7 @@ final class MaterialsFetchedState extends ViewMaterialState {
     }
   }
 
-  const MaterialsFetchedState({required this.studyMaterials});
+  const MaterialsFetchedState({required this.courses, required this.studyMaterials});
 }
 
 final class MaterialDownloadedSuccesfully extends ViewMaterialState {}
@@ -76,7 +78,7 @@ final class DownloadingCourses extends ViewMaterialState {
   const DownloadingCourses({required this.progress});
 }
 
-final class StudyMaterialOpened extends ViewMaterialState{
+final class StudyMaterialOpened extends ViewMaterialState {
   final StudyMaterial studyMaterial;
   final String uid;
 

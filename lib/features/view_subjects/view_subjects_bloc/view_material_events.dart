@@ -8,7 +8,7 @@ sealed class ViewMaterialEvent extends Equatable {
 }
 
 class FetchCourseMaterials extends ViewMaterialEvent {
-  final String course;
+  final String? course;
   final bool online;
   final String uid;
 

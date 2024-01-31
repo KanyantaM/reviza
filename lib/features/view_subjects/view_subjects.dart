@@ -1,0 +1,1 @@
+export './view/view_material_page.dart';

@@ -20,13 +20,14 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
         super(ViewMaterialInitial()) {
     on<FetchCourseMaterials>((event, emit) async {
       List<StudyMaterial> materials = [];
+      List<String> courses = [];
       Map<String, List<StudyMaterial>> map = {};
       emit(FetchingMaterialsState());
       emit(LoadingState());
       try {
         if (event.online) {
           map = await _materialOnlineDataRepository
-              .getStudyMaterials([event.course]);
+              .getStudyMaterials([event.course!]);
         } else {
           List<String> myCourses = [];
           await HiveUserRepository()
@@ -34,8 +35,15 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
               .then((value) => myCourses = value?.myCourses ?? []);
           map = await _hiveStudyMaterialRepository.getStudyMaterials(myCourses);
         }
-        materials = map[event.course] ?? [];
-        emit(MaterialsFetchedState(studyMaterials: materials));
+        if(event.course != null) {
+          materials = map[event.course] ?? [];
+        }else{
+          for (String course in map.keys) {
+            courses.add(course);
+          materials.addAll(map[course]??[]);
+        }
+        }
+        emit(MaterialsFetchedState(studyMaterials: materials, courses: courses));
       } catch (e) {
         emit(ErrorState(message: 'Failed to fetch user messages\n $e'));
       }

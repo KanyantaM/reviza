@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
 import 'package:reviza/features/edit_courses/view/home_tab_page.dart';
-import 'package:reviza/ui/home_screen/tabs/download/download_screen.dart';
+import 'package:reviza/features/view_subjects/view_subjects.dart';
 import 'package:reviza/ui/home_screen/tabs/upload/upload_screen.dart';
 import 'package:reviza/features/user_screen.dart';
 
@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
         userId: widget.uid,
       ))
       ..add(UploadTypeScreen(uid: widget.uid,))
-      ..add(const FilterScreen());
+      ..add(ViewMaterialPage(isDownloadedView: true, uid: widget.uid,));
     _currentPage = HomeTabPage(
       userId: widget.uid,
     );

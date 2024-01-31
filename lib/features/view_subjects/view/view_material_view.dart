@@ -193,7 +193,42 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
           }
         }
         if (state is LoadingState) {
-          return const CircularProgressIndicator.adaptive();
+          
+            return Scaffold(
+            appBar: (!widget.isDownloadedView)?AppBar(
+              centerTitle: true,
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              title: const Text('ReviZa'),
+              bottom: TabBar(controller: _tabController, tabs: const [
+                Tab(
+                  child: Icon(Icons.note),
+                ),
+                Tab(
+                  icon: Icon(Icons.question_answer),
+                ),
+                Tab(
+                  child: Icon(Icons.book),
+                ),
+                Tab(
+                  icon: Icon(Icons.link),
+                ),
+              ]),
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      commingSoon(context);
+                    },
+                    icon: const Icon(Icons.notifications)),
+                SizedBox(
+                  width: 12.h,
+                )
+              ],
+            ): null,
+            body: Container(
+                color: Colors.white,
+                child: const Center(child: CircularProgressIndicator())),
+          );
+  
         }
         if (state is StudyMaterialOpened) {
           return CustomPDFViewer(state: state, viewOnline: true);

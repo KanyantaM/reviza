@@ -19,7 +19,8 @@ import 'package:student_api/student_api.dart';
 class UploadPdfView extends StatefulWidget {
   final String id;
   final Types type;
-  const UploadPdfView({Key? key, required this.type, required this.id}) : super(key: key);
+  const UploadPdfView({Key? key, required this.type, required this.id})
+      : super(key: key);
 
   @override
   State<UploadPdfView> createState() => _CreateUpdateNoteViewState();
@@ -39,7 +40,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
 
 //test
   TextEditingController yearController = TextEditingController();
-  final String _courseName = '';
+  String _courseName = '';
   String _category = 'TEST';
   // bool _agreeToTerms = false;
   bool _isRangeSelected = false;
@@ -54,12 +55,11 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
   double? singleUnit;
   TextEditingController linkController = TextEditingController();
 
-  void getStudent()async{
+  void getStudent() async {
     _student = await fetchCurrentStudentOnline(widget.id);
     setState(() {
-    _myCourses = _student!.myCourses;
+      _myCourses = _student!.myCourses;
     });
-    
   }
 
   @override
@@ -70,7 +70,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
     )..addListener(() {
         setState(() {});
       });
-    
+
     getStudent();
     super.initState();
   }
@@ -101,13 +101,15 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
       ),
       body: BlocConsumer<UploadPdfBloc, UploadPdfState>(
         builder: ((context, state) {
-          //     // need to fixed
+          if (state is UploadingPdfState) {
+            const Center(child: CircularProgressIndicator(),);
+          }
           return Container(
             padding: const EdgeInsets.all(16),
             child: ListView(
               children: [
-                _buildSearchableDropdown('Course', _myCourses,
-                    (selectedCourse) => _courseName),
+                _buildSearchableDropdown(
+                    'Course', _myCourses, (selected) {_courseName = selected;}),
                 const Spacer(
                   flex: 1,
                 ),
@@ -247,8 +249,8 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                 children: [
                                   ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
-                                      child: Image.file(
-                                        _file!,
+                                      child: Image.asset(
+                                       'assets/images/pdf.png' ,
                                         width: 70,
                                       )),
                                   const SizedBox(
@@ -311,8 +313,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Theme.of(context).primaryColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular((20.86)),
+                        borderRadius: BorderRadius.circular((20.86)),
                       ),
                     ),
                     onPressed: () async {
@@ -342,40 +343,41 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
         }),
         listener: (context, state) {
           if (state is UploadedPdfState) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: CustomSnackBar(
-          errorText: 'File Uploaded',
-          headingText: 'Success',
-          color: const Color.fromARGB(255, 29, 164, 31),
-          image: Image.asset(
-            'assets/icon/error_solid_green.png',
-            height: 35,
-            width: 35,
-          ),
-        ),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ));
-      
-      // add duration
-      Future.delayed(const Duration(seconds: 3), () {
-        Navigator.pop(context);
-      });} else if(state is ErrorState){
-        ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: CustomSnackBar(
-            errorText: state.message,
-            headingText: 'Oh Snap!',
-            color: const Color(0xFFF75469),
-            image: Image.asset('assets/icon/error_solid.png'),
-          ),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-      );
-      }
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: CustomSnackBar(
+                errorText: 'File Uploaded',
+                headingText: 'Success',
+                color: const Color.fromARGB(255, 29, 164, 31),
+                image: Image.asset(
+                  'assets/icon/error_solid_green.png',
+                  height: 35,
+                  width: 35,
+                ),
+              ),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ));
+
+            // add duration
+            Future.delayed(const Duration(seconds: 3), () {
+              Navigator.pop(context);
+            });
+          } else if (state is ErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: CustomSnackBar(
+                  errorText: state.message,
+                  headingText: 'Oh Snap!',
+                  color: const Color(0xFFF75469),
+                  image: Image.asset('assets/icon/error_solid.png'),
+                ),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+              ),
+            );
+          }
         },
       ),
     );
@@ -505,19 +507,23 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
           break;
         default:
       }
-if(_courseName.isNotEmpty && _file != null) {
-  context.read<UploadPdfBloc>().add(UploadPdf(
-          subjectName: _courseName,
-          type: type,
-          id: Random(DateTime.now().millisecond).toString(),
-          title: (titleController.text.isNotEmpty)? titleController.text:_file!.path.split('/').last,
-          description: desc,
-          pdfFile: _file!,),);
-
+      context.read<UploadPdfBloc>().add(
+            UploadPdf(
+              subjectName: _courseName,
+              type: type,
+              id: Random(DateTime.now().millisecond).toString(),
+              title: (titleController.text.isNotEmpty)
+                  ? titleController.text
+                  : _file!.path.split('/').last,
+              description: desc,
+              pdfFile: _file!,
+            ),
+          );
 
       setState(() {
         loadingController.reverse();
-      });}else if (_courseName.isEmpty) {
+      });
+    } else if (_courseName.isEmpty) {
       await showCannotShareEmptyNoteDialog(context);
     } else {
       isuploaded = false;
@@ -535,11 +541,10 @@ if(_courseName.isNotEmpty && _file != null) {
         ),
       );
     }
-    } 
   }
 
   Widget _buildSearchableDropdown(
-      String label, List<String> options, Function(String) onChanged) {
+      String label, List<String> options, Function(String selected) onChanged) {
     return Autocomplete<String>(
       optionsBuilder: (TextEditingValue textEditingValue) {
         if (textEditingValue.text.isEmpty) {

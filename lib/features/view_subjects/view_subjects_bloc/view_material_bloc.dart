@@ -128,8 +128,8 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           updateStudyMaterial.fans.remove(event.uid);
         }
         try {
-          await _hiveStudyMaterialRepository
-              .updateStudyMaterial(updateStudyMaterial);
+          // await _hiveStudyMaterialRepository
+          //     .updateStudyMaterial(updateStudyMaterial);
           await _materialOnlineDataRepository
               .updateStudyMaterial(updateStudyMaterial);
         } on Exception catch (e) {
@@ -147,13 +147,13 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
         }
         try {
           if (event.material.reports.length <= 5) {
-            await _hiveStudyMaterialRepository
-                .updateStudyMaterial(updateStudyMaterial);
+            // await _hiveStudyMaterialRepository
+            //     .updateStudyMaterial(updateStudyMaterial);
             await _materialOnlineDataRepository
                 .updateStudyMaterial(updateStudyMaterial);
           } else {
-            await _hiveStudyMaterialRepository
-                .deleteStudyMaterial(event.material);
+            // await _hiveStudyMaterialRepository
+            //     .deleteStudyMaterial(event.material);
             await _materialOnlineDataRepository
                 .deleteStudyMaterial(event.material);
             // emit(MaterialBanedState());

@@ -11,7 +11,7 @@ class FirestoreStudyMaterialRepository implements StudyMaterialRepository {
 
   @override
   Future<void> updateStudyMaterial(StudyMaterial material) async {
-    await _firestore.collection(material.subjectName).doc(material.id).update(material.toJson());
+    await _firestore.collection(material.subjectName).doc(material.id).set(material.toJson());
   }
 
   @override

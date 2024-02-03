@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/app/bloc/app_bloc.dart';
+import 'package:reviza/features/login/login.dart';
 import 'package:reviza/features/report.dart';
 import 'package:reviza/ui/theme.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
@@ -169,6 +170,8 @@ class UserScreen extends StatelessWidget {
               title: const Text('Logout'),
               onTap: () {
                 context.read<AppBloc>().add(const AppLogoutRequested());
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()));
               },
             ),
           ],

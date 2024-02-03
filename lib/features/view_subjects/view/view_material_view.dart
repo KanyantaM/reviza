@@ -340,7 +340,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
               onReport: () {
                 context.read<ViewMaterialBloc>().add(
                       ReportMaterial(
-                        material: state.studyMaterial,
+                        material: state.originalStudyMaterial,
                         uid: state.uid,
                       ),
                     );
@@ -363,8 +363,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                         TextButton(
                           onPressed: () {
                             // Perform the deletion
-                            File(state.studyMaterial.filePath!).delete();
-
                             Navigator.pop(context,
                                 MaterialPageRoute(builder: (context) {
                               return ViewMaterialsView(
@@ -372,7 +370,8 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                                 uid: widget.uid,
                                 courseName: widget.courseName,
                               );
-                            })); // Close the dialog
+                            }));
+                            File(state.studyMaterial.filePath!).delete(); // Close the dialog
                           },
                           child: const Text('Delete'),
                         ),

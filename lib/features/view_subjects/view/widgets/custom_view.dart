@@ -63,13 +63,16 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_studyMaterial?.title ?? ''),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.share),
-            onPressed: () {
-              // Handle share action
-              commingSoon(context);
-            },
-          ),
+          IconButton(onPressed: (){
+            widget.onDelete;
+          }, icon: const Icon(Icons.delete)),
+          // IconButton(
+          //   icon: const Icon(Icons.share),
+          //   onPressed: () {
+          //     // Handle share action
+          //     commingSoon(context);
+          //   },
+          // ),
         ],
       ),
       body: Stack(
@@ -120,7 +123,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                   onUpVote: widget.onUpVote,
                   onDownVote: widget.onDownVote,
                   onReport: widget.onReport,
-                  onDelete: widget.onDelete,
+                  // onDelete: widget.onDelete,
                 )
               : const Wrap(),
         ],
@@ -133,7 +136,7 @@ class VotingBar extends StatefulWidget {
   final bool? hasVotedUp;
   final Function onUpVote;
   final Function onDownVote;
-  final Function onDelete;
+  // final Function onDelete;
   final Function onReport;
   const VotingBar({
     super.key,
@@ -142,7 +145,7 @@ class VotingBar extends StatefulWidget {
     required this.onDownVote,
     // required this.onDownload,
     required this.onReport,
-    required this.onDelete,
+    // required this.onDelete,
   });
 
   @override
@@ -234,10 +237,10 @@ class _VotingBarState extends State<VotingBar> {
                 ),
                 IconButton(
                     onPressed: () {
-                      widget.onDelete;
+                      commingSoon(context);
                     },
                     icon: const Icon(
-                      Icons.delete,
+                      Icons.share,
                       color: Colors.blue,
                     )),
                 InkWell(

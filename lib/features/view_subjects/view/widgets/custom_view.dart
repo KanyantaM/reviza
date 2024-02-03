@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
@@ -11,7 +10,7 @@ class CustomPDFViewer extends StatefulWidget {
   final StudyMaterialOpened state;
   final Function onUpVote;
   final Function onDownVote;
-  // final Function onDownload;
+  final Function onDelete;
   final Function onReport;
 
   const CustomPDFViewer({
@@ -21,6 +20,7 @@ class CustomPDFViewer extends StatefulWidget {
     required this.onUpVote,
     required this.onDownVote,
     required this.onReport,
+    required this.onDelete,
   });
 
   @override
@@ -120,6 +120,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                   onUpVote: widget.onUpVote,
                   onDownVote: widget.onDownVote,
                   onReport: widget.onReport,
+                  onDelete: widget.onDelete,
                 )
               : const Wrap(),
         ],
@@ -132,7 +133,7 @@ class VotingBar extends StatefulWidget {
   final bool? hasVotedUp;
   final Function onUpVote;
   final Function onDownVote;
-  // final Function onDownload;
+  final Function onDelete;
   final Function onReport;
   const VotingBar({
     super.key,
@@ -141,6 +142,7 @@ class VotingBar extends StatefulWidget {
     required this.onDownVote,
     // required this.onDownload,
     required this.onReport,
+    required this.onDelete,
   });
 
   @override
@@ -231,9 +233,11 @@ class _VotingBarState extends State<VotingBar> {
                   ),
                 ),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      widget.onDelete;
+                    },
                     icon: const Icon(
-                      Icons.storage,
+                      Icons.delete,
                       color: Colors.blue,
                     )),
                 InkWell(

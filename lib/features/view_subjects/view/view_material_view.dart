@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -343,12 +345,48 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                       ),
                     );
               },
+              onDelete: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      icon: const Icon(Icons.delete),
+                      title: Text('Delete ${state.studyMaterial.title}'),
+                      content: const Text('Are you sure you want to delete?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // Close the dialog
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // Perform the deletion
+                            File(state.studyMaterial.filePath!).delete();
+
+                            Navigator.pop(context,
+                                MaterialPageRoute(builder: (context) {
+                              return ViewMaterialsView(
+                                isDownloadedView: widget.isDownloadedView,
+                                uid: widget.uid,
+                                courseName: widget.courseName,
+                              );
+                            })); // Close the dialog
+                          },
+                          child: const Text('Delete'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
           );
         }
 
         // if(state is MaterialBanedState){
-          
+
         // }
 
         return Scaffold(

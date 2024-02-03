@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:reviza/app/bloc/app_bloc.dart';
 import 'package:reviza/app/routes/routes.dart';
-import 'package:reviza/ui/theme.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -34,20 +33,22 @@ class App extends StatelessWidget {
 }
 
 class AppView extends StatelessWidget {
-  const AppView({super.key});
+  const AppView({super.key,});
 
   @override
   Widget build(BuildContext context) {
-    // return ScreenUtilInit(builder: (context, child) {
-      return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ReviZaTheme.light,
-      home: FlowBuilder<AppState>(
-        state: context.select((AppBloc bloc) => bloc.state),
-        onGeneratePages: onGenerateAppViewPages,
-      ),
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, state) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: state.theme, // Access the theme from the AppState
+          home: FlowBuilder<AppState>(
+            state: state,
+            onGeneratePages: onGenerateAppViewPages,
+          ),
+        );
+      },
     );
-    // },);
-    
   }
 }
+

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reviza/features/view_subjects/view_subjects.dart';
-import 'package:reviza/ui/custom_text.dart';
 
 class SubjectListTile extends StatefulWidget {
   const SubjectListTile({
@@ -39,8 +38,8 @@ class _SubjectListTileState extends State<SubjectListTile> {
                     leading: const Icon(Icons.more_vert),
                     title: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: CustomText(
-                        title: widget.subject,
+                      child: Text(
+                         widget.subject,
                       ),
                     ),
                     trailing: const Icon(
@@ -64,8 +63,8 @@ class _SubjectListTileState extends State<SubjectListTile> {
                         ),
                   title: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: CustomText(
-                      title: widget.subject,
+                    child: Text(
+                       widget.subject,
                     ),
                   ),
                 ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/features/edit_courses/bloc/edit_my_courses_bloc.dart';
-import 'package:reviza/ui/custom_text.dart';
 import 'package:reviza/widgets/subject_listile.dart';
 import 'package:student_api/student_api.dart';
 
@@ -126,10 +125,12 @@ class _MySubjectState extends State<MySubjectsView> {
                 padding: const EdgeInsets.only(left: 15), child: frontButton),
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: CustomText(
-                title: '\t ${title.split(':').first}',
-                fontWeight: FontWeight.w600,
+              child: Text(
+                 '\t ${title.split(':').first}',
+                 style: const TextStyle(fontWeight: FontWeight.w600,
                 fontSize: 20,
+                // color: Colors.white
+                ),
               ),
             ),
           ],

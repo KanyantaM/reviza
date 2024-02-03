@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class StepsScreen extends StatefulWidget {
+  const StepsScreen({super.key});
+
   @override
-  _StepsScreenState createState() => _StepsScreenState();
+  State<StepsScreen> createState() => _StepsScreenState();
 }
 
 class _StepsScreenState extends State<StepsScreen> {

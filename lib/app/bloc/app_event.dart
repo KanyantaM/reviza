@@ -13,3 +13,4 @@ final class _AppUserChanged extends AppEvent {
 
   final User user;
 }
+class ChangeTheme extends AppEvent {}

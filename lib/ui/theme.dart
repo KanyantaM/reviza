@@ -43,4 +43,8 @@ class ReviZaTheme {
   ),
     );
   }
+
+  static ThemeData toggleTheme(ThemeData currentTheme) {
+    return currentTheme == light ? dark : light;
+  }
 }

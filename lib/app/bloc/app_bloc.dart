@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:reviza/ui/theme.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
@@ -12,26 +14,30 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       : _authenticationRepository = authenticationRepository,
         super(
           authenticationRepository.currentUser.isNotEmpty
-              ? AppState.authenticated(authenticationRepository.currentUser)
-              : const AppState.unauthenticated(),
+              ? AppState.authenticated(authenticationRepository.currentUser, ReviZaTheme.light)
+              :  AppState.unauthenticated(),
         ) {
     on<_AppUserChanged>(_onUserChanged);
     on<AppLogoutRequested>(_onLogoutRequested);
     _userSubscription = _authenticationRepository.user.listen(
       (user) => add(_AppUserChanged(user)),
     );
+    on<ChangeTheme>((event, emit) {
+      emit(state.copyWith(theme: ReviZaTheme.toggleTheme(state.theme)));
+    });
   }
 
   final AuthenticationRepository _authenticationRepository;
   late final StreamSubscription<User> _userSubscription;
 
   void _onUserChanged(_AppUserChanged event, Emitter<AppState> emit) {
-    emit(
-      event.user.isNotEmpty
-          ? AppState.authenticated(event.user)
-          : const AppState.unauthenticated(),
-    );
-  }
+  emit(
+    event.user.isNotEmpty
+        ? AppState.authenticated(event.user, state.theme) // Pass the current theme
+        : AppState.unauthenticated(),
+  );
+}
+
 
   void _onLogoutRequested(AppLogoutRequested event, Emitter<AppState> emit) {
     unawaited(_authenticationRepository.logOut());

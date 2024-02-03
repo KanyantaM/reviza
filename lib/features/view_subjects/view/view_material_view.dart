@@ -287,15 +287,76 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
               ));
         }
         if (state is StudyMaterialOpened) {
-          return CustomPDFViewer(state: state, viewOnline: true);
+          return WillPopScope(
+            onWillPop: () async {
+              // Show a confirmation dialog before allowing the pop.
+              if (widget.isDownloadedView) {
+                context.read<ViewMaterialBloc>().add(
+                      FetchCourseMaterials(
+                        course: null,
+                        online: false,
+                        uid: widget.uid,
+                      ),
+                    );
+              } else {
+                context.read<ViewMaterialBloc>().add(
+                      FetchCourseMaterials(
+                        course: widget.courseName,
+                        online: true,
+                        uid: widget.uid,
+                      ),
+                    );
+              }
+              return false;
+            },
+            child: CustomPDFViewer(
+              state: state,
+              viewOnline: true,
+              onUpVote: () {
+                context.read<ViewMaterialBloc>().add(
+                      VoteMaterial(
+                        material: state.originalStudyMaterial,
+                        uid: state.uid,
+                        vote: true,
+                      ),
+                    );
+              },
+              onDownVote: () {
+                context.read<ViewMaterialBloc>().add(
+                      VoteMaterial(
+                        material: state.originalStudyMaterial,
+                        uid: state.uid,
+                        vote: false,
+                      ),
+                    );
+              },
+              // onDownload: () {
+              //   context
+              //       .read<ViewMaterialBloc>()
+              //       .add(DownLoadMaterial(course: state.studyMaterial, uid: widget.state.uid));
+              // },
+              onReport: () {
+                context.read<ViewMaterialBloc>().add(
+                      ReportMaterial(
+                        material: state.studyMaterial,
+                        uid: state.uid,
+                      ),
+                    );
+              },
+            ),
+          );
         }
+
+        // if(state is MaterialBanedState){
+          
+        // }
+
         return Scaffold(
           appBar: (!widget.isDownloadedView)
               ? AppBar(
                   centerTitle: true,
                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                   title: const Text('ReviZa'),
-                 
                   actions: [
                     IconButton(
                         onPressed: () {

@@ -53,75 +53,79 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
     });
 
     on<DownLoadMaterial>((event, emit) async {
-  try {
-    Future<String> getFilePath(String filename, String subjectName) async {
-      final dir = await getApplicationDocumentsDirectory();
-      return "${dir.path}/$subjectName/$filename";
-    }
+      try {
+        Future<String> getFilePath(String filename, String subjectName) async {
+          final dir = await getApplicationDocumentsDirectory();
+          return "${dir.path}/$subjectName/$filename";
+        }
 
-    String url = event.course.filePath!;
-    String fileName = event.course.title;
-    String subjectName = event.course.subjectName;
-    String path = await getFilePath(fileName, subjectName);
+        String url = event.course.filePath!;
+        String fileName = event.course.title;
+        String subjectName = event.course.subjectName;
+        String path = await getFilePath(fileName, subjectName);
 
-    // Check if the file already exists
-    if (await File(path).exists()) {
-      // File exists, emit StudyMaterialOpened directly
-      StudyMaterial oldMaterial = event.course;
-        oldMaterial.filePath = path;
-      emit(
-        StudyMaterialOpened(
-          studyMaterial: oldMaterial,
-          uid: event.uid,
-        ),
-      );
-    } else {
-      Dio dio = Dio();
+        // Check if the file already exists
+        if (await File(path).exists()) {
+          // File exists, emit StudyMaterialOpened directly
+          StudyMaterial oldMaterial = event.course;
+          oldMaterial.filePath = path;
+          emit(
+            StudyMaterialOpened(
+              originalStudyMaterial: event.course,
+              studyMaterial: oldMaterial,
+              uid: event.uid,
+            ),
+          );
+        } else {
+          Dio dio = Dio();
 
-      await dio.download(
-        url,
-        path,
-        onReceiveProgress: (receivedBytes, totalBytes) {
-          double progress = receivedBytes / totalBytes;
-          emit(DownloadingCourses(progress: progress));
-        },
-        deleteOnError: true,
-      ).then((response) {
-        StudyMaterial oldMaterial = event.course;
-        oldMaterial.filePath = path;
-        _hiveStudyMaterialRepository.addStudyMaterial(oldMaterial);
-        emit(DownloadedCourse());
-        emit(
-          StudyMaterialOpened(
-            studyMaterial: oldMaterial,
-            uid: event.uid,
-          ),
-        );
-      });
-    }
-  } catch (e) {
-    emit(ErrorState(message: 'Failed to download material\n $e'));
-  }
-});
-
+          await dio.download(
+            url,
+            path,
+            onReceiveProgress: (receivedBytes, totalBytes) {
+              double progress = receivedBytes / totalBytes;
+              emit(DownloadingCourses(progress: progress));
+            },
+            deleteOnError: true,
+          ).then((response) {
+            StudyMaterial oldMaterial = event.course;
+            oldMaterial.filePath = path;
+            _hiveStudyMaterialRepository.addStudyMaterial(oldMaterial);
+            emit(DownloadedCourse());
+            emit(
+              StudyMaterialOpened(
+                originalStudyMaterial: event.course,
+                studyMaterial: oldMaterial,
+                uid: event.uid,
+              ),
+            );
+          });
+        }
+      } catch (e) {
+        emit(ErrorState(message: 'Failed to download material\n $e'));
+      }
+    });
 
     on<VoteMaterial>(
       (event, emit) async {
         List haters = event.material.haters;
         List fans = event.material.fans;
         StudyMaterial updateStudyMaterial = event.material;
-        if (event.vote == 1) {
+        if (event.vote ?? false) {
           if (fans.contains(event.uid)) {
             updateStudyMaterial.haters.remove(event.uid);
           } else {
             updateStudyMaterial.fans.add(event.uid);
           }
-        } else {
+        } else if (!(event.vote ?? true)) {
           if (haters.contains(event.uid)) {
             updateStudyMaterial.fans.remove(event.uid);
           } else {
             updateStudyMaterial.haters.add(event.uid);
           }
+        } else {
+          updateStudyMaterial.haters.remove(event.uid);
+          updateStudyMaterial.fans.remove(event.uid);
         }
         try {
           await _hiveStudyMaterialRepository
@@ -142,10 +146,18 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           updateStudyMaterial.reports.add(event.uid);
         }
         try {
-          await _hiveStudyMaterialRepository
-              .updateStudyMaterial(updateStudyMaterial);
-          await _materialOnlineDataRepository
-              .updateStudyMaterial(updateStudyMaterial);
+          if (event.material.reports.length <= 5) {
+            await _hiveStudyMaterialRepository
+                .updateStudyMaterial(updateStudyMaterial);
+            await _materialOnlineDataRepository
+                .updateStudyMaterial(updateStudyMaterial);
+          } else {
+            await _hiveStudyMaterialRepository
+                .deleteStudyMaterial(event.material);
+            await _materialOnlineDataRepository
+                .deleteStudyMaterial(event.material);
+            // emit(MaterialBanedState());
+          }
         } on Exception catch (e) {
           emit(ErrorState(message: 'Voting failed\n ERROR: $e'));
         }
@@ -156,6 +168,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
       (event, emit) => emit(
         StudyMaterialOpened(
           studyMaterial: event.studyMaterial,
+          originalStudyMaterial: event.studyMaterial,
           uid: event.uid,
         ),
       ),

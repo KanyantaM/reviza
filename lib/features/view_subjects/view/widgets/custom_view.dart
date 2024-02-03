@@ -9,11 +9,18 @@ import 'package:study_material_api/study_material_api.dart';
 class CustomPDFViewer extends StatefulWidget {
   final bool viewOnline;
   final StudyMaterialOpened state;
+  final Function onUpVote;
+  final Function onDownVote;
+  // final Function onDownload;
+  final Function onReport;
 
   const CustomPDFViewer({
     super.key,
     required this.state,
     required this.viewOnline,
+    required this.onUpVote,
+    required this.onDownVote,
+    required this.onReport,
   });
 
   @override
@@ -99,7 +106,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Text(
-                'Page ${currentPage+1}/${totalPage ?? ''}',
+                'Page ${currentPage + 1}/${totalPage ?? ''}',
                 style: const TextStyle(
                   fontSize: 16.0,
                   // color: Colors.white,
@@ -110,23 +117,9 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
           widget.viewOnline
               ? VotingBar(
                   hasVotedUp: _hasVotedUp,
-                  onUpVote: () {
-                    context.read<ViewMaterialBloc>().add(VoteMaterial(
-                        material: _studyMaterial!, uid: _uid!, vote: 1));
-                  },
-                  onDownVote: () {
-                    context.read<ViewMaterialBloc>().add(VoteMaterial(
-                        material: _studyMaterial!, uid: _uid!, vote: 0));
-                  },
-                  // onDownload: () {
-                  //   context
-                  //       .read<ViewMaterialBloc>()
-                  //       .add(DownLoadMaterial(course: _studyMaterial!, uid: widget.state.uid));
-                  // },
-                  onReport: () {
-                    context.read<ViewMaterialBloc>().add(
-                        ReportMaterial(material: _studyMaterial!, uid: _uid!));
-                  },
+                  onUpVote: widget.onUpVote,
+                  onDownVote: widget.onDownVote,
+                  onReport: widget.onReport,
                 )
               : const Wrap(),
         ],
@@ -230,7 +223,7 @@ class _VotingBarState extends State<VotingBar> {
                       Icon(
                         Icons.thumb_down,
                         color:
-                            _hasVotedUp ?? true ? Colors.red[100]: Colors.red,
+                            _hasVotedUp ?? true ? Colors.red[100] : Colors.red,
                         size: 30,
                       ),
                       const SizedBox(height: 8),
@@ -238,7 +231,7 @@ class _VotingBarState extends State<VotingBar> {
                   ),
                 ),
                 IconButton(
-                    onPressed: (){},
+                    onPressed: () {},
                     icon: const Icon(
                       Icons.storage,
                       color: Colors.blue,

@@ -81,8 +81,9 @@ final class DownloadingCourses extends ViewMaterialState {
 final class StudyMaterialOpened extends ViewMaterialState {
   final StudyMaterial studyMaterial;
   final String uid;
+  final StudyMaterial originalStudyMaterial;
 
-  const StudyMaterialOpened({required this.studyMaterial, required this.uid});
+  const StudyMaterialOpened({required this.originalStudyMaterial, required this.studyMaterial, required this.uid});
 }
 
 final class DownloadedCourse extends ViewMaterialState {}
@@ -94,3 +95,5 @@ final class ErrorState extends ViewMaterialState {
 
   const ErrorState({required this.message});
 }
+
+final class MaterialBanedState extends ViewMaterialState{}

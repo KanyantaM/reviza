@@ -24,7 +24,7 @@ class DownLoadMaterial extends ViewMaterialEvent{
 class VoteMaterial extends ViewMaterialEvent{
   final StudyMaterial material;
   final String uid;
-  final int vote;
+  final bool? vote;
 
   const VoteMaterial({required this.material, required this.uid, required this.vote});
 }

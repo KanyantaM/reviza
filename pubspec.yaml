@@ -62,6 +62,7 @@ dependencies:
   cloud_firestore: ^4.14.0
   dio: ^5.4.0
   path_provider: ^2.1.2
+  url_launcher: ^6.2.4
 
 
 dev_dependencies:

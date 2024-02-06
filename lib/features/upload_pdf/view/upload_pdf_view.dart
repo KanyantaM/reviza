@@ -438,7 +438,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
   getfile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'png' 'jpg', 'jpeg'],
+      allowedExtensions: ['pdf', /*'doc', 'png' 'jpg', 'jpeg'*/],
     );
 
     if (result != null) {

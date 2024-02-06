@@ -31,7 +31,7 @@ class StudyMaterialCard extends StatelessWidget {
                       textScaleFactor: 4,
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width*0.5,
+                      width: MediaQuery.of(context).size.width * 0.5,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -52,10 +52,13 @@ class StudyMaterialCard extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                        onPressed: () {
-                          commingSoon(context);
-                        },
-                        icon: const Icon(Icons.share))
+                      onPressed: () {
+                        commingSoon(context);
+                      },
+                      icon: const Icon(
+                        Icons.share,
+                      ),
+                    )
                   ],
                 ),
               ),

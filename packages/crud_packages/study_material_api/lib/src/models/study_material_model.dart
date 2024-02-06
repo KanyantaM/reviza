@@ -69,7 +69,7 @@
 
 import 'package:hive/hive.dart';
 
-part 'study_material.g.dart'; // Generated file for Hive TypeAdapter
+part 'study_material_model.g.dart'; // Generated file for Hive TypeAdapter
 
 @HiveType(typeId: 1) // typeId uniquely identifies your class
 class StudyMaterial extends HiveObject {

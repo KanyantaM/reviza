@@ -24,7 +24,7 @@
 
 import 'package:hive/hive.dart';
 
-part 'student.g.dart'; // Generated file for Hive TypeAdapter
+part 'student_model.g.dart'; // Generated file for Hive TypeAdapter
 
 @HiveType(typeId: 0) // typeId uniquely identifies your class
 class Student extends HiveObject {

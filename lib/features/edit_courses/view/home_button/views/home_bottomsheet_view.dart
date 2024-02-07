@@ -29,9 +29,7 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
 
   void _fetchCourses(String uni, String sch, String dep, String yr) async {
     _filteredCourses = await filterBy(uni, sch, dep, yr);
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   @override
@@ -94,7 +92,7 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
               onChanged: (list) {
                 setState(() {
                   _isSearching = true;
-                _searchResults = list;
+                  _searchResults = list;
                 });
               }),
           const SizedBox(height: 16.0),
@@ -117,81 +115,89 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
             color: Theme.of(context).primaryColorDark,
           ),
           SizedBox(
-              height: MediaQuery.of(context).size.height * 0.4,
-              child:(_isSearching && _searchResults.isEmpty || _filteredCourses.length<2)? Wrap(
-                          children: [const Text('We are constantly adding new courses. If you can\'t find your course please contact the team🫡'),
-                            Lottie.asset('assets/lottie/indian_searching.json', fit: BoxFit.scaleDown),
-                            
-                          ],
-                        ): ListView.builder(
-                shrinkWrap: true,
-                itemCount: _isSearching
-                    ? _searchResults.length
-                    : _filteredCourses.isNotEmpty
-                        ? _filteredCourses.length
-                        : _filteredCourses
-                            .length, // specify the number of items in your list,
-                itemBuilder: (context, index) {
-                  return _isSearching
-                      ? (_searchResults.isNotEmpty?AddSubjectListTile(
-                          onTap: (value) {
-                            setState(() {
-                              if (_selectedSubjects.contains(value)) {
-                                _selectedSubjects.remove(value);
-                              } else {
-                                _selectedSubjects.add(value);
-                              }
-                            });
-                          },
-                          value: _searchResults[index],
-                          isSelected:
-                              _selectedSubjects.contains(_searchResults[index]),
-                        ): Column(
-                          children: [
-                            Lottie.asset('assets/lottie/indian_searching'),
-                            const Text('We can\'t find the course\n please contact us to have the course added')
-                          ],
-                        ))
-                      : _filteredCourses.isNotEmpty
-                          ? AddSubjectListTile(
-                              onTap: (value) {
-                                setState(() {
-                                  if (_selectedSubjects.contains(value)) {
-                                    _selectedSubjects.remove(value);
-                                  } else {
-                                    _selectedSubjects.add(value);
-                                  }
-                                });
-                              },
-                              value: _filteredCourses[index],
-                              isSelected: _selectedSubjects
-                                  .contains(_filteredCourses[index]),
-                            )
-                          : AddSubjectListTile(
-                              onTap: (value) {
-                                setState(() {
-                                  if (_selectedSubjects.contains(value)) {
-                                    _selectedSubjects.remove(value);
-                                  } else {
-                                    _selectedSubjects.add(value);
-                                  }
-                                });
-                              },
-                              value: _filteredCourses[index],
-                              isSelected: _selectedSubjects
-                                  .contains(_filteredCourses[index]),
-                            );
-                },
-              ),
-              
-              ),
-              
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: (_isSearching && _searchResults.isEmpty ||
+                    _filteredCourses.length < 2)
+                ? Wrap(
+                    children: [
+                      const Text(
+                          'We are constantly adding new courses. If you can\'t find your course please contact the team🫡'),
+                      Lottie.asset('assets/lottie/indian_searching.json',
+                          fit: BoxFit.scaleDown),
+                    ],
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _isSearching
+                        ? _searchResults.length
+                        : _filteredCourses.isNotEmpty
+                            ? _filteredCourses.length
+                            : _filteredCourses
+                                .length, // specify the number of items in your list,
+                    itemBuilder: (context, index) {
+                      return _isSearching
+                          ? (_searchResults.isNotEmpty
+                              ? AddSubjectListTile(
+                                  onTap: (value) {
+                                    setState(() {
+                                      if (_selectedSubjects.contains(value)) {
+                                        _selectedSubjects.remove(value);
+                                      } else {
+                                        _selectedSubjects.add(value);
+                                      }
+                                    });
+                                  },
+                                  value: _searchResults[index],
+                                  isSelected: _selectedSubjects
+                                      .contains(_searchResults[index]),
+                                )
+                              : Column(
+                                  children: [
+                                    Lottie.asset(
+                                        'assets/lottie/indian_searching'),
+                                    const Text(
+                                        'We can\'t find the course\n please contact us to have the course added')
+                                  ],
+                                ))
+                          : _filteredCourses.isNotEmpty
+                              ? AddSubjectListTile(
+                                  onTap: (value) {
+                                    setState(() {
+                                      if (_selectedSubjects.contains(value)) {
+                                        _selectedSubjects.remove(value);
+                                      } else {
+                                        _selectedSubjects.add(value);
+                                      }
+                                    });
+                                  },
+                                  value: _filteredCourses[index],
+                                  isSelected: _selectedSubjects
+                                      .contains(_filteredCourses[index]),
+                                )
+                              : AddSubjectListTile(
+                                  onTap: (value) {
+                                    setState(() {
+                                      if (_selectedSubjects.contains(value)) {
+                                        _selectedSubjects.remove(value);
+                                      } else {
+                                        _selectedSubjects.add(value);
+                                      }
+                                    });
+                                  },
+                                  value: _filteredCourses[index],
+                                  isSelected: _selectedSubjects
+                                      .contains(_filteredCourses[index]),
+                                );
+                    },
+                  ),
+          ),
         ],
       ),
     );
   }
 
-  FilterChip selectedFilter(String filter, BuildContext context, String term, int depth) {
+  FilterChip selectedFilter(
+      String filter, BuildContext context, String term, int depth) {
     return FilterChip(
       label: Text(filter),
       selected: term.isNotEmpty,
@@ -207,143 +213,139 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
     return showDialog(
         context: context,
         builder: (context) {
+          switch (depth) {
+            case 1:
+              return AlertDialog(
+                content: Wrap(
+                  children: [
+                    _buildDropdown('University', data.keys.toList(), (value) {
+                      Navigator.pop(context);
+                      setState(() {
+                        _fetchCourses(value!, '', '', '');
+                        _university = value;
+                        _school = '';
+                        _department = '';
+                        _year = '';
+                      });
+                    }, true),
+                  ],
+                ),
+              );
+            case 2:
+              return AlertDialog(
+                content: Wrap(
+                  children: [
+                    _buildSearchableDropdown(
+                        'School', data[_university]?.keys.toList() ?? [],
+                        (value) {
+                      Navigator.pop(context);
+                      setState(() {
+                        _school = value;
+                        _department = '';
+                        _year = '';
+                        _fetchCourses(_university, value, '', '');
+                        //
+                      });
+                    }, (_university.isNotEmpty)),
+                  ],
+                ),
+              );
+            case 3:
+              return AlertDialog(
+                content: Wrap(
+                  children: [
+                    _buildSearchableDropdown('Department',
+                        data[_university]?[_school]?.keys.toList() ?? [],
+                        (value) {
+                      Navigator.pop(context);
+                      setState(() {
+                        _department = value;
+                        _year = '';
+                        _fetchCourses(_university, _department, value, '');
+                        //
+                      });
+                    }, (_school.isNotEmpty)),
+                  ],
+                ),
+              );
+            case 4:
+              return AlertDialog(
+                content: Wrap(
+                  children: [
+                    _buildDropdown(
+                        'Year',
+                        data[_university]?[_school]?[_department]
+                                ?.keys
+                                .toList()
+                                .cast<String>() ??
+                            [], (value) {
+                      Navigator.pop(context);
+                      setState(() {
+                        _year = value ?? '';
+                        _fetchCourses(_university, _department, _year, value!);
+                        //
+                      });
+                    }, (_department.isNotEmpty)),
+                  ],
+                ),
+              );
 
-switch (depth) {
-  case 1:
-    return AlertDialog(
-            content: Wrap(
-              children: [
-                _buildDropdown('University', data.keys.toList(), (value) {
-                  Navigator.pop(context);
-                  setState(() {
-                    _fetchCourses(value!, '', '', '');
-                    _university = value;
-                    _school = '';
-                    _department = '';
-                    _year = '';
-                  });
-                }, true),
-                
-              ],
-            ),
-          );
-          case 2:return AlertDialog(
-            content: Wrap(
-              children: [
-                _buildSearchableDropdown(
-                    'School', data[_university]?.keys.toList() ?? [], (value) {
-                  Navigator.pop(context);
-                  setState(() {
-                    _school = value;
-                    _department = '';
-                    _year = '';
-                    _fetchCourses(_university, value, '', '');
-                    //
-                  });
-                }, (_university.isNotEmpty)),
-              
-              ],
-            ),
-          );
-          case 3:
-          return AlertDialog(
-            content: Wrap(
-              children: [
-                
-                _buildSearchableDropdown('Department',
-                    data[_university]?[_school]?.keys.toList() ?? [], (value) {
-                  Navigator.pop(context);
-                  setState(() {
-                    _department = value;
-                    _year = '';
-                    _fetchCourses(_university, _department, value, '');
-                    //
-                  });
-                }, (_school.isNotEmpty)),
-                
-              ],
-            ),
-          );
-          case 4:
-          return AlertDialog(
-            content: Wrap(
-              children: [
-               
-                _buildDropdown(
-                    'Year',
-                    data[_university]?[_school]?[_department]
-                            ?.keys
-                            .toList()
-                            .cast<String>() ??
-                        [], (value) {
-                  Navigator.pop(context);
-                  setState(() {
-                    _year = value ?? '';
-                    _fetchCourses(_university, _department, _year, value!);
-                    //
-                  });
-                }, (_department.isNotEmpty)),
-              ],
-            ),
-          );
-          
-  default:
-  return AlertDialog(
-            content: Wrap(
-              children: [
-                _buildDropdown('University', data.keys.toList(), (value) {
-                  Navigator.pop(context);
-                  setState(() {
-                    _fetchCourses(value!, '', '', '');
-                    _university = value;
-                    _school = '';
-                    _department = '';
-                    _year = '';
-                  });
-                }, true),
-                _buildSearchableDropdown(
-                    'School', data[_university]?.keys.toList() ?? [], (value) {
-                  Navigator.pop(context);
-                  setState(() {
-                    _school = value;
-                    _department = '';
-                    _year = '';
-                    _fetchCourses(_university, value, '', '');
-                    //
-                  });
-                }, (_university.isNotEmpty)),
-                _buildSearchableDropdown('Department',
-                    data[_university]?[_school]?.keys.toList() ?? [], (value) {
-                  Navigator.pop(context);
-                  setState(() {
-                    _department = value;
-                    _year = '';
-                    _fetchCourses(_university, _department, value, '');
-                    //
-                  });
-                }, (_school.isNotEmpty)),
-                _buildDropdown(
-                    'Year',
-                    data[_university]?[_school]?[_department]
-                            ?.keys
-                            .toList()
-                            .cast<String>() ??
-                        [], (value) {
-                  Navigator.pop(context);
-                  setState(() {
-                    _year = value ?? '';
-                    _fetchCourses(_university, _department, _year, value!);
-                    //
-                  });
-                }, (_department.isNotEmpty)),
-                const SizedBox(height: 20),
-              ],
-            ),
-          );
-          
-}
-
-
+            default:
+              return AlertDialog(
+                content: Wrap(
+                  children: [
+                    _buildDropdown('University', data.keys.toList(), (value) {
+                      Navigator.pop(context);
+                      setState(() {
+                        _fetchCourses(value!, '', '', '');
+                        _university = value;
+                        _school = '';
+                        _department = '';
+                        _year = '';
+                      });
+                    }, true),
+                    _buildSearchableDropdown(
+                        'School', data[_university]?.keys.toList() ?? [],
+                        (value) {
+                      Navigator.pop(context);
+                      setState(() {
+                        _school = value;
+                        _department = '';
+                        _year = '';
+                        _fetchCourses(_university, value, '', '');
+                        //
+                      });
+                    }, (_university.isNotEmpty)),
+                    _buildSearchableDropdown('Department',
+                        data[_university]?[_school]?.keys.toList() ?? [],
+                        (value) {
+                      Navigator.pop(context);
+                      setState(() {
+                        _department = value;
+                        _year = '';
+                        _fetchCourses(_university, _department, value, '');
+                        //
+                      });
+                    }, (_school.isNotEmpty)),
+                    _buildDropdown(
+                        'Year',
+                        data[_university]?[_school]?[_department]
+                                ?.keys
+                                .toList()
+                                .cast<String>() ??
+                            [], (value) {
+                      Navigator.pop(context);
+                      setState(() {
+                        _year = value ?? '';
+                        _fetchCourses(_university, _department, _year, value!);
+                        //
+                      });
+                    }, (_department.isNotEmpty)),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              );
+          }
         });
   }
 }

@@ -1,8 +1,8 @@
 class Strings {
-  static var stepOneTitle = "Farm Driving";
-  static var stepOneContent = "There are all kinds of equipment to build your farm better harvest";
-  static var stepTwoTitle = "Plant Growing";
-  static var stepTwoContent = "Be part of the agriculture and gives your team the  power you need to do your best";
-  static var stepThreeTitle = "Fast Harvesting";
-  static var stepThreeContent = "Your will be proud to be part of agriculture and it’s harvest";
+  static var stepOneTitle = "Download";
+  static var stepOneContent = "Download lecture notes, past exams and more to ace your courses with ReviZa.";
+  static var stepTwoTitle = "Learn Together";
+  static var stepTwoContent = "You can help hundreds of students! Upload coursework, remember - sharing is caring";
+  static var stepThreeTitle = "Conquer";
+  static var stepThreeContent = "Like helpful materials? Recommend them to others by liking the material";
 }

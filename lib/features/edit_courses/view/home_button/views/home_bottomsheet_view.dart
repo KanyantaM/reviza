@@ -149,7 +149,7 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
                         ): Column(
                           children: [
                             Lottie.asset('assets/lottie/indian_searching'),
-                            Text('We can\'t find the course\n please contact us to have the course added')
+                            const Text('We can\'t find the course\n please contact us to have the course added')
                           ],
                         ))
                       : _filteredCourses.isNotEmpty

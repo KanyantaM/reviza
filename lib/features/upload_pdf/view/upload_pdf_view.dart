@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
@@ -10,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:reviza/features/upload_pdf/uplead_pdf_bloc/upload_pdf_bloc.dart';
+import 'package:reviza/utilities/generator.dart';
 import 'package:reviza/widgets/range_slider.dart';
 import 'package:reviza/misc/course_info.dart';
 import 'package:reviza/utilities/cloud.dart';
@@ -438,7 +438,9 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
   getfile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', /*'doc', 'png' 'jpg', 'jpeg'*/],
+      allowedExtensions: [
+        'pdf', /*'doc', 'png' 'jpg', 'jpeg'*/
+      ],
     );
 
     if (result != null) {
@@ -515,7 +517,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
             UploadPdf(
               subjectName: _courseName,
               type: type,
-              id: Random(DateTime.now().millisecond).toString(),
+              id: generateRandomString((DateTime.now().hour)%5 +5),
               title: (titleController.text.isNotEmpty)
                   ? titleController.text
                   : _file!.path.split('/').last,

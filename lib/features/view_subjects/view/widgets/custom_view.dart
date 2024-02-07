@@ -64,7 +64,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
         title: Text(_studyMaterial?.title ?? ''),
         actions: [
           IconButton(onPressed: (){
-            widget.onDelete;
+            widget.onDelete();
           }, icon: const Icon(Icons.delete)),
           // IconButton(
           //   icon: const Icon(Icons.share),
@@ -190,8 +190,8 @@ class _VotingBarState extends State<VotingBar> {
               children: [
                 GestureDetector(
                   onTap: () {
+                      widget.onUpVote();
                     setState(() {
-                      widget.onUpVote;
                       if (_hasVotedUp == false || _hasVotedUp == null) {
                         _hasVotedUp = true;
                       } else {
@@ -215,7 +215,7 @@ class _VotingBarState extends State<VotingBar> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      widget.onDownVote;
+                      widget.onDownVote();
                       if (_hasVotedUp == true || _hasVotedUp == null) {
                         _hasVotedUp = false;
                       } else {
@@ -244,7 +244,7 @@ class _VotingBarState extends State<VotingBar> {
                       color: Colors.blue,
                     )),
                 InkWell(
-                  onTap: () => widget.onReport,
+                  onTap: () => widget.onReport(),
                   child: const Row(
                     children: [
                       Text(

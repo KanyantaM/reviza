@@ -147,16 +147,11 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
         }
         try {
           if (event.material.reports.length <= 5) {
-            // await _hiveStudyMaterialRepository
-            //     .updateStudyMaterial(updateStudyMaterial);
             await _materialOnlineDataRepository
                 .updateStudyMaterial(updateStudyMaterial);
           } else {
-            // await _hiveStudyMaterialRepository
-            //     .deleteStudyMaterial(event.material);
             await _materialOnlineDataRepository
                 .deleteStudyMaterial(event.material);
-            // emit(MaterialBanedState());
           }
         } on Exception catch (e) {
           emit(ErrorState(message: 'Voting failed\n ERROR: $e'));

@@ -315,6 +315,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
               state: state,
               viewOnline: true,
               onUpVote: () {
+                print('begining upvote');
                 context.read<ViewMaterialBloc>().add(
                       VoteMaterial(
                         material: state.originalStudyMaterial,

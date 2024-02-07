@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:study_material_api/study_material_api.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirestoreStudyMaterialRepository implements StudyMaterialRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,12 +13,30 @@ class FirestoreStudyMaterialRepository implements StudyMaterialRepository {
 
   @override
   Future<void> updateStudyMaterial(StudyMaterial material) async {
-    await _firestore.collection(material.subjectName).doc(material.id).set(material.toJson());
+    await _firestore.collection(material.subjectName).doc(material.id).update(material.toJson());
   }
 
   @override
   Future<void> deleteStudyMaterial(StudyMaterial material) async {
+    try {
+    FirebaseStorage storage = FirebaseStorage.instance;
+
+    // Reference to the file in Firebase Storage
+    Reference reference = storage.ref().child(material.filePath!);
+
+    // Delete the file
+    await reference.delete();
+
     await _firestore.collection(material.subjectName).doc(material.id).delete();
+
+    if (kDebugMode) {
+      print('File deleted successfully');
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print('Error deleting file: $e');
+    }
+  }
   }
 
   @override

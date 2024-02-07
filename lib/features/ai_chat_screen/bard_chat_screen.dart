@@ -23,7 +23,7 @@ class AiScreen extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<AiScreen> {
-  int _selectedItem = 2;
+  final int _selectedItem = 2;
 
   final _sections = <SectionItem>[
     SectionItem(0, 'Stream text', const SectionTextStreamInput()),

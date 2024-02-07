@@ -103,16 +103,16 @@ class _IntroductionViewState extends State<IntroductionView> {
             controller: _pageController,
             children: <Widget>[
               _makePage(
-                  image: 'assets/images/step-one.png',
+                  image: 'assets/images/intro/fatimah.jpg',
                   title: Strings.stepOneTitle,
                   content: Strings.stepOneContent),
               _makePage(
                   reverse: true,
-                  image: 'assets/images/step-two.png',
+                  image: 'assets/images/intro/sharing ideas.jpg',
                   title: Strings.stepTwoTitle,
                   content: Strings.stepTwoContent),
               _makePage(
-                  image: 'assets/images/step-three.png',
+                  image: 'assets/images/intro/graduate.jpg',
                   title: Strings.stepThreeTitle,
                   content: Strings.stepThreeContent),
               CourseSelectionWidget(data: data, studentId: widget.studentId,),

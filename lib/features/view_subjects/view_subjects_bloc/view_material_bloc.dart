@@ -35,9 +35,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           await HiveUserRepository()
               .getUserById(event.uid)
               .then((value) => myCourses = value?.myCourses ?? []);
-          print(myCourses);
           map = await _hiveStudyMaterialRepository.getStudyMaterials(myCourses);
-          print(map);
         }
         if (event.course != null) {
           materials = map[event.course] ?? [];
@@ -60,7 +58,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           final dir = await getApplicationDocumentsDirectory();
           return "${dir.path}/$subjectName/$filename";
         }
-
+        String urlOG = event.course.filePath ?? '';
         String url = event.course.filePath!;
         String fileName = event.course.title;
         String subjectName = event.course.subjectName;
@@ -96,14 +94,18 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
             _hiveStudyMaterialRepository.addStudyMaterial(oldMaterial);
             emit(DownloadedCourse());
             downLoadProgressCubit.close;
+            StudyMaterial  originalStudyMaterial = StudyMaterial(subjectName: event.course.subjectName, type: event.course.type, id: event.course.id, title: event.course.title, description: event.course.description, filePath: urlOG, fans: event.course.fans, haters: event.course.haters, reports: event.course.reports, size: event.course.size);
+            oldMaterial.filePath = path;
+            print('${originalStudyMaterial.filePath} vs ${oldMaterial.filePath}');
             emit(
               StudyMaterialOpened(
-                originalStudyMaterial: event.course,
+                originalStudyMaterial: originalStudyMaterial,
                 studyMaterial: oldMaterial,
                 uid: event.uid,
               ),
             );
           });
+          
         }
       } catch (e) {
         emit(ErrorState(message: 'Failed to download material\n $e'));
@@ -122,11 +124,11 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
               updateStudyMaterial.fans.add(event.uid);
             } else {
               updateStudyMaterial.haters.remove(event.uid);
-          updateStudyMaterial.fans.remove(event.uid);
+              updateStudyMaterial.fans.remove(event.uid);
             }
           } else {
             if (!(haters.contains(event.uid))) {
-               updateStudyMaterial.fans.remove(event.uid);
+              updateStudyMaterial.fans.remove(event.uid);
               updateStudyMaterial.haters.add(event.uid);
             } else {
               updateStudyMaterial.haters.remove(event.uid);
@@ -138,8 +140,6 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           updateStudyMaterial.fans.remove(event.uid);
         }
         try {
-          // await _hiveStudyMaterialRepository
-          //     .updateStudyMaterial(updateStudyMaterial);
           await _materialOnlineDataRepository
               .updateStudyMaterial(updateStudyMaterial);
         } on Exception catch (e) {
@@ -172,8 +172,8 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
     on<ReadStudyMaterial>(
       (event, emit) => emit(
         StudyMaterialOpened(
-          studyMaterial: event.studyMaterial,
-          originalStudyMaterial: event.studyMaterial,
+          studyMaterial: event.offline,
+          originalStudyMaterial: event.online,
           uid: event.uid,
         ),
       ),

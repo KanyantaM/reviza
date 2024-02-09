@@ -43,8 +43,9 @@ class DownLoadAndView extends ViewMaterialEvent{
 }
 
 class ReadStudyMaterial extends ViewMaterialEvent{
-  final StudyMaterial studyMaterial;
+  final StudyMaterial offline;
+  final StudyMaterial online;
   final String uid;
 
-  const ReadStudyMaterial({required this.studyMaterial, required this.uid});
+  const ReadStudyMaterial({required this.offline, required this.online, required this.uid});
 }

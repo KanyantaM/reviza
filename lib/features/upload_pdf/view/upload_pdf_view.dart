@@ -28,6 +28,7 @@ class UploadPdfView extends StatefulWidget {
 
 class _CreateUpdateNoteViewState extends State<UploadPdfView>
     with SingleTickerProviderStateMixin {
+      bool _uploading = false;
   Student? _student;
   List<String> _myCourses = [];
   File? _file;
@@ -64,6 +65,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
 
   @override
   void initState() {
+    _uploading = false;
     loadingController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 10),
@@ -306,6 +308,21 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                   const SizedBox(
                                     width: 10,
                                   ),
+                                  BlocBuilder(
+                                      bloc: uploadProgressCubit,
+                                      builder: (context, state) {
+                                        return (uploadProgressCubit.state < 0.1)
+                                            ? IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _file = null;
+                                                    _platformFile = null;
+                                                  });
+                                                },
+                                                icon: const Icon(
+                                                    Icons.cancel_outlined))
+                                            : const Wrap();
+                                      }),
                                 ],
                               ),
                             ),
@@ -316,37 +333,48 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                 const Spacer(
                   flex: 2,
                 ),
-                SizedBox(
-                  height: (29.7),
-                  width: (170.7),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular((20.86)),
-                      ),
-                    ),
-                    onPressed: () async {
-                      await uploadFile(context, state);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          width: (9.86),
-                        ),
-                        Text(
-                          "Upload Material",
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: (12.51),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                
+                     SizedBox(
+                        height: (29.7),
+                        width: (170.7),
+                        child: (_uploading)
+                            ? const Wrap()
+                            : OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular((20.86)),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  setState(() {
+                                    _uploading = true;
+                                  });
+                                  await uploadFile(context, state);
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(
+                                      width: (9.86),
+                                    ),
+                                    Text(
+                                      "Upload Material",
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontSize: (12.51),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                  
+                const SizedBox(
+                  height: 12,
+                )
               ],
             ),
           );
@@ -455,10 +483,8 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
         _platformFile = result.files.first;
       });
     }
-    
-    setState(() {
-      
-    });
+
+    setState(() {});
 
     uploadProgressCubit.updateProgress(0);
   }

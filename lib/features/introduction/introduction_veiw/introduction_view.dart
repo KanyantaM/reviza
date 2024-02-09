@@ -33,7 +33,6 @@ class _IntroductionViewState extends State<IntroductionView> {
     super.initState();
   }
 
-
   @override
   void dispose() {
     _pageController.dispose();
@@ -55,20 +54,19 @@ class _IntroductionViewState extends State<IntroductionView> {
             color: Theme.of(context).scaffoldBackgroundColor,
             child: const Center(
               child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: CircularProgressIndicator.adaptive(),
-            ),
+                padding: EdgeInsets.all(20.0),
+                child: CircularProgressIndicator.adaptive(),
+              ),
             ),
           );
         }
         if (state is IntroductionIntroduced) {
-          return MyHomePage(uid:widget.studentId);
+          return MyHomePage(uid: widget.studentId);
         }
         if (state is IntroductionErrorState) {
           NoDataCuate(issue: state.message);
         }
-         return Container();
-        
+        return Container();
       },
     );
   }
@@ -81,7 +79,7 @@ class _IntroductionViewState extends State<IntroductionView> {
         backgroundColor: Colors.white,
         actions: <Widget>[
           InkWell(
-            onTap: (){
+            onTap: () {
               setState(() {
                 currentIndex = 3;
               });
@@ -111,19 +109,25 @@ class _IntroductionViewState extends State<IntroductionView> {
             controller: _pageController,
             children: <Widget>[
               _makePage(
-                  image: 'assets/images/intro/fatimah.jpg',
-                  title: Strings.stepOneTitle,
-                  content: Strings.stepOneContent),
+                image: 'assets/images/intro/fatimah.jpg',
+                title: Strings.stepOneTitle,
+                content: Strings.stepOneContent,
+              ),
               _makePage(
-                  reverse: true,
-                  image: 'assets/images/intro/sharing ideas.jpg',
-                  title: Strings.stepTwoTitle,
-                  content: Strings.stepTwoContent),
+                reverse: true,
+                image: 'assets/images/intro/sharing ideas.jpg',
+                title: Strings.stepTwoTitle,
+                content: Strings.stepTwoContent,
+              ),
               _makePage(
-                  image: 'assets/images/intro/graduate.jpg',
-                  title: Strings.stepThreeTitle,
-                  content: Strings.stepThreeContent),
-              CourseSelectionWidget(data: data, studentId: widget.studentId,),
+                image: 'assets/images/intro/graduate.jpg',
+                title: Strings.stepThreeTitle,
+                content: Strings.stepThreeContent,
+              ),
+              CourseSelectionWidget(
+                data: data,
+                studentId: widget.studentId,
+              ),
             ],
           ),
           Container(
@@ -138,8 +142,12 @@ class _IntroductionViewState extends State<IntroductionView> {
     );
   }
 
-  Widget _makePage({image, title, content, reverse = false,}) {
-    
+  Widget _makePage({
+    image,
+    title,
+    content,
+    reverse = false,
+  }) {
     return Container(
       padding: const EdgeInsets.only(left: 50, right: 50, bottom: 60),
       child: Column(

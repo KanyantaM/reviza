@@ -5,26 +5,29 @@ import 'package:path_provider/path_provider.dart';
 
 class PdfOps {
   ///subject name and title should be compulsory fields
+
+
 Future<String?> uploadPdfToFirebase(File pdfFile, String subjectName, String title, Function(double) uploadProgress) async {
   try {
+    double progress = 0;
     String pdfFileName = pdfFile.path.split('/').last;
     Reference storageReference = FirebaseStorage.instance.ref().child('$subjectName/$title/$pdfFileName');
 
     UploadTask uploadTask = storageReference.putFile(pdfFile);
     uploadTask.snapshotEvents.listen((TaskSnapshot event) {
-      double progress = event.bytesTransferred / event.totalBytes;
+     progress = event.bytesTransferred / event.totalBytes;
       uploadProgress(progress); // Call the function with the progress value
       print('Upload progress: $progress'); // Update your UI here
     });
-
+    await uploadTask;
     String downloadUrl = await storageReference.getDownloadURL();
+    print('---------------------------------$downloadUrl-------------------------------------');
     return downloadUrl;
   } catch (e) {
-    log("Error uploading PDF: $e");
+    print("Error uploading PDF: $e");
     return null;
   }
 }
-
 
 Future<String> downloadPdfFromFirebase(String pdfUrl) async {
   try {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 
 class NoDataCuate extends StatelessWidget {
   const NoDataCuate({
@@ -13,15 +14,15 @@ class NoDataCuate extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(
-          child: Image.asset(
-            "assets/images/error404.png",
-            height: 177.h,
-          ),
+        LottieBuilder.asset(
+          "assets/lottie/indian_searching.json",
+          height: 177.h,
         ),
-        Text(
-           issue,
-           textScaleFactor: 2,
+        Padding(
+          padding: const EdgeInsets.all(11.0),
+          child: Text(
+             issue,
+          ),
         ),
         SizedBox(
           height: 30.h,

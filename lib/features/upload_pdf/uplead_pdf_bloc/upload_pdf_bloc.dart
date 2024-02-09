@@ -15,29 +15,32 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
     on<UploadPdf>((event, emit) async {
       emit(UploadingPdfState());
       try {
-        String filePath =
-            await _pdfOps.uploadPdfToFirebase(event.pdfFile, event.subjectName,event.title,(progress){uploadProgressCubit.updateProgress(progress);}) ??
-                '';
+        String filePath = await _pdfOps.uploadPdfToFirebase(
+                event.pdfFile, event.subjectName, event.title, (progress) {
+              uploadProgressCubit.updateProgress(progress);
+            }) ??
+            '';
         if (filePath.isEmpty) {
           emit(const ErrorState(message: 'Couldn\'t find file path'));
         } else {
-          int size = await (File(filePath).length())~/1024;
+          int size = await (File(event.pdfFile.path).length()) ~/ 1024;
           StudyMaterial newStudyMaterial = StudyMaterial(
-              subjectName: event.subjectName,
-              type: event.type,
-              id: event.id,
-              title: event.title,
-              description: event.description,
-              filePath: filePath,
-              fans: [],
-              haters: [],
-              reports: [], size: size,
-              );
-          _materialOnlineDataRepository.addStudyMaterial(newStudyMaterial);
+            subjectName: event.subjectName,
+            type: event.type,
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            filePath: filePath,
+            fans: [],
+            haters: [],
+            reports: [],
+            size: size,
+          );
+          await _materialOnlineDataRepository.addStudyMaterial(newStudyMaterial);
           emit(UploadedPdfState());
         }
       } catch (e) {
-        emit(ErrorState(message: 'Failed to fetch user messages\n $e'));
+        emit(ErrorState(message: '$e'));
       }
     });
 
@@ -68,7 +71,7 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
 class UploadProgressCubit extends Cubit<double> {
   UploadProgressCubit() : super(0);
 
-  void updateProgress(double progress){
+  void updateProgress(double progress) {
     emit(progress);
   }
 }

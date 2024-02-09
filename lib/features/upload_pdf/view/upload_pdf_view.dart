@@ -290,8 +290,14 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                                 BorderRadius.circular(5),
                                             color: Colors.blue.shade50,
                                           ),
-                                          child: LinearProgressIndicator(
-                                            value: uploadProgressCubit.state,
+                                          child: BlocBuilder(
+                                            bloc: uploadProgressCubit,
+                                            builder: (context, state) {
+                                              return LinearProgressIndicator(
+                                                value:
+                                                    uploadProgressCubit.state,
+                                              );
+                                            },
                                           ),
                                         ),
                                       ],
@@ -439,7 +445,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: [
-        'pdf', /*'doc', 'png' 'jpg', 'jpeg'*/
+        'pdf',
       ],
     );
 
@@ -449,6 +455,10 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
         _platformFile = result.files.first;
       });
     }
+    
+    setState(() {
+      
+    });
 
     uploadProgressCubit.updateProgress(0);
   }
@@ -517,7 +527,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
             UploadPdf(
               subjectName: _courseName,
               type: type,
-              id: generateRandomString((DateTime.now().hour)%5 +5),
+              id: generateRandomString((DateTime.now().hour) % 5 + 5),
               title: (titleController.text.isNotEmpty)
                   ? titleController.text
                   : _file!.path.split('/').last,
@@ -525,10 +535,6 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
               pdfFile: _file!,
             ),
           );
-
-      // setState(() {
-      //   loadingController.reverse();
-      // });
     } else if (_courseName.isEmpty) {
       await showCannotShareEmptyNoteDialog(context);
     } else {

@@ -282,13 +282,16 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        LottieBuilder.asset(
-                            'assets/lottie/downloading_cloud.json'),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: LottieBuilder.asset(
+                              'assets/lottie/downloading_cloud.json'),
+                        ),
                         BlocBuilder(
                           bloc: downLoadProgressCubit,
                           builder: (context, ownloadProgressCubit) {
                             return Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Wrap(
                                 children: [
                                   LinearProgressIndicator(
@@ -467,8 +470,11 @@ Widget generateCards(
         }));
   } else {
     return Center(
-      child: NoDataCuate(
-          issue: 'No ${type!.name} have been found, help us by uploading some'),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: NoDataCuate(
+            issue: 'No ${type!.name} have been found, help us by uploading some'),
+      ),
     );
   }
 }

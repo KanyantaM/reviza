@@ -73,6 +73,7 @@ class StudyMaterial extends HiveObject {
       'fans': fans,
       'haters': haters,
       'reports': reports,
+      'size':size,
     };
   }
 }

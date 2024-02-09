@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
+// import 'package:lottie/lottie.dart';
 import 'package:reviza/ui/home_screen/app_home.dart';
 import 'package:reviza/features/introduction/introduction_bloc/bloc/introduction_bloc_bloc.dart';
 import 'package:reviza/features/introduction/introduction_veiw/helpers/ColorsSys.dart';

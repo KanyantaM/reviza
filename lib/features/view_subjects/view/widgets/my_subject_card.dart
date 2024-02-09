@@ -74,13 +74,13 @@ class StudyMaterialCard extends StatelessWidget {
                     children: [
                       (studyMaterial.fans.length >= studyMaterial.haters.length)? const Icon(Icons.thumb_up,color: Colors.green,):const Icon(Icons.thumb_down,color: Colors.red,),
                       Text(
-                        "${(studyMaterial.fans.length/(studyMaterial.fans.length+studyMaterial.haters.length)).toStringAsFixed(1)}% (${(studyMaterial.fans.length+studyMaterial.haters.length).toString()})",
+                        "${(((studyMaterial.fans.length >= studyMaterial.haters.length)? studyMaterial.fans.length : studyMaterial.haters.length)/(studyMaterial.fans.length+studyMaterial.haters.length)).toStringAsFixed(1)}% (${(studyMaterial.fans.length+studyMaterial.haters.length).toString()})",
                         style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color:(studyMaterial.fans.length >= studyMaterial.haters.length)? Colors.green: Colors.red),
                       ),
                     ],
                   ),
                   Text(
-                    studyMaterial.size.toString(),
+                    (studyMaterial.size! <= 1000)?'${studyMaterial.size.toString()} KB':'${(studyMaterial.size!/1000).toStringAsFixed(2)} MB',
                     style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                   ),
                 ],

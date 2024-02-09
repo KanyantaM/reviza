@@ -35,7 +35,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           await HiveUserRepository()
               .getUserById(event.uid)
               .then((value) => myCourses = value?.myCourses ?? []);
-              print(myCourses);
+          print(myCourses);
           map = await _hiveStudyMaterialRepository.getStudyMaterials(myCourses);
           print(map);
         }
@@ -115,17 +115,23 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
         List haters = event.material.haters;
         List fans = event.material.fans;
         StudyMaterial updateStudyMaterial = event.material;
-        if (event.vote ?? false) {
-          if (fans.contains(event.uid)) {
-            updateStudyMaterial.haters.remove(event.uid);
+        if (event.vote != null) {
+          if (event.vote!) {
+            if (!fans.contains(event.uid)) {
+              updateStudyMaterial.haters.remove(event.uid);
+              updateStudyMaterial.fans.add(event.uid);
+            } else {
+              updateStudyMaterial.haters.remove(event.uid);
+          updateStudyMaterial.fans.remove(event.uid);
+            }
           } else {
-            updateStudyMaterial.fans.add(event.uid);
-          }
-        } else if (!(event.vote ?? true)) {
-          if (haters.contains(event.uid)) {
-            updateStudyMaterial.fans.remove(event.uid);
-          } else {
-            updateStudyMaterial.haters.add(event.uid);
+            if (!(haters.contains(event.uid))) {
+               updateStudyMaterial.fans.remove(event.uid);
+              updateStudyMaterial.haters.add(event.uid);
+            } else {
+              updateStudyMaterial.haters.remove(event.uid);
+              updateStudyMaterial.fans.remove(event.uid);
+            }
           }
         } else {
           updateStudyMaterial.haters.remove(event.uid);
@@ -181,7 +187,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
 class DownloadProgressCubit extends Cubit<double> {
   DownloadProgressCubit() : super(0);
 
-  void updateProgress(double value){
+  void updateProgress(double value) {
     emit(value);
   }
 }

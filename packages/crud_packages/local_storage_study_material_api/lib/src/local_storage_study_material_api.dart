@@ -11,19 +11,19 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
 
   Future<void> _initHive() async {
     if (!_isInitialized) {
-    await Hive.initFlutter();
-    _box = await Hive.openBox('study_materials');
-    _isInitialized = true; }
+      await Hive.initFlutter();
+      Hive.registerAdapter(StudyMaterialAdapter());
+      _box = await Hive.openBox('study_materials');
+      _isInitialized = true;
+    }
   }
-
-
-  
 
   Future<void> _ensureInitialized() async {
     if (!_isInitialized) {
       await _initHive();
     }
   }
+
   String getCourseFolderKey(String subjectName) {
     return 'folder_$subjectName';
   }
@@ -52,8 +52,7 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
 
   @override
   Future<void> deleteStudyMaterial(StudyMaterial material) async {
-
-  _ensureInitialized();
+    _ensureInitialized();
     for (var key in _box.keys) {
       List<dynamic> materialsList = _box.get(key, defaultValue: []);
       materialsList.removeWhere((item) => item['id'] == material.id);
@@ -62,30 +61,31 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
   }
 
   @override
-  Future<Map<String, List<StudyMaterial>>> getStudyMaterials(List<String> courses) async {
-  Map<String, List<StudyMaterial>> studyMaterialsMap = {};
+  Future<Map<String, List<StudyMaterial>>> getStudyMaterials(
+      List<String> courses) async {
+    Map<String, List<StudyMaterial>> studyMaterialsMap = {};
 
-  for (String course in courses) {
-    _ensureInitialized();
-    String courseFolderKey = getCourseFolderKey(course);
-    List<dynamic> materialsList = _box.get(courseFolderKey, defaultValue: []);
-    List<StudyMaterial> studyMaterials = materialsList
-        .map((json) => StudyMaterial.fromJson(json as Map<String, dynamic>))
-        .toList();
+    for (String course in courses) {
+      _ensureInitialized();
+      String courseFolderKey = getCourseFolderKey(course);
+      List<dynamic> materialsList = _box.get(courseFolderKey, defaultValue: []);
+      List<StudyMaterial> studyMaterials = materialsList
+          .map((json) => StudyMaterial.fromJson(json))
+          .toList();
 
-    studyMaterialsMap[course] = studyMaterials;
+      studyMaterialsMap[course] = studyMaterials;
+    }
+
+    return studyMaterialsMap;
   }
-
-  return studyMaterialsMap;
-}
-
 
   @override
   Future<StudyMaterial?> getStudyMaterialById(StudyMaterial material) async {
     _ensureInitialized();
     for (var key in _box.keys) {
       List<dynamic> materialsList = _box.get(key, defaultValue: []);
-      var json = materialsList.firstWhere((item) => item['id'] == material.id, orElse: () => null);
+      var json = materialsList.firstWhere((item) => item['id'] == material.id,
+          orElse: () => null);
 
       if (json != null) {
         return StudyMaterial.fromJson(json as Map<String, dynamic>);

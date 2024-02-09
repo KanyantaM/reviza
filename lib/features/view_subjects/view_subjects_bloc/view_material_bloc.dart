@@ -35,7 +35,9 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           await HiveUserRepository()
               .getUserById(event.uid)
               .then((value) => myCourses = value?.myCourses ?? []);
+              print(myCourses);
           map = await _hiveStudyMaterialRepository.getStudyMaterials(myCourses);
+          print(map);
         }
         if (event.course != null) {
           materials = map[event.course] ?? [];
@@ -48,7 +50,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
         emit(
             MaterialsFetchedState(studyMaterials: materials, courses: courses));
       } catch (e) {
-        emit(ErrorState(message: 'Failed to fetch user messages\n $e'));
+        emit(ErrorState(message: 'Failed to fetch user subjects\n $e'));
       }
     });
 

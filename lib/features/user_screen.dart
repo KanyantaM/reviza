@@ -170,7 +170,7 @@ class UserScreen extends StatelessWidget {
               title: const Text('Logout'),
               onTap: () {
                 context.read<AppBloc>().add(const AppLogoutRequested());
-                Navigator.push(context,
+                Navigator.pop(context,
                     MaterialPageRoute(builder: (context) => const LoginPage()));
               },
             ),

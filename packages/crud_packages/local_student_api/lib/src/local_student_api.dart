@@ -12,7 +12,8 @@ class HiveUserRepository implements UserRepository {
 
   Future<void> _initHive() async {
     if (!_isInitialized) {
-      await Hive.initFlutter();
+      await Hive.initFlutter();      
+      Hive.registerAdapter(StudentAdapter());
       _box = await Hive.openBox('users');
       _isInitialized = true;
     }

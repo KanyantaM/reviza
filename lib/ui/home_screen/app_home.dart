@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
 import 'package:reviza/features/edit_courses/view/home_tab_page.dart';
-import 'package:reviza/features/view_subjects/view_subjects.dart';
+// import 'package:reviza/features/view_subjects/view_subjects.dart';
 import 'package:reviza/ui/home_screen/tabs/upload/upload_screen.dart';
 import 'package:reviza/features/user_screen.dart';
 
@@ -32,7 +32,8 @@ class _MyHomePageState extends State<MyHomePage> {
         userId: widget.uid,
       ))
       ..add(UploadTypeScreen(uid: widget.uid,))
-      ..add(ViewMaterialPage(isDownloadedView: true, uid: widget.uid,));
+      // ..add(ViewMaterialPage(isDownloadedView: true, uid: widget.uid,))
+      ;
     _currentPage = HomeTabPage(
       userId: widget.uid,
     );
@@ -56,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UserScreen()));
+                  MaterialPageRoute(builder: (context) => const UserScreen()));
             },
             icon: const Icon(Icons.settings),
           ),
@@ -78,11 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 Icons.upload,
               ),
               label: 'upload',),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.download,
-              ),
-              label: 'download',),
+          // BottomNavigationBarItem(
+          //     icon: Icon(
+          //       Icons.download,
+          //     ),
+          //     label: 'download',),
         ],
       ),
     );

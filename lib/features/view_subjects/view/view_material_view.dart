@@ -407,19 +407,20 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                   ],
                 )
               : null,
-          body: Center(
+          body:Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Image.asset('assets/images/error404.png'),
+                   (!widget.isDownloadedView)
+              ? Image.asset('assets/images/error404.png'): const CircularProgressIndicator.adaptive(),
                   (state is ErrorState)
                       ? Text(state.message)
                       : Text(state.toString()),
                 ],
               ),
             ),
-          ),
+          ) ,
         );
       },
     );

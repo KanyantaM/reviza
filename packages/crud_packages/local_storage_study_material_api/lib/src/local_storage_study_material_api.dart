@@ -12,7 +12,9 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
   Future<void> _initHive() async {
     if (!_isInitialized) {
       await Hive.initFlutter();
-      Hive.registerAdapter(StudyMaterialAdapter());
+      if (!Hive.isAdapterRegistered(1)) {
+  Hive.registerAdapter(StudyMaterialAdapter());
+}
       _box = await Hive.openBox('study_materials');
       _isInitialized = true;
     }

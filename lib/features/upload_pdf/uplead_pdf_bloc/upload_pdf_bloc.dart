@@ -20,10 +20,13 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
               uploadProgressCubit.updateProgress(progress);
             }) ??
             '';
-        if (filePath.isEmpty) {
+        if (filePath.isEmpty && (event.type != 'LINKS')) {
           emit(const ErrorState(message: 'Couldn\'t find file path'));
         } else {
-          int size = await (File(event.pdfFile.path).length()) ~/ 1024;
+          int size = 0;
+          if(event.type != 'LINKS')
+            {size = await (File(event.pdfFile.path).length()) ~/ 1024;
+            }
           StudyMaterial newStudyMaterial = StudyMaterial(
             subjectName: event.subjectName,
             type: event.type,

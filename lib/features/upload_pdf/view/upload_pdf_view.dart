@@ -118,7 +118,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                 const Spacer(
                   flex: 1,
                 ),
-                _platformFile == null
+                _platformFile == null && widget.type != Types.links
                     ? GestureDetector(
                         onTap: getfile,
                         child: Padding(
@@ -176,11 +176,11 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                         book: _documentUpload(),
                         lab: _documentUpload(),
                         link: Column(children: [
-                          const SizedBox(height: 16),
-                          _buildTextFieldWithTitle(
-                            title: 'Title',
-                            controller: titleController,
-                          ),
+                          // const SizedBox(height: 16),
+                          // _buildTextFieldWithTitle(
+                          //   title: 'Title',
+                          //   controller: titleController,
+                          // ),
                           const SizedBox(height: 16),
                           _buildTextFieldWithTitle(
                             title: 'Description',
@@ -217,11 +217,12 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                 ),
                                 maxLines: 1,
                               ),
+                              const SizedBox(height: 8),
                             ],
                           ),
                         ]),
                       ),
-                _platformFile != null
+                (_platformFile != null && widget.type != Types.links)
                     ? Container(
                         padding: const EdgeInsets.all(20),
                         child: Column(
@@ -490,7 +491,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
   }
 
   uploadFile(BuildContext context, UploadPdfState state) async {
-    if (_file != null && _courseName.isNotEmpty) {
+    if (_file != null && (_courseName.isNotEmpty || widget.type == Types.links)) {
       isuploaded = true;
       String type = '';
       String desc = '';

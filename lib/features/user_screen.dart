@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/app/bloc/app_bloc.dart';
 import 'package:reviza/features/login/login.dart';
-import 'package:reviza/features/report.dart';
+// import 'package:reviza/features/report.dart';
 import 'package:reviza/ui/theme.dart';
-import 'package:reviza/utilities/dialogues/comming_soon.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UserScreen extends StatelessWidget {
   const UserScreen({super.key});
+
+  
 
   Future<void> launchAppStoreForRating() async {
     const String packageName =
@@ -36,8 +38,8 @@ class UserScreen extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('About Us'),
-          content: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          content: const Wrap(
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                   'ReviZa - A Study Sharing App, developed by the Luso Software Team'),
@@ -60,7 +62,7 @@ class UserScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                const phoneNumber = '0761951544';
+                const phoneNumber = '+260762878107';
                 launch('https://wa.me/$phoneNumber/');
               },
               child: const Text('WhatsApp Us'),
@@ -112,8 +114,11 @@ class UserScreen extends StatelessWidget {
               onTap: () async {
                 // sendWhatsAppMessage();
                 // Navigate to feedback screen
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => StepsScreen()));
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => StepsScreen()));
+              
+                const phoneNumber = '+260762878107';
+                launch('https://wa.me/$phoneNumber/');
               },
             ),
             const Divider(),
@@ -140,8 +145,8 @@ class UserScreen extends StatelessWidget {
               title: const Text('Tell a Friend'),
               onTap: () {
                 // Implement tell a friend logic, should be able to let the app be shared on various social media platforms
-                //TODO
-                commingSoon(context);
+                Share.share('hello');
+                // commingSoon(context);
               },
             ),
             const Divider(),

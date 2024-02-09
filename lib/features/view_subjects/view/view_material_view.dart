@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:reviza/features/view_subjects/view/widgets/links_card.dart';
 import 'package:reviza/features/view_subjects/view/widgets/my_subject_card.dart';
 import 'package:reviza/features/view_subjects/view/widgets/custom_view.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
@@ -34,6 +35,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
 
   String selectedCourse = '';
   Types? selectedFilter;
+  
 
   @override
   void initState() {
@@ -276,14 +278,30 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
               body: Container(
                 color: Colors.white,
                 child: Center(
-                  child: Column(
-                    children: [
-                      LottieBuilder.asset(
-                          'assets/lottie/downloading_cloud.json'),
-                      LinearProgressIndicator(
-                        value: state.progress,
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        LottieBuilder.asset(
+                            'assets/lottie/downloading_cloud.json'),
+                        BlocBuilder(
+                          bloc: downLoadProgressCubit,
+                          builder: (context, ownloadProgressCubit) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Wrap(
+                                children: [
+                                  LinearProgressIndicator(
+                                    value: downLoadProgressCubit.state,
+                                  ),
+                                  Text('${(downLoadProgressCubit.state * 100).toStringAsFixed(1)} %')
+                                ],
+                              ),
+                            );
+                          }
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ));
@@ -315,7 +333,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
               state: state,
               viewOnline: true,
               onUpVote: () {
-                print('begining upvote');
                 context.read<ViewMaterialBloc>().add(
                       VoteMaterial(
                         material: state.originalStudyMaterial,
@@ -436,7 +453,9 @@ Widget generateCards(
         itemCount: studyMaterials.length,
         itemBuilder: ((context, index) {
           if (type == Types.links) {
-            // return ExpandingCard(title: title, subtitle: subtitle, onToggle: onToggle)
+             return LinksCard(
+              studyMaterial: studyMaterials[index],
+             );
           }
           // print(studyMaterials[index]);
           return StudyMaterialCard(

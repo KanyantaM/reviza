@@ -291,7 +291,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                             color: Colors.blue.shade50,
                                           ),
                                           child: LinearProgressIndicator(
-                                            value: loadingController.value,
+                                            value: uploadProgressCubit.state,
                                           ),
                                         ),
                                       ],
@@ -450,7 +450,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
       });
     }
 
-    loadingController.forward();
+    uploadProgressCubit.updateProgress(0);
   }
 
   uploadFile(BuildContext context, UploadPdfState state) async {
@@ -526,9 +526,9 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
             ),
           );
 
-      setState(() {
-        loadingController.reverse();
-      });
+      // setState(() {
+      //   loadingController.reverse();
+      // });
     } else if (_courseName.isEmpty) {
       await showCannotShareEmptyNoteDialog(context);
     } else {

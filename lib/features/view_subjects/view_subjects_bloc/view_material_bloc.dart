@@ -79,14 +79,15 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
             ),
           );
         } else {
+          // emit(const DownloadingCourses(progress: 0));
           Dio dio = Dio();
-
           await dio.download(
             url,
             path,
             onReceiveProgress: (receivedBytes, totalBytes) {
               double progress = receivedBytes / totalBytes;
-              emit(DownloadingCourses(progress: progress));
+              emit(DownloadingCourses(progress: totalBytes.toDouble()));
+              downLoadProgressCubit.updateProgress(progress);
             },
             deleteOnError: true,
           ).then((response) {
@@ -94,6 +95,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
             oldMaterial.filePath = path;
             _hiveStudyMaterialRepository.addStudyMaterial(oldMaterial);
             emit(DownloadedCourse());
+            downLoadProgressCubit.close;
             emit(
               StudyMaterialOpened(
                 originalStudyMaterial: event.course,
@@ -175,3 +177,13 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
   final HiveStudyMaterialRepository _hiveStudyMaterialRepository;
   final FirestoreStudyMaterialRepository _materialOnlineDataRepository;
 }
+
+class DownloadProgressCubit extends Cubit<double> {
+  DownloadProgressCubit() : super(0);
+
+  void updateProgress(double value){
+    emit(value);
+  }
+}
+
+DownloadProgressCubit downLoadProgressCubit = DownloadProgressCubit();

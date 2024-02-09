@@ -16,11 +16,12 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
       emit(UploadingPdfState());
       try {
         String filePath =
-            await _pdfOps.uploadPdfToFirebase(event.pdfFile, event.subjectName,event.title,) ??
+            await _pdfOps.uploadPdfToFirebase(event.pdfFile, event.subjectName,event.title,(progress){uploadProgressCubit.updateProgress(progress);}) ??
                 '';
         if (filePath.isEmpty) {
           emit(const ErrorState(message: 'Couldn\'t find file path'));
         } else {
+          int size = await (File(filePath).length())~/1024;
           StudyMaterial newStudyMaterial = StudyMaterial(
               subjectName: event.subjectName,
               type: event.type,
@@ -30,7 +31,7 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
               filePath: filePath,
               fans: [],
               haters: [],
-              reports: [],
+              reports: [], size: size,
               );
           _materialOnlineDataRepository.addStudyMaterial(newStudyMaterial);
           emit(UploadedPdfState());
@@ -63,3 +64,13 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
   final PdfOps _pdfOps = PdfOps();
   final FirestoreStudyMaterialRepository _materialOnlineDataRepository;
 }
+
+class UploadProgressCubit extends Cubit<double> {
+  UploadProgressCubit() : super(0);
+
+  void updateProgress(double progress){
+    emit(progress);
+  }
+}
+
+UploadProgressCubit uploadProgressCubit = UploadProgressCubit();

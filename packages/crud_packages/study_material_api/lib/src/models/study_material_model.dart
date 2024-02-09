@@ -31,6 +31,9 @@ class StudyMaterial extends HiveObject {
   @HiveField(8)
   String? filePath;
 
+  @HiveField(9)
+  int? size;
+
   StudyMaterial({
     required this.subjectName,
     required this.type,
@@ -41,6 +44,7 @@ class StudyMaterial extends HiveObject {
     required this.fans,
     required this.haters,
     required this.reports,
+    required this.size,
   });
 
   factory StudyMaterial.fromJson(Map<String, dynamic> json) {
@@ -54,6 +58,7 @@ class StudyMaterial extends HiveObject {
       fans: json['fans'],
       haters: json['haters'],
       reports: json['reports'],
+      size: json['size'],
     );
   }
 

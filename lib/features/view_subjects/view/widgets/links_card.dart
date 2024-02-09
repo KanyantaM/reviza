@@ -1,152 +1,93 @@
 import 'package:flutter/material.dart';
+import 'package:reviza/utilities/dialogues/comming_soon.dart';
+import 'package:study_material_api/study_material_api.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class ExpandingCard extends StatefulWidget {
-  final String title;
-  final String subtitle;
-  final Function(bool isOpen) onToggle;
+class LinksCard extends StatelessWidget {
+  final StudyMaterial studyMaterial;
 
-  const ExpandingCard({
-    Key? key,
-    required this.title,
-    required this.subtitle,
-    required this.onToggle,
-  }) : super(key: key);
-
-  @override
-  State<ExpandingCard> createState() => _ExpandingCardState();
-}
-
-class _ExpandingCardState extends State<ExpandingCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _heightFactorAnimation;
-  bool isOpen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-    _heightFactorAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _toggleCard() {
-    setState(() {
-      isOpen = !isOpen;
-      isOpen ? _animationController.forward() : _animationController.reverse();
-      widget.onToggle(isOpen);
-    });
-  }
+  const LinksCard({
+    super.key,
+    required this.studyMaterial,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Card(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          width: 350.0,
-          height: isOpen ? 250.0 : 160.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5.0,
-                blurRadius: 7.0,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: InkWell(
-            onTap: _toggleCard,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '🌐',
-                        textScaleFactor: 3.0,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.60,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.title,
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
-                            Text(
-                              'Tap to see more',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        isOpen
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down,
-                        color: !isOpen ? Colors.grey : Colors.amberAccent,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8.0),
-                  Expanded(
-                    child: AnimatedBuilder(
-                      animation: _heightFactorAnimation,
-                      builder: (context, child) {
-                        return ClipRect(
-                          child: Align(
-                            heightFactor: _heightFactorAnimation.value,
-                            child: child,
-                          ),
-                        );
-                      },
-                      child: ListView(
+        child: Column(
+          children: [
+            // Top section with text
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: InkWell(
+                onTap: (){
+                  launchUrl(Uri(path: studyMaterial.description));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '️🌐',
+                      textScaleFactor: 4,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Description:\t',
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                              Text(
-                                widget.subtitle,
-                                style: Theme.of(context).textTheme.bodyText2,
-                              ),
-                            ],
-                          ),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('Open Link'),
+                          Text(
+                            studyMaterial.title,
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 5.0),
+                          Text(
+                            "desc: ${studyMaterial.description}",
+                            style: const TextStyle(fontSize: 16.0),
+                            // overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                    IconButton(
+                      onPressed: () => commingSoon(context),
+                      icon: const Icon(Icons.share),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
+
+            // const Divider(),
+
+            // // Bottom section with thumbs up and download size
+            // Container(
+            //   padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Row(
+            //         children: [
+            //           (studyMaterial.fans.length >= studyMaterial.haters.length)? const Icon(Icons.thumb_up,color: Colors.green,):const Icon(Icons.thumb_down,color: Colors.red,),
+            //           Text(
+            //             "${(studyMaterial.fans.length/(studyMaterial.fans.length+studyMaterial.haters.length)).toStringAsFixed(1)}% (${(studyMaterial.fans.length+studyMaterial.haters.length).toString()})",
+            //             style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color:(studyMaterial.fans.length >= studyMaterial.haters.length)? Colors.green: Colors.red),
+            //           ),
+            //         ],
+            //       ),
+            //       Text(
+            //         studyMaterial.size.toString(),
+            //         style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+          ],
         ),
       ),
     );

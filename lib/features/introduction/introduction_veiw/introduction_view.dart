@@ -51,7 +51,15 @@ class _IntroductionViewState extends State<IntroductionView> {
           return _introductionView();
         }
         if (state is IntroductionCheckingStatus) {
-          return Lottie.asset('assets/lottie/loading.json');
+          return Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: const Center(
+              child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+            ),
+          );
         }
         if (state is IntroductionIntroduced) {
           return MyHomePage(uid:widget.studentId);

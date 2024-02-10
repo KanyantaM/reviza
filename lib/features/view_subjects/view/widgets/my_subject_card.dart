@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:study_material_api/study_material_api.dart';
 
@@ -79,9 +82,21 @@ class StudyMaterialCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Text(
-                    (studyMaterial.size! <= 1000)?'${studyMaterial.size.toString()} KB':'${(studyMaterial.size!/1000).toStringAsFixed(2)} MB',
-                    style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      FutureBuilder(future: getFilePath(studyMaterial.title, studyMaterial.subjectName), builder: (context, snapshot){
+                        if (snapshot.data ?? false) {
+                         return const Icon(Icons.phone_android_outlined);
+                        } else {
+                          return const Icon(Icons.cloud_outlined);
+                        }
+                      }),
+                      
+                      Text(
+                        (studyMaterial.size! <= 1000)?'${studyMaterial.size.toString()} KB':'${(studyMaterial.size!/1000).toStringAsFixed(2)} MB',
+                        style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -92,3 +107,12 @@ class StudyMaterialCard extends StatelessWidget {
     );
   }
 }
+
+Future<bool> getFilePath(String filename, String subjectName) async {
+          final dir = await getApplicationDocumentsDirectory();
+          if (await File("${dir.path}/$subjectName/$filename").exists()) {
+            return true;
+          } else {
+            return false;
+          }
+        }

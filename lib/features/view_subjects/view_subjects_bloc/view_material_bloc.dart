@@ -96,7 +96,6 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
             downLoadProgressCubit.close;
             StudyMaterial  originalStudyMaterial = StudyMaterial(subjectName: event.course.subjectName, type: event.course.type, id: event.course.id, title: event.course.title, description: event.course.description, filePath: urlOG, fans: event.course.fans, haters: event.course.haters, reports: event.course.reports, size: event.course.size);
             oldMaterial.filePath = path;
-            print('${originalStudyMaterial.filePath} vs ${oldMaterial.filePath}');
             emit(
               StudyMaterialOpened(
                 originalStudyMaterial: originalStudyMaterial,

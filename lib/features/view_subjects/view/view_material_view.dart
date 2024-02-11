@@ -35,7 +35,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
 
   String selectedCourse = '';
   Types? selectedFilter;
-  
 
   @override
   void initState() {
@@ -235,9 +234,8 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                     ],
                   )
                 : null,
-            body: Container(
-                color: Colors.white,
-                child: const Center(child: CircularProgressIndicator())),
+            body: const SizedBox(
+                child: Center(child: CircularProgressIndicator())),
           );
         }
         if (state is DownloadingCourses) {
@@ -275,8 +273,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                       ],
                     )
                   : null,
-              body: Container(
-                color: Colors.white,
+              body: SizedBox(
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -288,21 +285,21 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                               'assets/lottie/downloading_cloud.json'),
                         ),
                         BlocBuilder(
-                          bloc: downLoadProgressCubit,
-                          builder: (context, ownloadProgressCubit) {
-                            return Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Wrap(
-                                children: [
-                                  LinearProgressIndicator(
-                                    value: downLoadProgressCubit.state,
-                                  ),
-                                  Text('${(downLoadProgressCubit.state * 100).toStringAsFixed(1)} %')
-                                ],
-                              ),
-                            );
-                          }
-                        ),
+                            bloc: downLoadProgressCubit,
+                            builder: (context, ownloadProgressCubit) {
+                              return Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Wrap(
+                                  children: [
+                                    LinearProgressIndicator(
+                                      value: downLoadProgressCubit.state,
+                                    ),
+                                    Text(
+                                        '${(downLoadProgressCubit.state * 100).toStringAsFixed(1)} %')
+                                  ],
+                                ),
+                              );
+                            }),
                       ],
                     ),
                   ),
@@ -392,7 +389,8 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                                 courseName: widget.courseName,
                               );
                             }));
-                            File(state.studyMaterial.filePath!).delete(); // Close the dialog
+                            File(state.studyMaterial.filePath!)
+                                .delete(); // Close the dialog
                           },
                           child: const Text('Delete'),
                         ),
@@ -427,20 +425,28 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                   ],
                 )
               : null,
-          body:Center(
+          body: Center(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(15.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   (!widget.isDownloadedView)
-              ? Image.asset('assets/images/error404.png'): const CircularProgressIndicator.adaptive(),
+                  (!widget.isDownloadedView)
+                      ? ((state is ErrorState &&
+                              state.message.contains('[connection error]'))
+                          ? const Icon(Icons.cloud_off_outlined,size: 120,)
+                          : Image.asset('assets/images/error404.png'))
+                      : const CircularProgressIndicator.adaptive(),
                   (state is ErrorState)
-                      ? Text(state.message)
+                      ? ((state.message.contains('[connection error]'))
+                          ? const Text(
+                              'Failed to download due to poor or bad network connectivity', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700))
+                          : Text(state.message))
                       : Text(state.toString()),
                 ],
               ),
             ),
-          ) ,
+          ),
         );
       },
     );
@@ -456,9 +462,9 @@ Widget generateCards(
         itemCount: studyMaterials.length,
         itemBuilder: ((context, index) {
           if (type == Types.links) {
-             return LinksCard(
+            return LinksCard(
               studyMaterial: studyMaterials[index],
-             );
+            );
           }
           // print(studyMaterials[index]);
           return StudyMaterialCard(
@@ -473,7 +479,8 @@ Widget generateCards(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: NoDataCuate(
-            issue: 'No ${type!.name} have been found, help us by uploading some'),
+            issue:
+                'No ${type!.name} have been found, help us by uploading some'),
       ),
     );
   }

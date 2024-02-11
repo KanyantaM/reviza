@@ -318,6 +318,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                                   setState(() {
                                                     _file = null;
                                                     _platformFile = null;
+                                                    _uploading = false;
                                                   });
                                                 },
                                                 icon: const Icon(
@@ -339,7 +340,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                         height: (29.7),
                         width: (170.7),
                         child: (_uploading)
-                            ? const Wrap()
+                            ? const Center(child: Text('UPloading....', style: TextStyle(fontWeight: FontWeight.w700),))
                             : OutlinedButton(
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor:

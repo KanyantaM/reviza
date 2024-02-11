@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:reviza/utilities/dialogues/error_dialog.dart';
@@ -63,16 +64,17 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_studyMaterial?.title ?? ''),
         actions: [
-          IconButton(onPressed: (){
-            widget.onDelete();
-          }, icon: const Icon(Icons.delete)),
           // IconButton(
-          //   icon: const Icon(Icons.share),
+          //   icon: Icon(FontAwesomeIcons.robot),
           //   onPressed: () {
           //     // Handle share action
           //     commingSoon(context);
           //   },
           // ),
+          IconButton(onPressed: (){
+            widget.onDelete();
+          }, icon: const Icon(Icons.delete)),
+          
         ],
       ),
       body: Stack(
@@ -86,7 +88,6 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
               });
             },
             onError: (error) {
-              print(error);
               showErrorDialog(context, error.toString());
             },
             onPageError: (page, error) {
@@ -258,6 +259,13 @@ class _VotingBarState extends State<VotingBar> {
                     ],
                   ),
                 ),
+          //        IconButton(
+          //   icon: Icon(FontAwesomeIcons.robot),
+          //   onPressed: () {
+          //     // Handle share action
+          //     commingSoon(context);
+          //   },
+          // ),
               ],
             ),
           ),

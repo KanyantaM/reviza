@@ -43,14 +43,14 @@ class StudyMaterialCard extends StatelessWidget {
                           Text(
                             studyMaterial.title,
                             style: const TextStyle(
-                              fontSize: 20.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 5.0),
                           Text(
                             "desc: ${studyMaterial.description}",
-                            style: const TextStyle(fontSize: 16.0),
+                            style: const TextStyle(fontSize: 14.0),
                             // overflow: TextOverflow.ellipsis,
                           ),
                         ],
@@ -69,32 +69,52 @@ class StudyMaterialCard extends StatelessWidget {
 
             // Bottom section with thumbs up and download size
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      (studyMaterial.fans.length >= studyMaterial.haters.length)? const Icon(Icons.thumb_up,color: Colors.green,):const Icon(Icons.thumb_down,color: Colors.red,),
+                      (studyMaterial.fans.length >= studyMaterial.haters.length)
+                          ? const Icon(
+                              Icons.thumb_up,
+                              color: Colors.green,
+                            )
+                          : const Icon(
+                              Icons.thumb_down,
+                              color: Colors.red,
+                            ),
                       Text(
-                        "${(((studyMaterial.fans.length >= studyMaterial.haters.length)? studyMaterial.fans.length : studyMaterial.haters.length)/(studyMaterial.fans.length+studyMaterial.haters.length)).toStringAsFixed(1)}% (${(studyMaterial.fans.length+studyMaterial.haters.length).toString()})",
-                        style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color:(studyMaterial.fans.length >= studyMaterial.haters.length)? Colors.green: Colors.red),
+                        "${(((studyMaterial.fans.length >= studyMaterial.haters.length) ? studyMaterial.fans.length : studyMaterial.haters.length) / (studyMaterial.fans.length + studyMaterial.haters.length)).toStringAsFixed(1)}% (${(studyMaterial.fans.length + studyMaterial.haters.length).toString()})",
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold,
+                            color: (studyMaterial.fans.length >=
+                                    studyMaterial.haters.length)
+                                ? Colors.green
+                                : Colors.red),
                       ),
                     ],
                   ),
                   Row(
                     children: [
-                      FutureBuilder(future: getFilePath(studyMaterial.title, studyMaterial.subjectName), builder: (context, snapshot){
-                        if (snapshot.data ?? false) {
-                         return const Icon(Icons.phone_android_outlined);
-                        } else {
-                          return const Icon(Icons.cloud_outlined);
-                        }
-                      }),
-                      
+                      FutureBuilder(
+                          future: getFilePath(
+                              studyMaterial.title, studyMaterial.subjectName),
+                          builder: (context, snapshot) {
+                            if (snapshot.data ?? false) {
+                              return const Icon(Icons.phone_android_outlined);
+                            } else {
+                              return const Icon(Icons.cloud_outlined);
+                            }
+                          }),
                       Text(
-                        (studyMaterial.size! <= 1000)?'${studyMaterial.size.toString()} KB':'${(studyMaterial.size!/1000).toStringAsFixed(2)} MB',
-                        style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                        (studyMaterial.size! <= 1000)
+                            ? ' ${studyMaterial.size.toString()} KB'
+                            : ' ${(studyMaterial.size! / 1000).toStringAsFixed(2)} MB',
+                        style: const TextStyle(
+                            fontSize: 12.0, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -109,10 +129,10 @@ class StudyMaterialCard extends StatelessWidget {
 }
 
 Future<bool> getFilePath(String filename, String subjectName) async {
-          final dir = await getApplicationDocumentsDirectory();
-          if (await File("${dir.path}/$subjectName/$filename").exists()) {
-            return true;
-          } else {
-            return false;
-          }
-        }
+  final dir = await getApplicationDocumentsDirectory();
+  if (await File("${dir.path}/$subjectName/$filename").exists()) {
+    return true;
+  } else {
+    return false;
+  }
+}

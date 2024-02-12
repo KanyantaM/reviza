@@ -40,21 +40,12 @@ class _MyHomePageState extends State<AiScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true,
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_selectedItem == 2
             ? 'ReviZa AI'
             : _sections[_selectedItem].title),
-        // actions: [
-        //   PopupMenuButton<int>(
-        //     initialValue: _selectedItem,
-        //     onSelected: (value) => setState(() => _selectedItem = value),
-        //     itemBuilder: (context) => _sections.map((e) {
-        //       return PopupMenuItem<int>(value: e.index, child: Text(e.title));
-        //     }).toList(),
-        //     child: const Icon(Icons.more_vert_rounded),
-        //   )
-        // ],
       ),
       body: IndexedStack(
         index: _selectedItem,

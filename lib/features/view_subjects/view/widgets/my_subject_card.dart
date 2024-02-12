@@ -8,32 +8,77 @@ import 'package:study_material_api/study_material_api.dart';
 class StudyMaterialCard extends StatelessWidget {
   final StudyMaterial studyMaterial;
   final Function(StudyMaterial) onTap;
+  final Function onLongPress;
+  final bool isDeleteMode;
+  final Function(String path) onAddToDeleteList;
+  final List<String> shouldBeDeleted;
 
   const StudyMaterialCard({
     super.key,
     required this.studyMaterial,
     required this.onTap,
+    required this.onLongPress,
+    required this.isDeleteMode,
+    required this.onAddToDeleteList,
+    required this.shouldBeDeleted,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Card(
-        child: Column(
-          children: [
-            // Top section with text
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: InkWell(
-                onTap: () => onTap(studyMaterial),
+      child: InkWell(
+        onLongPress: () => onLongPress(),
+        onTap: () async {
+          if (isDeleteMode) {
+            String devicePath = await getPathTodDelete(studyMaterial);
+            onAddToDeleteList(devicePath);
+          } else {
+            onTap(studyMaterial);
+          }
+        },
+        child: Card(
+          child: Column(
+            children: [
+              // Top section with text
+              Padding(
+                padding: const EdgeInsets.all(15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '️🗒️',
-                      textScaleFactor: 4,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (isDeleteMode)
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              FutureBuilder(
+                                  future:  getPathTodDelete(studyMaterial),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.data?.isNotEmpty ?? false) {
+                                      if (shouldBeDeleted
+                                          .contains(snapshot.data!)) {
+                                        return const Icon(
+                                            Icons.check_circle_outline_rounded);
+                                      } else {
+                                        return const Icon(
+                                            Icons.circle_outlined);
+                                      }
+                                    } else {
+                                      return const Wrap();
+                                    }
+                                  }),
+                              // (shouldBeDeleted)?const Icon(Icons.check_circle_outline_rounded):const Icon(Icons.circle_outlined),
+                            ],
+                          ),
+                        Text(
+                          '️🗒️',
+                          textScaleFactor: (isDeleteMode) ? 3 : 4,
+                        ),
+                      ],
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.5,
@@ -63,65 +108,66 @@ class StudyMaterialCard extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
 
-            const Divider(),
+              const Divider(),
 
-            // Bottom section with thumbs up and download size
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      (studyMaterial.fans.length >= studyMaterial.haters.length)
-                          ? const Icon(
-                              Icons.thumb_up,
-                              color: Colors.green,
-                            )
-                          : const Icon(
-                              Icons.thumb_down,
-                              color: Colors.red,
-                            ),
-                      Text(
-                        "${(((studyMaterial.fans.length >= studyMaterial.haters.length) ? studyMaterial.fans.length : studyMaterial.haters.length) / (studyMaterial.fans.length + studyMaterial.haters.length)).toStringAsFixed(1)}% (${(studyMaterial.fans.length + studyMaterial.haters.length).toString()})",
-                        style: TextStyle(
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.bold,
-                            color: (studyMaterial.fans.length >=
-                                    studyMaterial.haters.length)
-                                ? Colors.green
-                                : Colors.red),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      FutureBuilder(
-                          future: getFilePath(
-                              studyMaterial.title, studyMaterial.subjectName),
-                          builder: (context, snapshot) {
-                            if (snapshot.data ?? false) {
-                              return const Icon(Icons.phone_android_outlined);
-                            } else {
-                              return const Icon(Icons.cloud_outlined);
-                            }
-                          }),
-                      Text(
-                        (studyMaterial.size! <= 1000)
-                            ? ' ${studyMaterial.size.toString()} KB'
-                            : ' ${(studyMaterial.size! / 1000).toStringAsFixed(2)} MB',
-                        style: const TextStyle(
-                            fontSize: 12.0, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ],
+              // Bottom section with thumbs up and download size
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        (studyMaterial.fans.length >=
+                                studyMaterial.haters.length)
+                            ? const Icon(
+                                Icons.thumb_up,
+                                color: Colors.green,
+                              )
+                            : const Icon(
+                                Icons.thumb_down,
+                                color: Colors.red,
+                              ),
+                        Text(
+                          "${(((studyMaterial.fans.length >= studyMaterial.haters.length) ? studyMaterial.fans.length : studyMaterial.haters.length) / (studyMaterial.fans.length + studyMaterial.haters.length)).toStringAsFixed(1)}% (${(studyMaterial.fans.length + studyMaterial.haters.length).toString()})",
+                          style: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                              color: (studyMaterial.fans.length >=
+                                      studyMaterial.haters.length)
+                                  ? Colors.green
+                                  : Colors.red),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        FutureBuilder(
+                            future: getFilePath(
+                                studyMaterial.title, studyMaterial.subjectName),
+                            builder: (context, snapshot) {
+                              if (snapshot.data ?? false) {
+                                return const Icon(Icons.phone_android_outlined);
+                              } else {
+                                return const Icon(Icons.cloud_outlined);
+                              }
+                            }),
+                        Text(
+                          (studyMaterial.size! <= 1000)
+                              ? ' ${studyMaterial.size.toString()} KB'
+                              : ' ${(studyMaterial.size! / 1000).toStringAsFixed(2)} MB',
+                          style: const TextStyle(
+                              fontSize: 12.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -134,5 +180,25 @@ Future<bool> getFilePath(String filename, String subjectName) async {
     return true;
   } else {
     return false;
+  }
+}
+
+Future<String> getPathTodDelete(StudyMaterial studyMaterial) async {
+  final dir = await getApplicationDocumentsDirectory();
+  if (await File(
+          "${dir.path}/${studyMaterial.subjectName}/${studyMaterial.title}")
+      .exists()) {
+    return "${dir.path}/${studyMaterial.subjectName}/${studyMaterial.title}";
+  }
+  return '';
+}
+
+Future deleteFile(StudyMaterial studyMaterial) async {
+  final dir = await getApplicationDocumentsDirectory();
+  if (await File(
+          "${dir.path}/${studyMaterial.subjectName}/${studyMaterial.title}")
+      .exists()) {
+    File("${dir.path}/${studyMaterial.subjectName}/${studyMaterial.title}")
+        .delete();
   }
 }

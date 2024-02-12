@@ -18,7 +18,7 @@ class Student extends HiveObject {
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
       userId: json['userId'] as String,
-      myCourses: List<String>.from(json['myCourses'] as List<dynamic>),
+      myCourses: List<String>.from(json['myCourses']),
     );
   }
 

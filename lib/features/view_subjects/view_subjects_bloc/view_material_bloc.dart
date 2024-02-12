@@ -34,7 +34,10 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           List<String> myCourses = [];
           await HiveUserRepository()
               .getUserById(event.uid)
-              .then((value) => myCourses = value?.myCourses ?? []);
+              .then((value) {
+                return myCourses = value?.myCourses ?? [];
+              });
+                
           map = await _hiveStudyMaterialRepository.getStudyMaterials(myCourses);
         }
         if (event.course != null) {

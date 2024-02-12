@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
@@ -64,16 +66,20 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_studyMaterial?.title ?? ''),
         actions: [
-          // IconButton(
-          //   icon: Icon(FontAwesomeIcons.robot),
-          //   onPressed: () {
-          //     // Handle share action
-          //     commingSoon(context);
-          //   },
-          // ),
-          IconButton(onPressed: (){
-            widget.onDelete();
-          }, icon: const Icon(Icons.delete)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: const Icon(FontAwesomeIcons.robot),
+              onPressed: () {
+                // Handle share action
+                showDialog(context: context, builder: (context){
+                  return AlertDialog(
+                    content: AiScreen(),
+                  );
+                });
+              },
+            ),
+          ),
           
         ],
       ),

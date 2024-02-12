@@ -13,8 +13,8 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
     if (!_isInitialized) {
       await Hive.initFlutter();
       if (!Hive.isAdapterRegistered(1)) {
-  Hive.registerAdapter(StudyMaterialAdapter());
-}
+        Hive.registerAdapter(StudyMaterialAdapter());
+      }
       _box = await Hive.openBox('study_materials');
       _isInitialized = true;
     }
@@ -34,8 +34,9 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
   Future<void> addStudyMaterial(StudyMaterial material) async {
     _ensureInitialized();
     String courseFolderKey = getCourseFolderKey(material.subjectName);
-    List<dynamic> materialsList = _box.get(courseFolderKey, defaultValue: []);
-    materialsList.add(material.toJson());
+    List<dynamic> materialsList =
+        _box.get(courseFolderKey, defaultValue: <StudyMaterial>[]);
+    materialsList.add(material);
     await _box.put(courseFolderKey, materialsList);
   }
 
@@ -43,11 +44,12 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
   Future<void> updateStudyMaterial(StudyMaterial material) async {
     _ensureInitialized();
     String courseFolderKey = getCourseFolderKey(material.subjectName);
-    List<dynamic> materialsList = _box.get(courseFolderKey, defaultValue: []);
+    List<dynamic> materialsList =
+        _box.get(courseFolderKey, defaultValue: <StudyMaterial>[]);
     int index = materialsList.indexWhere((item) => item['id'] == material.id);
 
     if (index != -1) {
-      materialsList[index] = material.toJson();
+      materialsList[index] = material;
       await _box.put(courseFolderKey, materialsList);
     }
   }
@@ -56,8 +58,9 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
   Future<void> deleteStudyMaterial(StudyMaterial material) async {
     _ensureInitialized();
     for (var key in _box.keys) {
-      List<dynamic> materialsList = _box.get(key, defaultValue: []);
-      materialsList.removeWhere((item) => item['id'] == material.id);
+      List<StudyMaterial> materialsList =
+          _box.get(key, defaultValue: <StudyMaterial>[]);
+      materialsList.removeWhere((item) => item.id == material.id);
       await _box.put(key, materialsList);
     }
   }
@@ -70,14 +73,14 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
     for (String course in courses) {
       _ensureInitialized();
       String courseFolderKey = getCourseFolderKey(course);
-      List<dynamic> materialsList = _box.get(courseFolderKey, defaultValue: []);
-      List<StudyMaterial> studyMaterials = materialsList
-          .map((json) => StudyMaterial.fromJson(json))
-          .toList();
+      print('about to fetch material list');
+      List<StudyMaterial> materialsList =
+          List<StudyMaterial>.from(_box.get(courseFolderKey, defaultValue: <StudyMaterial>[]));
+      List<StudyMaterial> studyMaterials = materialsList;
+      print(materialsList);
 
       studyMaterialsMap[course] = studyMaterials;
     }
-
     return studyMaterialsMap;
   }
 
@@ -85,13 +88,12 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
   Future<StudyMaterial?> getStudyMaterialById(StudyMaterial material) async {
     _ensureInitialized();
     for (var key in _box.keys) {
-      List<dynamic> materialsList = _box.get(key, defaultValue: []);
-      var json = materialsList.firstWhere((item) => item['id'] == material.id,
-          orElse: () => null);
+      List<StudyMaterial> materialsList =
+          List<StudyMaterial>.from(_box.get(key, defaultValue: <StudyMaterial>[]));
+      StudyMaterial json =
+          materialsList.firstWhere((item) => item.id == material.id);
 
-      if (json != null) {
-        return StudyMaterial.fromJson(json as Map<String, dynamic>);
-      }
+      return json;
     }
 
     return null;

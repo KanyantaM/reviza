@@ -30,20 +30,20 @@ class HiveUserRepository implements UserRepository {
   @override
   Future<void> addUser(Student user) async {
     await _ensureInitialized();
-    await _box.put(user.userId, user.toJson());
+    await _box.put(user.userId, user);
   }
 
   @override
   Future<Student?> getUserById(String userId) async {
     await _ensureInitialized();
     var json = _box.get(userId);
-    return json != null ? Student.fromJson(json) : null;
+    return json;
   }
 
   @override
   Future<void> updateUser(Student user) async {
     await _ensureInitialized();
-    await _box.put(user.userId, user.toJson());
+    await _box.put(user.userId, user);
   }
 
   @override
@@ -57,15 +57,6 @@ class HiveUserRepository implements UserRepository {
     await _ensureInitialized();
     var json = await _box.get(userId);
     return (json != null);
-  }
-}
-
-
-class HiveInitializer {
-  static Future<void> initializeHive() async {
-    await Hive.initFlutter();
-    await Hive.openBox('users');
-    await Hive.openBox('study_materials');
   }
 }
 

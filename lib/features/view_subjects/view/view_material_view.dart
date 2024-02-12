@@ -35,6 +35,8 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
 
   String selectedCourse = '';
   Types? selectedFilter;
+  bool _deleteMode = false;
+  List<String> _pathsToDelete = [];
 
   @override
   void initState() {
@@ -57,11 +59,13 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
           );
     }
     _tabController = TabController(length: 4, vsync: this);
+    _deleteMode = false;
   }
 
   @override
   void dispose() {
-    context.read<ViewMaterialBloc>().close();
+    // context.read<ViewMaterialBloc>().close();
+    _deleteMode = false;
     super.dispose();
   }
 
@@ -104,13 +108,113 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
               ),
               body: TabBarView(controller: _tabController, children: <Widget>[
                 generateCards(
-                    widget.uid, widget.courseName, Types.notes, state),
+                    context,
+                    widget.uid,
+                    widget.courseName,
+                    Types.notes,
+                    state,
+                    () {
+                      setState(() {
+                        _deleteMode = true;
+                      });
+                    },
+                    _deleteMode,
+                    () {
+                      setState(() {
+                        _deleteMode = false;
+                      });
+                    },
+                    (path) {
+                      setState(() {
+                        if (_pathsToDelete.contains(path)) {
+                          _pathsToDelete.remove(path);
+                        } else {
+                          _pathsToDelete.add(path);
+                        }
+                      });
+                    },
+                    _pathsToDelete),
                 generateCards(
-                    widget.uid, widget.courseName, Types.papers, state),
+                    context,
+                    widget.uid,
+                    widget.courseName,
+                    Types.papers,
+                    state,
+                    () {
+                      setState(() {
+                        _deleteMode = true;
+                      });
+                    },
+                    _deleteMode,
+                    () {
+                      setState(() {
+                        _deleteMode = false;
+                      });
+                    },
+                    (path) {
+                      setState(() {
+                        if (_pathsToDelete.contains(path)) {
+                          _pathsToDelete.remove(path);
+                        } else {
+                          _pathsToDelete.add(path);
+                        }
+                      });
+                    },
+                    _pathsToDelete),
                 generateCards(
-                    widget.uid, widget.courseName, Types.books, state),
+                    context,
+                    widget.uid,
+                    widget.courseName,
+                    Types.books,
+                    state,
+                    () {
+                      setState(() {
+                        _deleteMode = true;
+                      });
+                    },
+                    _deleteMode,
+                    () {
+                      setState(() {
+                        _deleteMode = false;
+                      });
+                    },
+                    (path) {
+                      setState(() {
+                        if (_pathsToDelete.contains(path)) {
+                          _pathsToDelete.remove(path);
+                        } else {
+                          _pathsToDelete.add(path);
+                        }
+                      });
+                    },
+                    _pathsToDelete),
                 generateCards(
-                    widget.uid, widget.courseName, Types.links, state),
+                    context,
+                    widget.uid,
+                    widget.courseName,
+                    Types.links,
+                    state,
+                    () {
+                      setState(() {
+                        _deleteMode = true;
+                      });
+                    },
+                    _deleteMode,
+                    () {
+                      setState(() {
+                        _deleteMode = false;
+                      });
+                    },
+                    (path) {
+                      setState(() {
+                        if (_pathsToDelete.contains(path)) {
+                          _pathsToDelete.remove(path);
+                        } else {
+                          _pathsToDelete.add(path);
+                        }
+                      });
+                    },
+                    _pathsToDelete),
 
                 // SimilarSubjectsWidget(
                 //   similarSubjects: const [
@@ -124,78 +228,111 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
             );
           } else {
             return Scaffold(
-              body: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0, 16, 0),
-                child: ListView(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
-                      child: SearchBar(
-                        hintText: 'search downloads',
-                        leading: Icon(Icons.search),
-                      ),
-                    ),
-                    const Text(
-                      'Filter:',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Wrap(
-                      spacing: 8.0,
+              appBar: AppBar(
+        automaticallyImplyLeading: true,
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Downloads'),
+      ),
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        for (String course in state.courses)
-                          FilterChip(
-                            label: Text(course),
-                            selected: selectedCourse == course,
-                            onSelected: (bool selected) {
-                              setState(() {
-                                selectedCourse = selected ? course : '';
-                                selectedFilter = null;
-                              });
-                            },
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Select Course:',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                        ),
+                        Wrap(
+                          spacing: 8.0,
+                          children: [
+                            for (String course in state.courses)
+                              FilterChip(
+                                label: Text(course.split('-').first),
+                                selected: selectedCourse == course,
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    selectedCourse = selected ? course : '';
+                                    selectedFilter = null;
+                                  });
+                                },
+                              ),
+                          ],
+                        ),
+                        (selectedCourse.isNotEmpty)
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Select Type:',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Wrap(
+                                    spacing: 8.0,
+                                    children: [
+                                      for (Types filter in Types.values)
+                                        FilterChip(
+                                          label: Text(filter.name),
+                                          selected: selectedFilter == filter,
+                                          onSelected: (bool selected) {
+                                            setState(() {
+                                              selectedFilter =
+                                                  selected ? filter : null;
+                                            });
+                                          },
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : const SizedBox(height: 20),
                       ],
                     ),
-                    if (selectedCourse.isNotEmpty)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 20),
-                          const Text(
-                            'Select Filter:',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          Wrap(
-                            spacing: 8.0,
-                            children: [
-                              for (Types filter in Types.values)
-                                FilterChip(
-                                  label: Text(filter.name),
-                                  selected: selectedFilter == filter,
-                                  onSelected: (bool selected) {
-                                    setState(() {
-                                      selectedFilter = selected ? filter : null;
-                                    });
-                                  },
-                                ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {});
-                            },
-                            child: const Text('Apply Filters'),
-                          ),
-                          generateCards(
-                              widget.uid, selectedCourse, selectedFilter, state)
-                        ],
-                      ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: generateCards(
+                        context,
+                        widget.uid,
+                        selectedCourse,
+                        selectedFilter,
+                        state,
+                        () {
+                          setState(() {
+                            _deleteMode = true;
+                          });
+                        },
+                        _deleteMode,
+                        () {
+                          setState(() {
+                            _deleteMode = false;
+                          });
+                        },
+                        (path) {
+                          setState(() {
+                            if (_pathsToDelete.contains(path)) {
+                              _pathsToDelete.remove(path);
+                            } else {
+                              _pathsToDelete.add(path);
+                            }
+                          });
+                        },
+                        _pathsToDelete),
+                  ),
+                ],
               ),
             );
           }
@@ -233,7 +370,12 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                       )
                     ],
                   )
-                : null,
+                : AppBar(
+        automaticallyImplyLeading: true,
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Downloads'),
+      ),
             body: const SizedBox(
                 child: Center(child: CircularProgressIndicator())),
           );
@@ -272,7 +414,12 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                         )
                       ],
                     )
-                  : null,
+                  :  AppBar(
+        automaticallyImplyLeading: true,
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Downloads'),
+      ),
               body: SizedBox(
                 child: Center(
                   child: Padding(
@@ -424,7 +571,12 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                     )
                   ],
                 )
-              : null,
+              :  AppBar(
+        automaticallyImplyLeading: true,
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Downloads'),
+      ),
           body: Center(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -434,15 +586,20 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                   (!widget.isDownloadedView)
                       ? ((state is ErrorState &&
                               state.message.contains('[connection error]'))
-                          ? const Icon(Icons.cloud_off_outlined,size: 120,)
+                          ? const Icon(
+                              Icons.cloud_off_outlined,
+                              size: 120,
+                            )
                           : Image.asset('assets/images/error404.png'))
                       : const CircularProgressIndicator.adaptive(),
                   (state is ErrorState)
                       ? ((state.message.contains('[connection error]'))
                           ? const Text(
-                              'Failed to download due to poor or bad network connectivity', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700))
+                              'Failed to download due to poor or bad network connectivity',
+                              style: TextStyle(
+                                  fontSize: 13, fontWeight: FontWeight.w700))
                           : Text(state.message))
-                      : Text(state.toString()),
+                      : const Text(''),
                 ],
               ),
             ),
@@ -454,33 +611,109 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
 }
 
 Widget generateCards(
-    String uid, String? course, Types? type, MaterialsFetchedState state) {
+    BuildContext context,
+    String uid,
+    String? course,
+    Types? type,
+    MaterialsFetchedState state,
+    Function onLongPress,
+    bool deleteMode,
+    Function onCancel,
+    Function(String) onAddToDeleteList,
+    List<String> pathsToDelete) {
   List<StudyMaterial> studyMaterials = state.filterByType(course, type);
   if (studyMaterials.isNotEmpty) {
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: studyMaterials.length,
-        itemBuilder: ((context, index) {
-          if (type == Types.links) {
-            return LinksCard(
-              studyMaterial: studyMaterials[index],
-            );
-          }
-          // print(studyMaterials[index]);
-          return StudyMaterialCard(
-              studyMaterial: studyMaterials[index],
-              onTap: (studyMaterial) {
-                context.read<ViewMaterialBloc>().add(
-                    DownLoadMaterial(course: studyMaterials[index], uid: uid));
-              });
-        }));
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (deleteMode)
+          Column(
+            children: [
+              const Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        onCancel();
+                      },
+                      icon: const Icon(Icons.cancel)),
+                  IconButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                icon: const Icon(Icons.delete),
+                                title: Text(
+                                    'Delete ${pathsToDelete.length} file(s)'),
+                                content: const Text(
+                                    'Are you sure you want to delete?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      // Perform the deletion
+                                      Navigator.pop(
+                                        context,
+                                      );
+                                      for (String path in pathsToDelete) {
+                                        File(path).delete();
+                                      }
+                                      // Close the dialog
+                                    },
+                                    child: const Text('Delete'),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      icon: const Icon(Icons.delete))
+                ],
+              ),
+              const Divider(),
+            ],
+          ),
+        Flexible(
+          child: ListView.builder(
+              // physics: const ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: studyMaterials.length,
+              itemBuilder: ((context, index) {
+                if (type == Types.links) {
+                  return LinksCard(
+                    studyMaterial: studyMaterials[index],
+                  );
+                }
+                // print(studyMaterials[index]);
+                return StudyMaterialCard(
+                  studyMaterial: studyMaterials[index],
+                  onTap: (studyMaterial) {
+                    context.read<ViewMaterialBloc>().add(DownLoadMaterial(
+                        course: studyMaterials[index], uid: uid));
+                  },
+                  onLongPress: onLongPress,
+                  isDeleteMode: deleteMode,
+                  onAddToDeleteList: onAddToDeleteList,
+                  shouldBeDeleted: pathsToDelete,
+                );
+              })),
+        ),
+      ],
+    );
   } else {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: NoDataCuate(
             issue:
-                'No ${type!.name} have been found, help us by uploading some'),
+                'No ${type?.name ?? 'material'} have been found, help us by uploading some'),
       ),
     );
   }

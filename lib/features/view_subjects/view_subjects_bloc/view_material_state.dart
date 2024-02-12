@@ -19,7 +19,7 @@ final class MaterialsFetchedState extends ViewMaterialState {
   List<StudyMaterial> filterByType(String? course, Types? type) {
     List<StudyMaterial> filteredResults = [];
     if (course?.isNotEmpty ?? false) {
-      for (var material in studyMaterials) {
+      for (StudyMaterial material in studyMaterials) {
         if (material.subjectName == course) {
           if (type != null) {
             switch (type) {
@@ -61,10 +61,13 @@ final class MaterialsFetchedState extends ViewMaterialState {
           }
         }
       }
-      return filteredResults;
     } else {
-      return studyMaterials;
+      for (StudyMaterial material in studyMaterials) {
+        print(material);
+        filteredResults.add(material);
+      }
     }
+      return filteredResults;
   }
 
   const MaterialsFetchedState({required this.courses, required this.studyMaterials});

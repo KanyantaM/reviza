@@ -19,15 +19,18 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
         super(EditMyCoursesInitial()) {
     on<FetchMyCourses>((event, emit) async {
       emit(FetchingCoursesState());
+
       try {
-        Student
-            currentStudent = /*await _studentOfflineDataRepository.getUserById(event.studentId) ??*/
-            Student(userId: event.studentId, myCourses: []);
-        //  if (currentStudent.myCourses.isEmpty) {
-        currentStudent =
-            await _studentOnlineDataRepository.getUserById(event.studentId) ??
-                Student(userId: event.studentId, myCourses: []);
-        //  }
+        Student currentStudent =
+            await _studentOfflineDataRepository.getUserById(event.studentId) ??
+                Student(userId: event.studentId, myCourses: <String>[]);
+        if (currentStudent.myCourses.isEmpty) {
+          currentStudent =
+              await _studentOnlineDataRepository.getUserById(event.studentId) ??
+                  Student(userId: event.studentId, myCourses: <String>[]);
+                  //updating the user in local storage
+          await _studentOfflineDataRepository.addUser(currentStudent);
+        }
         emit(CoursesFetchedState(student: currentStudent));
       } catch (e) {
         emit(ErrorState(message: 'Failed to fetch user messages\n $e'));
@@ -41,8 +44,8 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
           for (var courseToDelete in event.coursesToDelete) {
             event.student.myCourses.remove(courseToDelete);
             final dir = await getApplicationDocumentsDirectory();
-            if (await File("${dir.path}/$courseToDelete/").exists()) {
-              File("${dir.path}/$courseToDelete/").delete(recursive: true);
+            if (await File("${dir.path}/$courseToDelete").exists()) {
+              File("${dir.path}/$courseToDelete").delete(recursive: true);
             }
           }
           await _studentOfflineDataRepository.updateUser(event.student);

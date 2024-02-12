@@ -32,8 +32,7 @@ class _MyHomePageState extends State<AiScreen> {
     SectionItem(3, 'text', const SectionTextInput()),
     SectionItem(4, 'embedContent', const SectionEmbedContent()),
     SectionItem(5, 'batchEmbedContents', const SectionBatchEmbedContents()),
-    SectionItem(
-        6, 'response without setState()', const ResponseWidgetSection()),
+    SectionItem(6, 'response without setState()', const ResponseWidgetSection()),
   ];
 
   @override
@@ -54,3 +53,4 @@ class _MyHomePageState extends State<AiScreen> {
     );
   }
 }
+

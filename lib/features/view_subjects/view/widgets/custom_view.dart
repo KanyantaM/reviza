@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:reviza/utilities/dialogues/error_dialog.dart';
@@ -72,15 +71,16 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
               icon: const Icon(FontAwesomeIcons.robot),
               onPressed: () {
                 // Handle share action
-                showDialog(context: context, builder: (context){
-                  return AlertDialog(
-                    content: AiScreen(),
-                  );
-                });
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const AlertDialog(
+                        content: AiScreen(),
+                      );
+                    });
               },
             ),
           ),
-          
         ],
       ),
       body: Stack(
@@ -100,7 +100,6 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
               showErrorDialog(context, '$page: ${error.toString()}');
             },
             onViewCreated: (PDFViewController pdfViewController) {
-              // Access pdfViewController if needed
             },
             onPageChanged: (int? page, int? total) {
               setState(() {
@@ -130,7 +129,6 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                   onUpVote: widget.onUpVote,
                   onDownVote: widget.onDownVote,
                   onReport: widget.onReport,
-                  // onDelete: widget.onDelete,
                 )
               : const Wrap(),
         ],
@@ -143,16 +141,13 @@ class VotingBar extends StatefulWidget {
   final bool? hasVotedUp;
   final Function onUpVote;
   final Function onDownVote;
-  // final Function onDelete;
   final Function onReport;
   const VotingBar({
     super.key,
     this.hasVotedUp,
     required this.onUpVote,
     required this.onDownVote,
-    // required this.onDownload,
     required this.onReport,
-    // required this.onDelete,
   });
 
   @override
@@ -197,7 +192,7 @@ class _VotingBarState extends State<VotingBar> {
               children: [
                 GestureDetector(
                   onTap: () {
-                      widget.onUpVote();
+                    widget.onUpVote();
                     setState(() {
                       if (_hasVotedUp == false || _hasVotedUp == null) {
                         _hasVotedUp = true;
@@ -265,13 +260,13 @@ class _VotingBarState extends State<VotingBar> {
                     ],
                   ),
                 ),
-          //        IconButton(
-          //   icon: Icon(FontAwesomeIcons.robot),
-          //   onPressed: () {
-          //     // Handle share action
-          //     commingSoon(context);
-          //   },
-          // ),
+                //        IconButton(
+                //   icon: Icon(FontAwesomeIcons.robot),
+                //   onPressed: () {
+                //     // Handle share action
+                //     commingSoon(context);
+                //   },
+                // ),
               ],
             ),
           ),

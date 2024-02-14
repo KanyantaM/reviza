@@ -35,7 +35,7 @@ class _MyHomePageState extends State<AiScreen> {
             : _sections[_selectedItem].title),
       ),
       body: IndexedStack(
-        index: _selectedItem,
+        index: 0,
         children: _sections.map((e) => e.widget).toList(),
       ),
     );

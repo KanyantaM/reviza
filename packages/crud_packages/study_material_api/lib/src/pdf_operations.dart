@@ -17,14 +17,12 @@ Future<String?> uploadPdfToFirebase(File pdfFile, String subjectName, String tit
     uploadTask.snapshotEvents.listen((TaskSnapshot event) {
      progress = event.bytesTransferred / event.totalBytes;
       uploadProgress(progress); // Call the function with the progress value
-      print('Upload progress: $progress'); // Update your UI here
+      // Update your UI here
     });
     await uploadTask;
     String downloadUrl = await storageReference.getDownloadURL();
-    print('---------------------------------$downloadUrl-------------------------------------');
     return downloadUrl;
   } catch (e) {
-    print("Error uploading PDF: $e");
     return null;
   }
 }

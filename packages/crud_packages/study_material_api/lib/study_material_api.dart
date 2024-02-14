@@ -1,4 +1,4 @@
-export 'src/study_material_api copy.dart';
+export 'src/study_material_api.dart';
 export 'src/models/study_material_model.dart';
 export 'src/pdf_operations.dart';
 

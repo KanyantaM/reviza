@@ -190,8 +190,11 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                     ),
                   ),
                   Expanded(
-                      child: generateCardByTypeSelector(selectedFilter,
-                          course: selectedCourse)),
+                    child: generateCardByTypeSelector(
+                      selectedFilter,
+                      course: selectedCourse,
+                    ),
+                  ),
                 ],
               ),
             );

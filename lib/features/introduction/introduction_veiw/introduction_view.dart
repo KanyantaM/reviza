@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:lottie/lottie.dart';
 import 'package:reviza/ui/home_screen/app_home.dart';
 import 'package:reviza/features/introduction/introduction_bloc/bloc/introduction_bloc_bloc.dart';
-import 'package:reviza/features/introduction/introduction_veiw/helpers/ColorsSys.dart';
+import 'package:reviza/features/introduction/introduction_veiw/helpers/color_sys.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:reviza/features/introduction/introduction_veiw/helpers/Strings.dart';
-import 'package:reviza/features/introduction/introduction_veiw/widgets/registerStudent.dart';
+import 'package:reviza/features/introduction/introduction_veiw/helpers/const_strings.dart';
+import 'package:reviza/features/introduction/introduction_veiw/widgets/register_student.dart';
 import 'package:reviza/widgets/no_data.dart';
 import 'package:reviza/misc/course_info.dart';
 

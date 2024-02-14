@@ -25,7 +25,8 @@ class UserScreen extends StatelessWidget {
       await launchUrl(Uri(path: androidUrl));
     } else if (await canLaunchUrl(Uri(path: iOSUrl))) {
       await launchUrl(Uri(path: iOSUrl));
-    } else {
+    } 
+    else {
       // Handle the case where neither the Android nor iOS URL can be launched
       showErrorDialog(
           context, 'Could not launch the app store on both Android and iOS');

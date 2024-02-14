@@ -63,7 +63,6 @@ final class MaterialsFetchedState extends ViewMaterialState {
       }
     } else {
       for (StudyMaterial material in studyMaterials) {
-        print(material);
         filteredResults.add(material);
       }
     }

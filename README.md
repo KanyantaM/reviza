@@ -16,7 +16,7 @@ Get instant answers to your study queries with our Gemini Pro-powered chatbot. T
 
 Built using Flutter, ReviZa offers a seamless and intuitive interface across various devices. The app is designed with a feature-focused architecture and utilizes Bloc for state management, ensuring a smooth and responsive user experience.
 
-### 4. Tech-Yatu - Your Software Development Partner
+### 4. Luso Software - Your Software Development Partner
 
 ReviZa is a product of Luso Software, a leading software development company. If you have specific software development needs or are interested in our services, feel free to contact us at <kanyanta.1makasa@gmail.com>.
 
@@ -38,6 +38,6 @@ To make the most of ReviZa, follow these simple steps:
 
 ## Contact Information
 
-For inquiries, collaborations, or to learn more about Tech-Yatu's software development services, contact us at <kanyanta.1makasa@gmail.com>.
+For inquiries, collaborations, or to learn more about Luso Software's software development services, contact us at <kanyanta.1makasa@gmail.com>.
 
-Thank you for choosing ReviZa and Tech-Yatu. Happy studying!
+Thank you for choosing ReviZa and Luso Software. Happy studying!

@@ -4,15 +4,14 @@ import 'package:reviza/app/bloc/app_bloc.dart';
 import 'package:reviza/features/login/login.dart';
 // import 'package:reviza/features/report.dart';
 import 'package:reviza/ui/theme.dart';
+import 'package:reviza/utilities/dialogues/error_dialog.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UserScreen extends StatelessWidget {
   const UserScreen({super.key});
 
-  
-
-  Future<void> launchAppStoreForRating() async {
+  Future<void> launchAppStoreForRating(BuildContext context) async {
     const String packageName =
         'your_app_package_name'; // Replace with your app's package name
 
@@ -22,13 +21,13 @@ class UserScreen extends StatelessWidget {
     // For iOS
     final String iOSUrl = 'itms-apps://itunes.apple.com/app/id$packageName';
 
-    if (await canLaunch(androidUrl)) {
-      await launch(androidUrl);
-    } else if (await canLaunch(iOSUrl)) {
-      await launch(iOSUrl);
+    if (await canLaunchUrl(Uri(path:androidUrl))) {
+      await launchUrl(Uri(path:androidUrl));
+    } else if (await canLaunchUrl(Uri(path:iOSUrl))) {
+      await launchUrl(Uri(path:iOSUrl));
     } else {
       // Handle the case where neither the Android nor iOS URL can be launched
-      print('Could not launch the app store on both Android and iOS');
+      showErrorDialog(context,'Could not launch the app store on both Android and iOS');
     }
   }
 
@@ -42,28 +41,28 @@ class UserScreen extends StatelessWidget {
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                  'ReviZa - A Study Sharing App, developed by the Luso Software Team'),
+                  'Welcome to ReviZa,\n\nA powerful study app brought to you by Luso Software.\n\nReviZa is designed to facilitate seamless collaboration among students, enabling them to share study materials such as past papers and school notes. The app also features an AI chatbot for quick assistance with study-related questions.'),
               SizedBox(height: 16),
-              Text('Luso Software - A Zambian Software Development Company'),
+              Text('\nLuso Software - A Zambian Software Development Company', style: TextStyle(fontStyle: FontStyle.italic),),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                launch('https://www.lusosoftware.com');
+                launchUrl(Uri(path:'https://www.lusosoftware.com'));
               },
               child: const Text('Visit Us'),
             ),
             TextButton(
               onPressed: () {
-                launch('mailto:team@lusosoftware.com');
+                launchUrl(Uri(path:'mailto:team@lusosoftware.com'));
               },
               child: const Text('Email Us'),
             ),
             TextButton(
               onPressed: () {
                 const phoneNumber = '+260762878107';
-                launch('https://wa.me/$phoneNumber/');
+                launchUrl(Uri(path:'https://wa.me/$phoneNumber/'));
               },
               child: const Text('WhatsApp Us'),
             ),
@@ -112,13 +111,8 @@ class UserScreen extends StatelessWidget {
               leading: const Icon(Icons.feedback),
               title: const Text('Feedback'),
               onTap: () async {
-                // sendWhatsAppMessage();
-                // Navigate to feedback screen
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => StepsScreen()));
-              
                 const phoneNumber = '+260762878107';
-                launch('https://wa.me/$phoneNumber/');
+                launchUrl(Uri(path:'https://wa.me/$phoneNumber/'));
               },
             ),
             const Divider(),
@@ -127,7 +121,7 @@ class UserScreen extends StatelessWidget {
               title: const Text('Rate this App'),
               onTap: () {
                 // Open app store for rating
-                launchAppStoreForRating();
+                launchAppStoreForRating(context);
                 // commingSoon(context);
               },
             ),

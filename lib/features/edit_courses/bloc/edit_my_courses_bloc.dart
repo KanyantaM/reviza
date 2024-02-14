@@ -1,11 +1,11 @@
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_student_api/cloud_student_api.dart';
 import 'package:equatable/equatable.dart';
+import 'package:local_storage_study_material_api/local_storage_study_material_api.dart';
 import 'package:local_student_api/local_student_api.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:student_api/student_api.dart';
+import 'package:study_material_api/study_material_api.dart';
 
 part 'edit_my_courses_event.dart';
 part 'edit_my_courses_state.dart';
@@ -28,7 +28,7 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
           currentStudent =
               await _studentOnlineDataRepository.getUserById(event.studentId) ??
                   Student(userId: event.studentId, myCourses: <String>[]);
-                  //updating the user in local storage
+          //updating the user in local storage
           await _studentOfflineDataRepository.addUser(currentStudent);
         }
         emit(CoursesFetchedState(student: currentStudent));
@@ -41,13 +41,24 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
       (event, emit) async {
         emit(DeletingCourses());
         try {
-          for (var courseToDelete in event.coursesToDelete) {
-            event.student.myCourses.remove(courseToDelete);
-            final dir = await getApplicationDocumentsDirectory();
-            if (await File("${dir.path}/$courseToDelete").exists()) {
-              File("${dir.path}/$courseToDelete").delete(recursive: true);
+          HiveStudyMaterialRepository hiveStudyMaterialRepository =
+              HiveStudyMaterialRepository();
+          Map<String, List<StudyMaterial>> myMaterials =
+              await hiveStudyMaterialRepository
+                  .getStudyMaterials(event.coursesToDelete);
+          for (String courses in myMaterials.keys) {
+            event.student.myCourses.remove(courses);
+            for (StudyMaterial material in myMaterials[courses]!) {
+              hiveStudyMaterialRepository.deleteStudyMaterial(material);
             }
           }
+          // for (var courseToDelete in event.coursesToDelete) {
+          //   event.student.myCourses.remove(courseToDelete);
+          //   final dir = await getApplicationDocumentsDirectory();
+          //   if (await File("${dir.path}/$courseToDelete").exists()) {
+          //     File("${dir.path}/$courseToDelete").delete(recursive: true);
+          //   }
+          // }
           await _studentOfflineDataRepository.updateUser(event.student);
           await _studentOnlineDataRepository.updateUser(event.student);
           emit(CoursesEditedSuccesfully());

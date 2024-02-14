@@ -17,7 +17,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
 );
   Gemini.init(apiKey: 'AIzaSyAc4B-fK2YSYVV9qG-HPzznQbpjlcmLkfw', enableDebugging: true);
-  
+      
   HiveUserRepository();
   HiveStudyMaterialRepository();
   final authenticationRepository = AuthenticationRepository(); 

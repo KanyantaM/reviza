@@ -70,15 +70,13 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
           return false;
         }
       });
-      await _box.put(courseFolderKey, materialsList);
-    
+      await _box.put(courseFolderKey, materialsList);    
   }
 
   @override
   Future<Map<String, List<StudyMaterial>>> getStudyMaterials(
-      List<String> courses) async {
+      List<String> courses ) async {
     Map<String, List<StudyMaterial>> studyMaterialsMap = {};
-
     for (String course in courses) {
       _ensureInitialized();
       String courseFolderKey = getCourseFolderKey(course);
@@ -99,10 +97,8 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
           List<StudyMaterial>.from(_box.get(key, defaultValue: <StudyMaterial>[]));
       StudyMaterial json =
           materialsList.firstWhere((item) => item.id == material.id);
-
       return json;
     }
-
     return null;
   }
 }

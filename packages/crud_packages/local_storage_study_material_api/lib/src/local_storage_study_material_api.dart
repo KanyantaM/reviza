@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:study_material_api/study_material_api.dart';
 
@@ -44,9 +46,9 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
   Future<void> updateStudyMaterial(StudyMaterial material) async {
     _ensureInitialized();
     String courseFolderKey = getCourseFolderKey(material.subjectName);
-    List<dynamic> materialsList =
+    List<StudyMaterial> materialsList =
         _box.get(courseFolderKey, defaultValue: <StudyMaterial>[]);
-    int index = materialsList.indexWhere((item) => item['id'] == material.id);
+    int index = materialsList.indexWhere((item) => item.id == material.id);
 
     if (index != -1) {
       materialsList[index] = material;
@@ -57,12 +59,19 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
   @override
   Future<void> deleteStudyMaterial(StudyMaterial material) async {
     _ensureInitialized();
-    for (var key in _box.keys) {
-      List<StudyMaterial> materialsList =
-          _box.get(key, defaultValue: <StudyMaterial>[]);
-      materialsList.removeWhere((item) => item.id == material.id);
-      await _box.put(key, materialsList);
-    }
+    String courseFolderKey = getCourseFolderKey(material.subjectName);
+    List<StudyMaterial> materialsList =
+       List<StudyMaterial>.from( _box.get(courseFolderKey, defaultValue: <StudyMaterial>[]));
+      materialsList.removeWhere((item) {
+        if(item.id == material.id) {
+          File(item.filePath!).delete();
+          return true;
+        }else {
+          return false;
+        }
+      });
+      await _box.put(courseFolderKey, materialsList);
+    
   }
 
   @override
@@ -73,11 +82,9 @@ class HiveStudyMaterialRepository implements StudyMaterialRepository {
     for (String course in courses) {
       _ensureInitialized();
       String courseFolderKey = getCourseFolderKey(course);
-      print('about to fetch material list');
       List<StudyMaterial> materialsList =
           List<StudyMaterial>.from(_box.get(courseFolderKey, defaultValue: <StudyMaterial>[]));
       List<StudyMaterial> studyMaterials = materialsList;
-      print(materialsList);
 
       studyMaterialsMap[course] = studyMaterials;
     }

@@ -16,18 +16,19 @@ class UserScreen extends StatelessWidget {
         'your_app_package_name'; // Replace with your app's package name
 
     // For Android
-    final String androidUrl = 'market://details?id=$packageName';
+    const String androidUrl = 'market://details?id=$packageName';
 
     // For iOS
-    final String iOSUrl = 'itms-apps://itunes.apple.com/app/id$packageName';
+    const String iOSUrl = 'itms-apps://itunes.apple.com/app/id$packageName';
 
-    if (await canLaunchUrl(Uri(path:androidUrl))) {
-      await launchUrl(Uri(path:androidUrl));
-    } else if (await canLaunchUrl(Uri(path:iOSUrl))) {
-      await launchUrl(Uri(path:iOSUrl));
+    if (await canLaunchUrl(Uri(path: androidUrl))) {
+      await launchUrl(Uri(path: androidUrl));
+    } else if (await canLaunchUrl(Uri(path: iOSUrl))) {
+      await launchUrl(Uri(path: iOSUrl));
     } else {
       // Handle the case where neither the Android nor iOS URL can be launched
-      showErrorDialog(context,'Could not launch the app store on both Android and iOS');
+      showErrorDialog(
+          context, 'Could not launch the app store on both Android and iOS');
     }
   }
 
@@ -43,28 +44,31 @@ class UserScreen extends StatelessWidget {
               Text(
                   'Welcome to ReviZa,\n\nA powerful study app brought to you by Luso Software.\n\nReviZa is designed to facilitate seamless collaboration among students, enabling them to share study materials such as past papers and school notes. The app also features an AI chatbot for quick assistance with study-related questions.'),
               SizedBox(height: 16),
-              Text('\nLuso Software - A Zambian Software Development Company', style: TextStyle(fontStyle: FontStyle.italic),),
+              Text(
+                '\nLuso Software - A Zambian Software Development Company',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                launchUrl(Uri(path:'https://www.lusosoftware.com'));
+                launchUrl(Uri(path: 'https://www.lusosoftware.com'));
               },
-              child: const Text('Visit Us'),
+              child: const Text('Visit Us 🌐'),
             ),
             TextButton(
               onPressed: () {
-                launchUrl(Uri(path:'mailto:team@lusosoftware.com'));
+                launchUrl(Uri(path: 'mailto:team@lusosoftware.com'));
               },
-              child: const Text('Email Us'),
+              child: const Text('Email Us 📧'),
             ),
             TextButton(
               onPressed: () {
                 const phoneNumber = '+260762878107';
-                launchUrl(Uri(path:'https://wa.me/$phoneNumber/'));
+                launchUrl(Uri(path: 'https://wa.me/$phoneNumber/'));
               },
-              child: const Text('WhatsApp Us'),
+              child: const Text('WhatsApp Us 💬'),
             ),
             TextButton(
               onPressed: () {
@@ -112,7 +116,7 @@ class UserScreen extends StatelessWidget {
               title: const Text('Feedback'),
               onTap: () async {
                 const phoneNumber = '+260762878107';
-                launchUrl(Uri(path:'https://wa.me/$phoneNumber/'));
+                launchUrl(Uri(path: 'https://wa.me/$phoneNumber/'));
               },
             ),
             const Divider(),

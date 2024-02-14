@@ -10,8 +10,8 @@ class StudyMaterialCard extends StatelessWidget {
   final Function(StudyMaterial) onTap;
   final Function onLongPress;
   final bool isDeleteMode;
-  final Function(String path) onAddToDeleteList;
-  final List<String> shouldBeDeleted;
+  final Function(StudyMaterial path) onAddToDeleteList;
+  final List<StudyMaterial> shouldBeDeleted;
 
   const StudyMaterialCard({
     super.key,
@@ -31,8 +31,8 @@ class StudyMaterialCard extends StatelessWidget {
         onLongPress: () => onLongPress(),
         onTap: () async {
           if (isDeleteMode) {
-            String devicePath = await getPathTodDelete(studyMaterial);
-            onAddToDeleteList(devicePath);
+            // String devicePath = await getPathTodDelete(studyMaterial);
+            onAddToDeleteList(studyMaterial);
           } else {
             onTap(studyMaterial);
           }
@@ -60,7 +60,7 @@ class StudyMaterialCard extends StatelessWidget {
                                   builder: (context, snapshot) {
                                     if (snapshot.data?.isNotEmpty ?? false) {
                                       if (shouldBeDeleted
-                                          .contains(snapshot.data!)) {
+                                          .contains(studyMaterial)) {
                                         return const Icon(
                                             Icons.check_circle_outline_rounded);
                                       } else {

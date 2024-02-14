@@ -12,7 +12,6 @@ class CustomPDFViewer extends StatefulWidget {
   final StudyMaterialOpened state;
   final Function onUpVote;
   final Function onDownVote;
-  final Function onDelete;
   final Function onReport;
 
   const CustomPDFViewer({
@@ -22,7 +21,6 @@ class CustomPDFViewer extends StatefulWidget {
     required this.onUpVote,
     required this.onDownVote,
     required this.onReport,
-    required this.onDelete,
   });
 
   @override
@@ -260,13 +258,6 @@ class _VotingBarState extends State<VotingBar> {
                     ],
                   ),
                 ),
-                //        IconButton(
-                //   icon: Icon(FontAwesomeIcons.robot),
-                //   onPressed: () {
-                //     // Handle share action
-                //     commingSoon(context);
-                //   },
-                // ),
               ],
             ),
           ),

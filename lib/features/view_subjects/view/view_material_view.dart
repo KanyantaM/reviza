@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:local_storage_study_material_api/local_storage_study_material_api.dart';
 import 'package:lottie/lottie.dart';
 import 'package:reviza/features/view_subjects/view/widgets/links_card.dart';
 import 'package:reviza/features/view_subjects/view/widgets/my_subject_card.dart';
@@ -36,7 +35,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
   String selectedCourse = '';
   Types? selectedFilter;
   bool _deleteMode = false;
-  List<String> _pathsToDelete = [];
+  List<StudyMaterial> _pathsToDelete = [];
 
   @override
   void initState() {
@@ -77,35 +76,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
         if (state is MaterialsFetchedState) {
           if (!widget.isDownloadedView) {
             return Scaffold(
-              appBar: AppBar(
-                centerTitle: true,
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                title: const Text('ReviZa'),
-                bottom: TabBar(controller: _tabController, tabs: const [
-                  Tab(
-                    child: Icon(Icons.note),
-                  ),
-                  Tab(
-                    icon: Icon(Icons.question_answer),
-                  ),
-                  Tab(
-                    child: Icon(Icons.book),
-                  ),
-                  Tab(
-                    icon: Icon(Icons.link),
-                  ),
-                ]),
-                actions: [
-                  IconButton(
-                      onPressed: () {
-                        commingSoon(context);
-                      },
-                      icon: const Icon(Icons.notifications)),
-                  SizedBox(
-                    width: 12.h,
-                  )
-                ],
-              ),
+              appBar: cloudAppBar(context),
               body: TabBarView(controller: _tabController, children: <Widget>[
                 generateCards(
                     context,
@@ -133,7 +104,13 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                         }
                       });
                     },
-                    _pathsToDelete),
+                    _pathsToDelete,
+                    () {
+                      setState(() {
+                        _deleteMode = false;
+                        _pathsToDelete = [];
+                      });
+                    }),
                 generateCards(
                     context,
                     widget.uid,
@@ -160,7 +137,10 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                         }
                       });
                     },
-                    _pathsToDelete),
+                    _pathsToDelete,
+                    () {
+                      setState(() {});
+                    }),
                 generateCards(
                     context,
                     widget.uid,
@@ -187,7 +167,13 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                         }
                       });
                     },
-                    _pathsToDelete),
+                    _pathsToDelete,
+                    () {
+                      setState(() {
+                        _deleteMode = false;
+                        _pathsToDelete = [];
+                      });
+                    }),
                 generateCards(
                     context,
                     widget.uid,
@@ -214,26 +200,18 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                         }
                       });
                     },
-                    _pathsToDelete),
-
-                // SimilarSubjectsWidget(
-                //   similarSubjects: const [
-                //     'Mathematics',
-                //     'Physics',
-                //     'Chemistry',
-                //     'Biology'
-                //   ],
-                // ),
+                    _pathsToDelete,
+                    () {
+                      setState(() {
+                        _deleteMode = false;
+                        _pathsToDelete = [];
+                      });
+                    }),
               ]),
             );
           } else {
             return Scaffold(
-              appBar: AppBar(
-        automaticallyImplyLeading: true,
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Downloads'),
-      ),
+              appBar: localAppBar(context),
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -330,7 +308,13 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                             }
                           });
                         },
-                        _pathsToDelete),
+                        _pathsToDelete,
+                        () {
+                          setState(() {
+                            _deleteMode = false;
+                            _pathsToDelete = [];
+                          });
+                        }),
                   ),
                 ],
               ),
@@ -339,43 +323,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
         }
         if (state is LoadingState) {
           return Scaffold(
-            appBar: (!widget.isDownloadedView)
-                ? AppBar(
-                    centerTitle: true,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.inversePrimary,
-                    title: const Text('ReviZa'),
-                    bottom: TabBar(controller: _tabController, tabs: const [
-                      Tab(
-                        child: Icon(Icons.note),
-                      ),
-                      Tab(
-                        icon: Icon(Icons.question_answer),
-                      ),
-                      Tab(
-                        child: Icon(Icons.book),
-                      ),
-                      Tab(
-                        icon: Icon(Icons.link),
-                      ),
-                    ]),
-                    actions: [
-                      IconButton(
-                          onPressed: () {
-                            commingSoon(context);
-                          },
-                          icon: const Icon(Icons.notifications)),
-                      SizedBox(
-                        width: 12.h,
-                      )
-                    ],
-                  )
-                : AppBar(
-        automaticallyImplyLeading: true,
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Downloads'),
-      ),
+            appBar: appBarSelector(context),
             body: const SizedBox(
                 child: Center(child: CircularProgressIndicator())),
           );
@@ -383,43 +331,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
         if (state is DownloadingCourses) {
           // Show download progress UI
           return Scaffold(
-              appBar: (!widget.isDownloadedView)
-                  ? AppBar(
-                      centerTitle: true,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.inversePrimary,
-                      title: const Text('ReviZa'),
-                      bottom: TabBar(controller: _tabController, tabs: const [
-                        Tab(
-                          child: Icon(Icons.note),
-                        ),
-                        Tab(
-                          icon: Icon(Icons.question_answer),
-                        ),
-                        Tab(
-                          child: Icon(Icons.book),
-                        ),
-                        Tab(
-                          icon: Icon(Icons.link),
-                        ),
-                      ]),
-                      actions: [
-                        IconButton(
-                            onPressed: () {
-                              commingSoon(context);
-                            },
-                            icon: const Icon(Icons.notifications)),
-                        SizedBox(
-                          width: 12.h,
-                        )
-                      ],
-                    )
-                  :  AppBar(
-        automaticallyImplyLeading: true,
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Downloads'),
-      ),
+              appBar: appBarSelector(context),
               body: SizedBox(
                 child: Center(
                   child: Padding(
@@ -497,11 +409,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                       ),
                     );
               },
-              // onDownload: () {
-              //   context
-              //       .read<ViewMaterialBloc>()
-              //       .add(DownLoadMaterial(course: state.studyMaterial, uid: widget.state.uid));
-              // },
               onReport: () {
                 context.read<ViewMaterialBloc>().add(
                       ReportMaterial(
@@ -510,73 +417,12 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                       ),
                     );
               },
-              onDelete: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      icon: const Icon(Icons.delete),
-                      title: Text('Delete ${state.studyMaterial.title}'),
-                      content: const Text('Are you sure you want to delete?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context); // Close the dialog
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            // Perform the deletion
-                            Navigator.pop(context,
-                                MaterialPageRoute(builder: (context) {
-                              return ViewMaterialsView(
-                                isDownloadedView: widget.isDownloadedView,
-                                uid: widget.uid,
-                                courseName: widget.courseName,
-                              );
-                            }));
-                            File(state.studyMaterial.filePath!)
-                                .delete(); // Close the dialog
-                          },
-                          child: const Text('Delete'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
             ),
           );
         }
 
-        // if(state is MaterialBanedState){
-
-        // }
-
         return Scaffold(
-          appBar: (!widget.isDownloadedView)
-              ? AppBar(
-                  centerTitle: true,
-                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                  title: const Text('ReviZa'),
-                  actions: [
-                    IconButton(
-                        onPressed: () {
-                          commingSoon(context);
-                        },
-                        icon: const Icon(Icons.notifications)),
-                    SizedBox(
-                      width: 12.h,
-                    )
-                  ],
-                )
-              :  AppBar(
-        automaticallyImplyLeading: true,
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Downloads'),
-      ),
+          appBar: appBarSelector(context),
           body: Center(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -608,6 +454,53 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
       },
     );
   }
+
+  AppBar appBarSelector(BuildContext context) {
+    return (!widget.isDownloadedView)
+        ? cloudAppBar(context)
+        : localAppBar(context);
+  }
+
+  AppBar localAppBar(BuildContext context) {
+    return AppBar(
+      automaticallyImplyLeading: true,
+      centerTitle: true,
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      title: const Text('Downloads'),
+    );
+  }
+
+  AppBar cloudAppBar(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      title: const Text('ReviZa'),
+      bottom: TabBar(controller: _tabController, tabs: const [
+        Tab(
+          child: Icon(Icons.note),
+        ),
+        Tab(
+          icon: Icon(Icons.question_answer),
+        ),
+        Tab(
+          child: Icon(Icons.book),
+        ),
+        Tab(
+          icon: Icon(Icons.link),
+        ),
+      ]),
+      actions: [
+        IconButton(
+            onPressed: () {
+              commingSoon(context);
+            },
+            icon: const Icon(Icons.notifications)),
+        SizedBox(
+          width: 12.h,
+        )
+      ],
+    );
+  }
 }
 
 Widget generateCards(
@@ -619,8 +512,9 @@ Widget generateCards(
     Function onLongPress,
     bool deleteMode,
     Function onCancel,
-    Function(String) onAddToDeleteList,
-    List<String> pathsToDelete) {
+    Function(StudyMaterial) onAddToDeleteList,
+    List<StudyMaterial> pathsToDelete,
+    Function onDelete) {
   List<StudyMaterial> studyMaterials = state.filterByType(course, type);
   if (studyMaterials.isNotEmpty) {
     return Column(
@@ -643,6 +537,8 @@ Widget generateCards(
                         showDialog(
                             context: context,
                             builder: (context) {
+                              HiveStudyMaterialRepository local =
+                                  HiveStudyMaterialRepository();
                               return AlertDialog(
                                 icon: const Icon(Icons.delete),
                                 title: Text(
@@ -658,14 +554,16 @@ Widget generateCards(
                                     child: const Text('Cancel'),
                                   ),
                                   TextButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       // Perform the deletion
                                       Navigator.pop(
                                         context,
                                       );
-                                      for (String path in pathsToDelete) {
-                                        File(path).delete();
+                                      for (StudyMaterial path
+                                          in pathsToDelete) {
+                                        await local.deleteStudyMaterial(path);
                                       }
+                                      onDelete();
                                       // Close the dialog
                                     },
                                     child: const Text('Delete'),

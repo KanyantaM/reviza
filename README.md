@@ -1,6 +1,6 @@
 # ReviZa: Your Ultimate Study Companion
 
-Welcome to ReviZa, a powerful study app brought to you by Tech-Yatu. ReviZa is designed to facilitate seamless collaboration among students, enabling them to share study materials such as past papers and school notes. The app also features a Gemini Pro-powered chatbot for quick assistance with study-related questions.
+Welcome to ReviZa, a powerful study app brought to you by Luso Softare. ReviZa is designed to facilitate seamless collaboration among students, enabling them to share study materials such as past papers and school notes. The app also features a Gemini Pro-powered chatbot for quick assistance with study-related questions.
 
 ## Features
 
@@ -18,7 +18,7 @@ Built using Flutter, ReviZa offers a seamless and intuitive interface across var
 
 ### 4. Tech-Yatu - Your Software Development Partner
 
-ReviZa is a product of Tech-Yatu, a leading software development company. If you have specific software development needs or are interested in our services, feel free to contact us at <kanyanta.1makasa@gmail.com>.
+ReviZa is a product of Luso Software, a leading software development company. If you have specific software development needs or are interested in our services, feel free to contact us at <kanyanta.1makasa@gmail.com>.
 
 ## Getting Started
 

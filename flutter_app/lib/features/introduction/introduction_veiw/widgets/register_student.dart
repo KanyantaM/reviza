@@ -120,30 +120,36 @@ class _CourseSelectionWidgetState extends State<CourseSelectionWidget> {
 }
 
 Widget _buildDropdown(String label, List<String> options, Function(String?)? onChanged) {
-  return DropdownButtonFormField<String>(
-    decoration: InputDecoration(labelText: label),
-    items: options.map((option) => DropdownMenuItem(value: option, child: Text(option))).toList(),
-    value: options.isEmpty ? null : options.first, // Set initial value
-    onChanged: onChanged,
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: DropdownButtonFormField<String>(
+      decoration: InputDecoration(labelText: label),
+      items: options.map((option) => DropdownMenuItem(value: option, child: Text(option))).toList(),
+      value: options.isEmpty ? null : options.first, // Set initial value
+      onChanged: onChanged,
+    ),
   );
 }
 
 Widget _buildSearchableDropdown(String label, List<String> options, Function(String) onChanged) {
-  return Autocomplete<String>(
-    optionsBuilder: (TextEditingValue textEditingValue) {
-      if (textEditingValue.text.isEmpty) {
-        return const Iterable<String>.empty();
-      }
-      return options.where((option) => option.toLowerCase().startsWith(textEditingValue.text.toLowerCase()) || option.toLowerCase().contains(textEditingValue.text.toLowerCase())) ;
-    },
-    onSelected: onChanged,
-    fieldViewBuilder: (context, textEditingController, focusNode, onEditingComplete) {
-      return TextFormField(
-        decoration: InputDecoration(labelText: label),
-        controller: textEditingController,
-        focusNode: focusNode,
-        onEditingComplete: onEditingComplete,
-      );
-    },
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Autocomplete<String>(
+      optionsBuilder: (TextEditingValue textEditingValue) {
+        if (textEditingValue.text.isEmpty) {
+          return const Iterable<String>.empty();
+        }
+        return options.where((option) => option.toLowerCase().startsWith(textEditingValue.text.toLowerCase()) || option.toLowerCase().contains(textEditingValue.text.toLowerCase())) ;
+      },
+      onSelected: onChanged,
+      fieldViewBuilder: (context, textEditingController, focusNode, onEditingComplete) {
+        return TextFormField(
+          decoration: InputDecoration(labelText: label),
+          controller: textEditingController,
+          focusNode: focusNode,
+          onEditingComplete: onEditingComplete,
+        );
+      },
+    ),
   );
 }

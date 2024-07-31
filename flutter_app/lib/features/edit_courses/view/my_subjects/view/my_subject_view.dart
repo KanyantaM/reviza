@@ -1,3 +1,4 @@
+import 'package:banner_carousel/banner_carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/features/edit_courses/bloc/edit_my_courses_bloc.dart';
@@ -41,6 +42,21 @@ class _MySubjectState extends State<MySubjectsView> {
     return Column(
       // shrinkWrap: true,
       children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: BannerCarousel(
+            banners: listBanners,
+            customizedIndicators: const IndicatorModel.animation(
+                width: 20, height: 5, spaceBetween: 2, widthAnimation: 50),
+            height: 120,
+            activeColor: ColorX.gold,
+            disableColor: ColorX.white,
+            animation: true,
+            borderRadius: 10,
+            width: 250,
+            indicatorBottom: false,
+          ),
+        ),,
         isEditSubjects
             ? _subjectsHeading(
                 IconButton(

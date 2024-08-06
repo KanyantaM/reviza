@@ -1,0 +1,73 @@
+<!-- file: wardView.html -->
+
+{% extends 'base.html' %}
+{% include 'header.html' %}
+
+
+{% block title %} Dashboard {% endblock %}
+
+
+{% block body %} 
+
+<div class="containter">
+    <div class="row">
+        <div class="col md-12">
+            <div class="jumbotron p-3">
+                <h1><b>Ward</b> Records  
+                    <a href="/wardList">
+                        <button type="button" class="btn btn-info mb-2 float-right"
+                    data-toggle="modal">Manage Wards</button>
+                    </a>
+                </h1>
+
+                <form method="POST">
+                    <input type="text" autofocus="autofocus" name="ward_search_string" />
+                    <input type="submit" formaction="{{ url_for('wardViewSearch') }}" value="Search" />
+                    <a href="/dashboard">
+                        <button type="button" class="btn btn-secondary float-right"
+                    data-toggle="modal">Go to Dashboard</button>
+                    </a>
+                    <a href="/patientView">
+                        <button type="button" class="btn btn-primary mb-2 float-right"
+                    data-toggle="modal">View Patients</button>
+                    </a>
+                </form>
+
+                <h3> {{ legend }} </h3>
+            {% if wards %}
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Ward ID</th>
+                            <th>Ward Name</th>
+                            <th>Number of Beds</th>
+                            <th>Free Beds</th>
+                            <th>Nurse in Charge</th>
+                            <th>Ward Type</th>
+                            <th>Action</th>
+                    </tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ward in wards %}
+                            <tr>
+                                <td>{{ ward.ward_id }}</td>
+                                <td>{{ ward.ward_name }}</td>
+                                <td>{{ ward.number_beds }}</td>
+                                <td>{{ ward.free_beds }}</td>
+                                <td>{{ ward.nurse_in_charge }}</td>
+                                <td>{{ ward.ward_type }}</td>
+                                <td>
+                                    <a href="{{ url_for('viewW', ward_id=ward.ward_id) }}" class="btn btn-success">View</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

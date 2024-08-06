@@ -1,0 +1,81 @@
+<!-- file: patientView.html -->
+
+{% extends 'base.html' %}
+{% include 'header.html' %}
+
+
+{% block title %} Dashboard {% endblock %}
+
+
+{% block body %} 
+
+<div class="containter">
+    <div class="row">
+        <div class="col md-12">
+            <div class="jumbotron p-3">
+                <h1><b>Patient</b> Records 
+                    <a href="/patientList">
+                        <button type="button" class="btn btn-info mb-2 float-right"
+                    data-toggle="modal">Manage Patients</button>
+                    </a>
+                </h1>
+
+                <form method="POST">
+                    <input type="text" autofocus="autofocus" name="patient_search_string" />
+                    <input type="submit" formaction="{{ url_for('patientViewSearch') }}" value="Search" />
+                    <a href="/dashboard">
+                        <button type="button" class="btn btn-secondary float-right"
+                    data-toggle="modal">Go to Dashboard</button>
+                    </a>
+                    <a href="/wardView">
+                        <button type="button" class="btn btn-primary mb-2 float-right"
+                    data-toggle="modal">View Wards</button>
+                    </a>
+                </form>
+
+                <h3> {{ legend }} </h3>
+            {% if patients %}
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Name</th>
+                            <th>Initials</th>
+                            <th>Sex</th>
+                            <th>Address</th>
+                            <th>Post Code</th>
+                            <th>Admission Date</th>
+                            <th>Date of Birth</th>
+                            <th>Ward ID</th>
+                            <th>Next of Kin</th>
+                            <th>Action</th>
+                    </tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                            <tr>
+                                <td >{{ patient.patient_id }}</td>
+                                <td>{{ patient.name }}</td>
+                                <td>{{ patient.initials }}</td>
+                                <td>{{ patient.sex }}</td>
+                                <td>{{ patient.address }}</td>
+                                <td>{{ patient.post_code }}</td>
+                                <td>{{ patient.admission }}</td>
+                                <td>{{ patient.DOB }}</td>
+                                <td>{{ patient.ward_id }}</td>
+                                <td>{{ patient.next_of_kin }}</td>
+                                <td>
+                                    <a href="{{ url_for('viewP', patient_id=patient.patient_id) }}" class="btn btn-success">View</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

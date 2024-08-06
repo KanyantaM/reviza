@@ -1,0 +1,120 @@
+<!-- file: index.html -->
+
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Polygon</title>
+            <link rel="stylesheet" href="../static/css/indexStyleSheet.css"/>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+            <link rel="icon" href="../static/logos/polygon_white_bg.png" type="image/png" />
+        </head>
+        <body>
+
+            <header>
+                <div class="fixed-bar">
+                    <div class="fixed-content">
+                        <p>Get started with Andromeda Version 2 (Amd-2.0). Trinity Version 3, the Large Scale Integration for Hospitals, coming soon. Powered by Polygon.</p>
+                        </div>
+                </div>
+            </header>
+            <main>
+                <div class="container" id="video-container">
+                    <img id="image-background" src="../static/images/polygon-image-background.jpg" alt="Scientist in the Lab" />
+                    <video autoplay muted loop id="video-background">
+                        <source src="../static/video/polygon.mp4" type="video/mp4">
+                    </video>
+                    <div class="polygon-title"><p id="poly-toggle-1">Polygon</p></div>
+                    <div class="navigation-list" id="nav-1">
+                        <ul>
+                            <li><a href="https://www.unza.zm/staff">STAFF</a></li>
+                            <li><a href="https://journals.unza.zm/">JOURNALS</a></li>
+                            <li><a href="https://www.unza.zm/res/publications">RESEARCH</a></li>
+                            <li><a href="https://www.unza.zm/policies-and-procedures">POLICIES</a></li>
+                            <li><a href="https://www.unza.zm/about/history">ABOUT</a></li>
+                        </ul>
+                    </div>
+                    <div class="content-1">
+                        <h1 class="version">Andromeda</h1>
+                        <h2>Version 2</h2>
+                        <h4>Small to Medium Scale Integration for Clinics</h4>
+                    </div>
+                    <div class="button-container">
+                        <a href="{{ url_for('Welcome') }}">
+                            <button class="translucent-button">Get Started</button>
+                        </a>
+                        <div id="btn-gap"></div>
+                        <a href="https://www.unza.zm/academics/study-at-unza/undergraduate">
+                            <button class="translucent-button">Discover</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="container">
+                    <img id="image-background" src="../static/images/trinity.jpg" alt="Scientist on a computer running a database and writing in an open book." />
+                    <div class="polygon-title"><p id="poly-toggle-2">Polygon</p></div>
+                    <div class="navigation-list" id="nav-2">
+                        <ul>
+                            <li><a href="https://www.unza.zm/staff">STAFF</a></li>
+                            <li><a href="#https://journals.unza.zm/">JOURNALS</a></li>
+                            <li><a href="https://www.unza.zm/res/publications">RESEARCH</a></li>
+                            <li><a href="https://www.unza.zm/policies-and-procedures">POLICIES</a></li>
+                            <li><a href="https://www.unza.zm/about/history">ABOUT</a></li>
+                        </ul>
+                    </div>
+                    <div class="content-2">
+                        <h1 class="version">Trinity</h1>
+                        <h2>Version 3</h2>
+                        <h4>Large Scale Integration for Hospitals</h4>
+                    </div>
+                    <div class="button-container">
+                        <a href="#">
+                            <button class="translucent-button">Coming Soon</button>
+                        </a>
+                        <div id="btn-gap"></div>
+                        <a href="https://www.unza.zm/academics/study-at-unza/undergraduate">
+                            <button class="translucent-button">Discover</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="container" id="video-container">
+                    <img id="image-background" src="../static/images/polygon-image-background.jpg" alt="Scientist in the Lab" />
+                    <video autoplay muted loop id="video-background">
+                        <source src="../static/video/dna.mp4" type="video/mp4">
+                    </video>
+                    <div class="polygon-title"><p id="poly-toggle-3">Polygon</p></div>
+                    <div class="navigation-list" id="nav-3">
+                        <ul>
+                            <li><a href="https://www.unza.zm/staff">STAFF</a></li>
+                            <li><a href="#https://journals.unza.zm/">JOURNALS</a></li>
+                            <li><a href="#https://www.unza.zm/res/publications">RESEARCH</a></li>
+                            <li><a href="https://www.unza.zm/policies-and-procedures">POLICIES</a></li>
+                            <li><a href="https://www.unza.zm/about/history">ABOUT</a></li>
+                        </ul>
+                    </div>
+                    <div class="content-3">
+                        <h1 class="version">Experience Polygon</h1>
+                        <h2>Advancing Technology in Health Care</h2>
+                    </div>
+                    <div class="button-container">
+                        <a href="{{ url_for('Welcome') }}">
+                            <button class="translucent-button">Andromeda</button>
+                        </a>
+                        <div id="btn-gap"></div>
+                        <a href="#">
+                            <button class="translucent-button">Trinity</button>
+                        </a>
+                    </div>
+                </div>
+            </main>
+            <footer></footer>
+
+            <script src="../static/js/indexScript.js"></script>
+            
+        </body>
+    </html>
+
+

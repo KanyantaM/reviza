@@ -1,0 +1,60 @@
+<!-- file: wardView.html -->
+
+{% extends 'base.html' %}
+{% include 'header.html' %}
+
+
+{% block title %} Dashboard {% endblock %}
+
+
+{% block body %} 
+
+<div class="containter">
+    <div class="row">
+        <div class="col md-12">
+            <div class="jumbotron p-3">
+                <h1><b>Ward</b> Records  
+                    <a href="/wardList">
+                        <button type="button" class="btn btn-info mb-2 float-right"
+                    data-toggle="modal">Manage Wards</button>
+                    </a>
+                </h1>
+
+                <form method="POST">
+                    <input type="text" autofocus="autofocus" name="ward_search_string" />
+                    <input type="submit" formaction="{{ url_for('wardViewSearch') }}" value="Search" />
+                    <a href="/dashboard">
+                        <button type="button" class="btn btn-secondary float-right"
+                    data-toggle="modal">Go to Dashboard</button>
+                    </a>
+                    <a href="/patientView">
+                        <button type="button" class="btn btn-primary mb-2 float-right"
+                    data-toggle="modal">View Patients</button>
+                    </a>
+                    <a href="/printW/<ward_id>">
+                        <button type="button" class="btn btn-danger btn-xs float-right"
+                    data-toggle="modal">Print Patient</button>
+                    </a>
+                </form>
+
+                <h3> {{ legend }} </h3>
+                <table class="table table-hover table-striped">
+                </table>
+
+                <div class="contaier">
+                    <h3>Details</h3>
+                    <br/>
+                    <h4>{{ ward.ward_name }}</h4>
+                    <p><b>Ward ID:</b> {{ ward.ward_id }}</p>
+                    <p><b>Number of Beds:</b> {{ ward.number_beds }}</p>
+                    <p><b>Free Beds:</b> {{ ward.free_beds }}</p>
+                    <p><b>Nurse In Charge:</b> {{ ward.nurse_in_charge }}</p>
+                    <p><b>Ward Type:</b> {{ ward.ward_type }}</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

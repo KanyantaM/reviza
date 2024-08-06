@@ -1,0 +1,34 @@
+<!-- file: welcome.html -->
+
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+            <meta charset="UTF-8" />
+            <meta name="author" content="Kangwa E. Mukuka" />
+            <meta name="keywords" content="Polygon, UNZA, Clinic" />
+            <link rel="stylesheet" href="../static/css/welcomeStyleSheet.css" />
+            <link rel="icon" href="../static/logos/polygon_white_bg.png" type="image/png" />
+            <title>Welcome</title>
+        </head>
+        <body>
+            <div class="window">
+                <div class="window2">
+                    <div class="logo-frame">
+                        <img id="polygon-logo" src="../static/logos/polygon.png" alt="Polygon Logo (Eucleadian Spiral of a Pentagon)" />
+                    </div>
+                    <div class="main-text">Welcome to Polygon</div>
+                    <div class="sub-text">Log in with your user account to continue</div>
+                    <fieldset>
+                        <label for="log-in">
+                            <a href="{{ url_for('Login') }}"><button id="log-in">Log in</button></a>
+                        </label>
+                        <span id="space"></span>
+                        <label for="sign-up">
+                            <a href="{{ url_for('Signup') }}"><button id="sign-up">Sign up</button></a>
+                        </label>
+                    </fieldset>
+                </div>
+            </div>
+        </body>
+    </html>

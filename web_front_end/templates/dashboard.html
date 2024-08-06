@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+    <meta name="author" content="Kangwa E. Mukuka" />
+    <meta name="keywords" content="Polygon, UNZA, Clinic" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/b4c0cd408e.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bts-5/css/dashboardStyleSheet.css') }}">
+    <link rel="icon" href="../static/logos/polygon_white_bg.png" type="image/png" />
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <!-- ======== Main wrapper for dashboard =========== -->
+
+    <div class="wrapper">
+        <!-- =========== Sidebar for admin dashboard =========== -->
+
+        <aside id="sidebar">
+
+            <!-- ======== Content For Sidebar ========-->
+            <div class="h-100">
+                <div class="sidebar-logo">
+                    <a href="#">Reviza</a>
+                </div>
+                <!-- ======= Navigation links for sidebar ======== -->
+                <ul class="sidebar-nav">
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">
+                            <i class="fa-solid fa-house pe-2"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">
+                            <i class="fa-solid fa-layer-group pe-2"></i>
+                            My Library
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">
+                            <i class="fa-solid fa-robot pe-2"></i>
+                            Reviza AI
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">
+                            <i class="fa-solid fa-comments pe-2"></i>
+                            Chats
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link collapsed" data-bs-target="#recent" data-bs-toggle="collapse"
+                        aria-expanded="false">
+                            <i class="fa-solid fa-clock pe-2"></i>
+                            Recent
+                        </a>
+                        <ul id="recent" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                            <li class="sidebar-item">
+                                <a href="/patientList" class="sidebar-link">Patients</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="/wardList" class="sidebar-link">Wards</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-header">
+                        My Library
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link collapsed" data-bs-target="#posts" data-bs-toggle="collapse"
+                        aria-expanded="false">
+                            <i class="fa-solid fa-folder pe-2"></i>
+                            Courses
+                        </a>
+                        <ul id="posts" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                            <li class="sidebar-item">
+                                <a href="/patientView" class="sidebar-link">Patients</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="/wardView" class="sidebar-link">Wards</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link collapsed" data-bs-target="#books" data-bs-toggle="collapse"
+                        aria-expanded="false">
+                            <i class="fa-solid fa-book pe-2"></i>
+                            Books
+                        </a>
+                        <ul id="books" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                            <li class="sidebar-item">
+                                <a href="/patientList" class="sidebar-link">Patients</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="/wardList" class="sidebar-link">Wards</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- // Prospective Option for version 2
+
+                        <li class="sidebar-item">
+                        <a href="#" class="sidebar-link collapsed" data-bs-target="#pages" data-bs-toggle="collapse"
+                        aria-expanded="false">
+                            <i class="fa-solid fa-book-bookmark pe-2"></i>
+                            Studylists
+                        </a>
+                        <ul id="pages" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                            <li class="sidebar-item">
+                                <a href="/patientList" class="sidebar-link">Patients</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="/wardList" class="sidebar-link">Wards</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">
+                            <i class="fa-solid fa-list pe-2"></i>
+                            Questions
+                        </a>
+                    </li>
+
+                    -->
+
+                    <li class="sidebar-header">
+                        Account Options
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link collapsed" data-bs-target="#Multi" data-bs-toggle="collapse"
+                        aria-expanded="false">
+                        <i class="fa-regular fa-user pe-2"></i>
+                            Account
+                        </a>
+                        <ul id="Multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                            <li class="sidebar-item">
+                                <button id="signOutButton" class="sidebar-link">Sign Out</button>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- ========= Main section of dashboard ======= -->
+
+        <div class="main">
+
+            <!-- ========= Main navbar section of dashboard ======= -->
+
+            <nav class="navbar navbar-expand px-3 border-bottom">
+                <button class="btn" id="sidebar-toggle" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse navbar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pa-md-0">
+                                <img src="../static/bts-5/image/profile.jpg" class="avatar img-fluid rounded" alt="Profile Photo"/>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="#" class="dropdown-item">Profile</a>
+                                    <a href="#" class="dropdown-item">Settings</a>
+                                    <a href="#" class="dropdown-item">About</a>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- ========= Main content section of dashboard ======= -->
+
+            <main class="content px-3 py-2">
+                <div class="container-fluid">
+                    <div class="mb3">
+                        <h4>Dashboard</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 d-flex">
+                            <div class="card flex-fill border-0 illustration">
+                                <div class="card-body p-0 d-flex flex-fill">
+                                    <div class="row g-0 w-100">
+                                        <div class="col-6">
+                                            <div class="p-3 m-1">
+                                                <h4>Welcome Back!</h4>
+                                                <p class="mb-0">Administrator Dashboard, Polygon</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 align-self-end text-end">
+                                            <img src="../static/bts-5/image/customer-support.jpg" class="img-fluid illustration-img" alt="admin activated" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 d-flex">
+                            <div class="card flex-fill border-0">
+                                <div class="card-body py-4">
+                                    <div class="d-flex align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h4 class="mb-2">
+                                                Andromeda
+                                            </h4>
+                                            <p class="mb-2">
+                                                Version 2.0
+                                            </p>
+                                            <div class="mb-0">
+                                                <span class="badge text-success me-2">
+                                                    Amd-2.0
+                                                </span>
+                                                <span class="text-muted">
+                                                    Small to Medium Scale Integration for Clinics
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- ========= light and dark mode toggle button ======= -->
+
+            <a href="#" class="theme-toggle">
+                <i class="fa-regular fa-moon"></i>
+                <i class="fa-regular fa-sun"></i>
+            </a>
+
+            <!-- ========= footer section of dashboard ======= -->
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row text-muted">
+                        <div class="col-6 text-start">
+                            <p class="mb-0">
+                                <a href="#" class="text-muted">
+                                    <strong>powered by Luso Software</strong>
+                                </a> 
+                            </p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <ul class="list-inline">
+                                <li class="list-inline-item"><a href="https://www.unza.zm/staff" class="text-muted">STAFF</a></li>
+                                <li class="list-inline-item"><a href="https://journals.unza.zm/" class="text-muted">JOURNALS</a></li>
+                                <li class="list-inline-item"><a href="https://www.unza.zm/res/publications" class="text-muted">RESEARCH</a></li>
+                                <li class="list-inline-item"><a href="https://www.unza.zm/policies-and-procedures" class="text-muted">POLICIES</a></li>
+                                <li class="list-inline-item"><a href="https://www.unza.zm/about/history" class="text-muted">ABOUT</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/bts-5/js/moonLight.js"></script>
+    <script type="module" src="../static/bts-5/js/dashboardScript.js"></script>
+</body>
+
+</html>

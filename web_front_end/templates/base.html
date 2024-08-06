@@ -1,0 +1,26 @@
+<!-- file: base.html -->
+
+<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+            <meta charset="UTF-8" />
+            <meta name="author" content="Kangwa E. Mukuka" />
+            <meta name="keywords" content="Polygon, UNZA, Clinic" />
+            <title>{% block title %} {% endblock %}</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+            <link rel="icon" href="{{ url_for('static', filename='logos/polygon_white_bg.png') }}">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        </head>
+        <body>
+
+            {% block body %} {% endblock %}
+
+            <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+            <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+            <script>
+                flatpickr("input[type=datetime-local]", {});
+            </script>
+        </body>
+    </html>

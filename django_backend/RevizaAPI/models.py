@@ -1,18 +1,56 @@
 from django.db import models
 import os
 import uuid
+from django.utils.translation import gettext_lazy as _
+
+class University(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class Faculty(models.Model):
+    university = models.ForeignKey(University, related_name='faculties', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class Program(models.Model):
+    faculty = models.ForeignKey(Faculty, related_name='programs', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class Year(models.Model):
+    program = models.ForeignKey(Program, related_name='years', on_delete=models.CASCADE)
+    year_number = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"Year {self.year_number} - {self.program.name}"
+    
+class Course(models.Model):
+    year = models.ForeignKey(Year, related_name='courses', on_delete=models.CASCADE)
+    course = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"Year {self.course} - {self.year.year_number}"
+
+
 
 class StudyMaterial(models.Model):
-    TYPE_CHOICES = [
-        ('NOTE', 'Note'),
-        ('BOOK', 'Book'),
-        ('VIDEO', 'Video'),
-        # Add more types as needed
-    ]
+    class MaterialType(models.TextChoices):
+        NOTES = 'NOTES', _('Notes')
+        PAPERS = 'PAPERS', _('Papers')
+        BOOKS = 'BOOKS', _('Books')
+        LINKS = 'LINKS', _('Links')
+        ASSIGNMENT = 'ASSIGNMENT', _('Assignment')
+        LAB = 'LAB', _('Lab')
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # Automatically generated unique ID
-    type = models.CharField(max_length=50, choices=TYPE_CHOICES)
-    subject_name = models.CharField(max_length=255)
+    type = models.CharField(max_length=20, choices=MaterialType.choices)
+    subject_name = models.ForeignKey(Course, related_name='courses', on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
 

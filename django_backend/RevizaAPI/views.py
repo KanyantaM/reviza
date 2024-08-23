@@ -1,6 +1,6 @@
-from rest_framework import generics
-from .models import StudyMaterial
-from .serializers import StudyMaterialSerializer
+from rest_framework import generics, viewsets
+from .models import StudyMaterial, University
+from .serializers import StudyMaterialSerializer, UniversitySerializer
 
 class StudyMaterialsView(generics.ListCreateAPIView):
     queryset = StudyMaterial.objects.all()
@@ -8,4 +8,8 @@ class StudyMaterialsView(generics.ListCreateAPIView):
 
 class SingleStudyMaterialView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
     queryset = StudyMaterial.objects.all()
-    serializer_class = StudyMaterialSerializer 
+    serializer_class = StudyMaterialSerializer
+
+class UniversityView(generics.ListCreateAPIView):
+    queryset = University.objects.all()
+    serializer_class = UniversitySerializer 

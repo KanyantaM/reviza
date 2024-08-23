@@ -1,43 +1,224 @@
-# ReviZa: Your Ultimate Study Companion
+# Reviza Study Materials API
 
-Welcome to ReviZa, a powerful study app brought to you by Luso Softare. ReviZa is designed to facilitate seamless collaboration among students, enabling them to share study materials such as past papers and school notes. The app also features a Gemini Pro-powered chatbot for quick assistance with study-related questions.
+This API allows users to upload, retrieve, and manage study materials. It supports basic CRUD operations and is designed to be used with both mobile and web front-end applications.
 
-## Features
+## Base URL
 
-### 1. Study Material Sharing
+The base URL for the API is:
 
-ReviZa provides a user-friendly platform for students to share and access study materials effortlessly. From past papers to class notes, students can collaborate and enhance their learning experience.
+```curl
+http://127.0.0.1:8000/api/studyMaterials/
+```
 
-### 2. Gemini Pro-powered Chatbot
+## Endpoints
 
-Get instant answers to your study queries with our Gemini Pro-powered chatbot. This intelligent assistant is designed to provide quick and accurate responses, making your study sessions more interactive and efficient.
+### 1. Get All Study Materials
 
-### 3. Seamless User Experience
+**Endpoint:**
 
-Built using Flutter, ReviZa offers a seamless and intuitive interface across various devices. The app is designed with a feature-focused architecture and utilizes Bloc for state management, ensuring a smooth and responsive user experience.
+```curl
+GET /api/studyMaterials/
+```
 
-### 4. Luso Software - Your Software Development Partner
+**Response:**
 
-ReviZa is a product of Tech-Yatu, a leading software development company. If you have specific software development needs or are interested in our services, feel free to contact us at <kanyanta.1makasa@gmail.com>.
+- Returns a list of all study materials stored in the system.
 
-## Getting Started
+**Status Code:**
 
-To make the most of ReviZa, follow these simple steps:
+- `200 OK`
 
-1. **Download the App:**
-   - ReviZa is available for download on [App Store] and [Google Play Store].
+**Response Example:**
 
-2. **Create Your Account:**
-   - Sign up using your email or other social media accounts to access the full suite of ReviZa features.
+```json
+[
+    {
+        "id": "3fc96687-02bd-4278-a73e-c18352310915",
+        "type": "NOTE",
+        "subject_name": "Math",
+        "title": "Chess",
+        "description": "Kaya",
+        "file": "http://127.0.0.1:8000/study_materials/2020-Scrum-Guide-US_09fesmH.pdf",
+        "size": "248.39 KB",
+        "uploaded_at": "2024-08-23T11:45:02.571072Z"
+    }
+]
+```
 
-3. **Explore and Share:**
-   - Dive into the app, join study groups, and start sharing or downloading study materials with your peers.
+### 2. Get a Single Study Material
 
-4. **Connect with the Chatbot:**
-   - Have a question? Engage with the Gemini Pro chatbot for instant assistance.
+**Endpoint:**
 
-## Contact Information
+```curl
+GET /api/studyMaterials/{id}/
+```
 
-For inquiries, collaborations, or to learn more about Luso Software's software development services, contact us at <kanyanta.1makasa@gmail.com>.
+**Path Parameter:**
 
-Thank you for choosing ReviZa and Luso Software. Happy studying!
+- `id`: The unique identifier of the study material.
+
+**Response:**
+
+- Returns the details of the specific study material.
+
+**Status Code:**
+
+- `200 OK`
+
+**Response Example:**
+
+```json
+{
+    "id": "3fc96687-02bd-4278-a73e-c18352310915",
+    "type": "NOTE",
+    "subject_name": "Math",
+    "title": "Chess",
+    "description": "Kaya",
+    "file": "http://127.0.0.1:8000/study_materials/2020-Scrum-Guide-US_09fesmH.pdf",
+    "size": "248.39 KB",
+    "uploaded_at": "2024-08-23T11:45:02.571072Z"
+}
+```
+
+### 3. Create a New Study Material
+
+**Endpoint:**
+
+```curl
+POST /api/studyMaterials/
+```
+
+**Request Body:**
+
+- Use `multipart/form-data` to upload files.
+- Required fields are `type`, `subject_name`, `title`, `description`, and `file`.
+
+**Request Example:**
+
+```json
+{
+    "type": "NOTE",
+    "subject_name": "Math",
+    "title": "Chess",
+    "description": "Kaya",
+    "file": "path/to/your/file.pdf"
+}
+```
+
+**Response:**
+
+- Returns the created study material.
+
+**Status Code:**
+
+- `201 Created`
+
+### 4. Update a Study Material
+
+**Endpoint:**
+
+```curl
+PUT /api/studyMaterials/{id}/
+```
+
+**Path Parameter:**
+
+- `id`: The unique identifier of the study material.
+
+**Request Body:**
+
+- All fields are required. This endpoint will replace the existing data.
+
+**Request Example:**
+
+```json
+{
+    "type": "NOTE",
+    "subject_name": "Math",
+    "title": "Updated Title",
+    "description": "Updated Description",
+    "file": "path/to/your/updated_file.pdf"
+}
+```
+
+**Response:**
+
+- Returns the updated study material.
+
+**Status Code:**
+
+- `200 OK`
+
+### 5. Partially Update a Study Material
+
+**Endpoint:**
+
+```curl
+PATCH /api/studyMaterials/{id}/
+```
+
+**Path Parameter:**
+
+- `id`: The unique identifier of the study material.
+
+**Request Body:**
+
+- Only the fields that need to be updated should be included in the request body.
+
+**Request Example:**
+
+```json
+{
+    "title": "Updated Title",
+    "description": "Updated Description"
+}
+```
+
+**Response:**
+
+- Returns the updated study material.
+
+**Status Code:**
+
+- `200 OK`
+
+### 6. Delete a Study Material
+
+**Endpoint:**
+
+```curl
+DELETE /api/studyMaterials/{id}/
+```
+
+**Path Parameter:**
+
+- `id`: The unique identifier of the study material.
+
+**Response:**
+
+- Returns a success message or an empty response.
+
+**Status Code:**
+
+- `204 No Content`
+
+## Fields
+
+- **id**: Unique identifier for the study material, automatically generated.
+- **type**: The type of the study material (e.g., Note, Book, Video).
+- **subject_name**: The subject to which the study material belongs.
+- **title**: The title of the study material.
+- **description**: A short description of the study material.
+- **file**: URL to the uploaded file.
+- **size**: The size of the uploaded file (automatically calculated and stored).
+- **uploaded_at**: The date and time when the study material was uploaded.
+
+## Usage Notes
+
+- **File Upload:** The `file` field is used to upload files. The API automatically calculates the file size and stores it in the `size` field.
+- **UUIDs:** The `id` field is automatically generated using UUIDs, ensuring each study material has a unique identifier.
+- **Date Handling:** The `uploaded_at` field records when the study material is first created.
+
+---
+
+This API is designed to be flexible and easy to integrate with both web and mobile applications. If you have any questions or issues, please refer to the documentation or contact the backend development team.

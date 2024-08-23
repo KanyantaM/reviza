@@ -4,7 +4,7 @@ from .models import *
 class StudyMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudyMaterial
-        fields = ['id', 'type', 'subject_name', 'title', 'description', 'file', 'size', 'uploaded_at']
+        fields = ['id', 'type', 'course', 'title', 'description', 'file', 'size', 'uploaded_at']
 
 class CourseSerializer(serializers.ModelSerializer):
     materials = StudyMaterialSerializer(many=True, read_only=True)
@@ -14,11 +14,11 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ['year', 'course']
 
 class YearSerializer(serializers.ModelSerializer):
-    materials = CourseSerializer(many=True, read_only=True)
+    course = CourseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Year
-        fields = ['year_number', 'program']
+        fields = ['year_number', 'course']
 
 class ProgramSerializer(serializers.ModelSerializer):
     years = YearSerializer(many=True, read_only=True)

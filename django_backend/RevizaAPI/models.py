@@ -35,7 +35,7 @@ class Course(models.Model):
     course = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"Year {self.course} - {self.year.year_number}"
+        return f"Course:: {self.course}"
 
 
 
@@ -50,7 +50,7 @@ class StudyMaterial(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # Automatically generated unique ID
     type = models.CharField(max_length=20, choices=MaterialType.choices)
-    subject_name = models.ForeignKey(Course, related_name='courses', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, related_name='courses', on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
 

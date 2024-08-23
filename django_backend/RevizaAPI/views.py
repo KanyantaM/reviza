@@ -10,6 +10,6 @@ class SingleStudyMaterialView(generics.RetrieveUpdateAPIView, generics.DestroyAP
     queryset = StudyMaterial.objects.all()
     serializer_class = StudyMaterialSerializer
 
-class UniversityView(generics.ListCreateAPIView):
+class UniversityView(generics.ListAPIView):
     queryset = University.objects.all()
     serializer_class = UniversitySerializer 

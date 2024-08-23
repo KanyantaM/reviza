@@ -221,4 +221,4 @@ DELETE /api/studyMaterials/{id}/
 
 ---
 
-This API is designed to be flexible and easy to integrate with both web and mobile applications. If you have any questions or issues, please refer to the documentation or contact the backend development team.
+This API is designed to be flexible and easy to integrate with both web and mobile applications. If you have any questions or issues, please refer to the documentation or contact the backend development team. kanyanta.1makasa@gmail.com

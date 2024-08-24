@@ -11,6 +11,8 @@
     <script src="https://kit.fontawesome.com/b4c0cd408e.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='bts-5/css/dashboardStyleSheet.css') }}">
     <link rel="icon" href="../static/logos/polygon_white_bg.png" type="image/png" />
+    <!-- New Dashboard Links -->
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
     <title>Dashboard</title>
 </head>
 
@@ -24,9 +26,7 @@
 
             <!-- ======== Content For Sidebar ========-->
             <div class="h-100">
-                <div class="sidebar-logo">
-                    <a href="#">Reviza</a>
-                </div>
+                
                 <!-- ======= Navigation links for sidebar ======== -->
                 <ul class="sidebar-nav">
                     <li class="sidebar-item">
@@ -61,10 +61,7 @@
                         </a>
                         <ul id="recent" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
-                                <a href="/patientList" class="sidebar-link">Patients</a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="/wardList" class="sidebar-link">Wards</a>
+                                <a href="#" class="sidebar-link">You don't have any recent items yet.</a>
                             </li>
                         </ul>
                     </li>
@@ -79,10 +76,17 @@
                         </a>
                         <ul id="posts" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
-                                <a href="/patientView" class="sidebar-link">Patients</a>
+                                <a href="#" class="sidebar-link">Course 1</a>
                             </li>
                             <li class="sidebar-item">
-                                <a href="/wardView" class="sidebar-link">Wards</a>
+                                <a href="#" class="sidebar-link">Course 2</a>
+                            </li>
+                            <li>
+                                <div class="d-grid gap-2 col-10 mx-auto">
+                                    <button type="button" class="btn btn-outline-secondary">
+                                        <i class="fa-solid fa-plus"></i> Add Courses
+                                    </button>
+                                  </div>
                             </li>
                         </ul>
                     </li>
@@ -94,10 +98,17 @@
                         </a>
                         <ul id="books" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
-                                <a href="/patientList" class="sidebar-link">Patients</a>
+                                <a href="#" class="sidebar-link">Book 1</a>
                             </li>
                             <li class="sidebar-item">
-                                <a href="/wardList" class="sidebar-link">Wards</a>
+                                <a href="#" class="sidebar-link">Book 2</a>
+                            </li>
+                            <li>
+                                <div class="d-grid gap-2 col-10 mx-auto">
+                                    <button type="button" class="btn btn-outline-secondary">
+                                        <i class="fa-solid fa-plus"></i> Add Books
+                                    </button>
+                                  </div>
                             </li>
                         </ul>
                     </li>
@@ -134,8 +145,8 @@
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link collapsed" data-bs-target="#Multi" data-bs-toggle="collapse"
                         aria-expanded="false">
-                        <i class="fa-regular fa-user pe-2"></i>
-                            Account
+                        <i class="lni lni-user"></i>
+                            <span> Account</span>
                         </a>
                         <ul id="Multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
@@ -152,16 +163,29 @@
         <div class="main">
 
             <!-- ========= Main navbar section of dashboard ======= -->
-
             <nav class="navbar navbar-expand px-3 border-bottom">
-                <button class="btn" id="sidebar-toggle" type="button">
+                <button class="btn" id="toggle-btn" type="button">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <div class="sidebar-logo">
+                    <img src="../static/bts-5/image/reviza.png" class="avatar img-fluid rounded me-3" alt="ReViza logo"/>
+                    <a href="#">Reviza</a>
+                </div>
                 <div class="navbar-collapse navbar">
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
+                            <a href="#" class="nav-icon pa-md-0">
+                                <img src="../static/bts-5/image/bell.png" class="avatar img-fluid rounded me-3" alt="Notification Icon"/>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-icon pa-md-0">
+                                <img src="../static/bts-5/image/chats.png" class="avatar img-fluid rounded me-3" alt="Chats Icon"/>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
                             <a href="#" data-bs-toggle="dropdown" class="nav-icon pa-md-0">
-                                <img src="../static/bts-5/image/profile.jpg" class="avatar img-fluid rounded" alt="Profile Photo"/>
+                                <img src="../static/bts-5/image/profile.png" class="avatar img-fluid rounded" alt="User Profile"/>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <a href="#" class="dropdown-item">Profile</a>
                                     <a href="#" class="dropdown-item">Settings</a>
@@ -172,6 +196,7 @@
                     </ul>
                 </div>
             </nav>
+            
 
             <!-- ========= Main content section of dashboard ======= -->
 
@@ -192,7 +217,9 @@
                                             </div>
                                         </div>
                                         <div class="col-6 align-self-end text-end">
-                                            <img src="../static/bts-5/image/customer-support.jpg" class="img-fluid illustration-img" alt="admin activated" />
+                                            <!--
+                                                <img src="../static/bts-5/image/customer-support.jpg" class="img-fluid illustration-img" alt="admin activated" />
+                                            -->
                                         </div>
                                     </div>
                                 </div>
@@ -223,6 +250,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </main>
 
@@ -245,6 +273,7 @@
                                 </a> 
                             </p>
                         </div>
+                        <!--
                         <div class="col-6 text-end">
                             <ul class="list-inline">
                                 <li class="list-inline-item"><a href="https://www.unza.zm/staff" class="text-muted">STAFF</a></li>
@@ -254,6 +283,7 @@
                                 <li class="list-inline-item"><a href="https://www.unza.zm/about/history" class="text-muted">ABOUT</a></li>
                             </ul>
                         </div>
+                        -->
                     </div>
                 </div>
             </footer>

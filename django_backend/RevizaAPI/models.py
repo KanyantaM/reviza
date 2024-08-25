@@ -1,5 +1,4 @@
 from django.db import models
-import os
 import uuid
 from django.utils.translation import gettext_lazy as _
 
@@ -32,10 +31,10 @@ class Year(models.Model):
     
 class Course(models.Model):
     year = models.ForeignKey(Year, related_name='courses', on_delete=models.CASCADE)
-    course = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)  
 
     def __str__(self):
-        return f"Course:: {self.course}"
+        return self.name
 
 
 
@@ -50,25 +49,39 @@ class StudyMaterial(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # Automatically generated unique ID
     type = models.CharField(max_length=20, choices=MaterialType.choices)
-    course = models.ForeignKey(Course, related_name='courses', on_delete=models.CASCADE)
+    
+    # ForeignKey to Course for validation
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='study_materials')
+    
+    # Store the course name as a string for easier access and filtering
+    course_name = models.CharField(max_length=255, editable=False)
+    
     title = models.CharField(max_length=255)
     description = models.TextField()
 
     # FileField for storing file uploads
-    file = models.FileField(upload_to='study_materials/', null=True, blank=True)
+    file = models.FileField(upload_to=f'study_materials/', null=True, blank=True)
 
     size = models.CharField(max_length=50, null=True, blank=True, editable=False)
 
+    # List of user IDs who liked the material
     fans = models.JSONField(default=list)
+    
+    # List of user IDs who disliked the material
     haters = models.JSONField(default=list)
+    
+    # List of user IDs who reported the material
     reports = models.JSONField(default=list)
 
     uploaded_at = models.DateTimeField(auto_now_add=True, null=True, editable=False)  # Automatically records the upload date
 
     def __str__(self):
-        return f"{self.title} ({self.subject_name})"
+        return f"{self.title} ({self.course_name})"
     
     def save(self, *args, **kwargs):
+        # Automatically set the course_name field to the course's name
+        self.course_name = self.course.name
+
         # Automatically calculate the size of the file
         if self.file:
             self.size = self.get_file_size(self.file.size)
@@ -83,3 +96,27 @@ class StudyMaterial(models.Model):
             return f"{size_in_bytes / (1024 * 1024):.2f} MB"
         else:
             return f"{size_in_bytes / (1024 * 1024 * 1024):.2f} GB"
+
+    def upvote(self, user_id):
+        """Add user to fans list and remove from haters list if present."""
+        if user_id not in self.fans:
+            self.fans.append(user_id)
+        if user_id in self.haters:
+            self.haters.remove(user_id)
+        self.save()
+
+    def downvote(self, user_id):
+        """Add user to haters list and remove from fans list if present."""
+        if user_id not in self.haters:
+            self.haters.append(user_id)
+        if user_id in self.fans:
+            self.fans.remove(user_id)
+        self.save()
+
+    def delete_vote(self, user_id):
+        """Remove user from both fans and haters lists."""
+        if user_id in self.fans:
+            self.fans.remove(user_id)
+        if user_id in self.haters:
+            self.haters.remove(user_id)
+        self.save()

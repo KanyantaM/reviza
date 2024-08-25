@@ -4,21 +4,19 @@ from .models import *
 class StudyMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudyMaterial
-        fields = ['id', 'type', 'course', 'title', 'description', 'file', 'size', 'uploaded_at']
+        fields = ['id', 'type', 'course_name', 'title', 'description', 'file', 'size', 'uploaded_at', 'fans', 'haters', 'reports']
 
 class CourseSerializer(serializers.ModelSerializer):
-    materials = StudyMaterialSerializer(many=True, read_only=True)
-
     class Meta:
         model = Course
-        fields = ['year', 'course']
+        fields = ['year','name']
 
 class YearSerializer(serializers.ModelSerializer):
-    course = CourseSerializer(many=True, read_only=True)
+    courses = CourseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Year
-        fields = ['year_number', 'course']
+        fields = ['year_number', 'courses']
 
 class ProgramSerializer(serializers.ModelSerializer):
     years = YearSerializer(many=True, read_only=True)

@@ -9,7 +9,7 @@ class StudyMaterialSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ['year','name']
+        fields = ['name']
 
 class YearSerializer(serializers.ModelSerializer):
     courses = CourseSerializer(many=True, read_only=True)

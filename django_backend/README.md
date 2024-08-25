@@ -32,16 +32,19 @@ GET /api/studyMaterials/
 
 ```json
 [
-    {
-        "id": "3fc96687-02bd-4278-a73e-c18352310915",
-        "type": "NOTE",
-        "subject_name": "Math",
-        "title": "Chess",
-        "description": "Kaya",
-        "file": "http://127.0.0.1:8000/study_materials/2020-Scrum-Guide-US_09fesmH.pdf",
-        "size": "248.39 KB",
-        "uploaded_at": "2024-08-23T11:45:02.571072Z"
-    }
+  {
+    "id": "6f4a898a-86e7-4136-9c1a-353ccd8bcf02",
+    "type": "NOTES",
+    "course_name": "MAT 4119 - ENGINEERING MATHEMATICS III",
+    "title": "Maths",
+    "description": "just trying",
+    "file": "http://127.0.0.1:8000/study_materials/Chapter_1_Notes.pdf",
+    "size": "194.83 KB",
+    "uploaded_at": "2024-08-25T05:40:14.618172Z",
+    "fans": [],
+    "haters": [],
+    "reports": []
+  }
 ]
 ```
 
@@ -69,14 +72,17 @@ GET /api/studyMaterials/{id}/
 
 ```json
 {
-    "id": "3fc96687-02bd-4278-a73e-c18352310915",
-    "type": "NOTE",
-    "subject_name": "Math",
-    "title": "Chess",
-    "description": "Kaya",
-    "file": "http://127.0.0.1:8000/study_materials/2020-Scrum-Guide-US_09fesmH.pdf",
-    "size": "248.39 KB",
-    "uploaded_at": "2024-08-23T11:45:02.571072Z"
+    "id": "6f4a898a-86e7-4136-9c1a-353ccd8bcf02",
+    "type": "NOTES",
+    "course_name": "MAT 4119 - ENGINEERING MATHEMATICS III",
+    "title": "Maths",
+    "description": "just trying",
+    "file": "http://127.0.0.1:8000/study_materials/Chapter_1_Notes.pdf",
+    "size": "194.83 KB",
+    "uploaded_at": "2024-08-25T05:40:14.618172Z",
+    "fans": [],
+    "haters": [],
+    "reports": []
 }
 ```
 
@@ -97,11 +103,11 @@ POST /api/studyMaterials/
 
 ```json
 {
-    "type": "NOTE",
-    "subject_name": "Math",
-    "title": "Chess",
-    "description": "Kaya",
-    "file": "path/to/your/file.pdf"
+  "type": "NOTE",
+  "subject_name": "Math",
+  "title": "Chess",
+  "description": "Kaya",
+  "file": "path/to/your/file.pdf"
 }
 ```
 
@@ -133,11 +139,11 @@ PUT /api/studyMaterials/{id}/
 
 ```json
 {
-    "type": "NOTE",
-    "subject_name": "Math",
-    "title": "Updated Title",
-    "description": "Updated Description",
-    "file": "path/to/your/updated_file.pdf"
+  "type": "NOTE",
+  "subject_name": "Math",
+  "title": "Updated Title",
+  "description": "Updated Description",
+  "file": "path/to/your/updated_file.pdf"
 }
 ```
 
@@ -169,8 +175,8 @@ PATCH /api/studyMaterials/{id}/
 
 ```json
 {
-    "title": "Updated Title",
-    "description": "Updated Description"
+  "title": "Updated Title",
+  "description": "Updated Description"
 }
 ```
 
@@ -221,4 +227,4 @@ DELETE /api/studyMaterials/{id}/
 
 ---
 
-This API is designed to be flexible and easy to integrate with both web and mobile applications. If you have any questions or issues, please refer to the documentation or contact the backend development team. kanyanta.1makasa@gmail.com
+This API is designed to be flexible and easy to integrate with both web and mobile applications. If you have any questions or issues, please refer to the documentation or contact the backend development team. <kanyanta.1makasa@gmail.com>

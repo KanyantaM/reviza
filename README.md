@@ -1,3 +1,5 @@
+![logo](logo.jpeg)
+
 # ReviZa: Your Ultimate Study Companion
 
 Welcome to ReviZa, a powerful study app brought to you by Luso Softare. ReviZa is designed to facilitate seamless collaboration among students, enabling them to share study materials such as past papers and school notes. The app also features a Gemini Pro-powered chatbot for quick assistance with study-related questions.

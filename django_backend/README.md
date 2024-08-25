@@ -47,6 +47,45 @@ GET /api/studyMaterials/
   }
 ]
 ```
+### 2. Filtering by course and/or type
+
+**Endpoint:**
+
+```curl
+GET /api/studyMaterials/?course={course_name}&type={type}
+```
+
+**Path Parameter:**
+
+- `name`: The unique name of the course that a particular material belongs to.
+- `type`: Category the study material belongs to.
+
+**Response:**
+
+- Returns the details of the specific study material.
+
+**Status Code:**
+
+- `200 OK`
+
+**Response Example:**
+
+```json
+{
+    "id": "6f4a898a-86e7-4136-9c1a-353ccd8bcf02",
+    "type": "NOTES",
+    "course_name": "MAT 4119 - ENGINEERING MATHEMATICS III",
+    "title": "Maths",
+    "description": "just trying",
+    "file": "http://127.0.0.1:8000/study_materials/Chapter_1_Notes.pdf",
+    "size": "194.83 KB",
+    "uploaded_at": "2024-08-25T05:40:14.618172Z",
+    "fans": [],
+    "haters": [],
+    "reports": []
+}
+```
+
 
 ### 2. Get a Single Study Material
 

@@ -1,8 +1,16 @@
-from rest_framework import generics, viewsets
-from .models import StudyMaterial, University
-from .serializers import StudyMaterialSerializer, UniversitySerializer
+from rest_framework import generics
+from .models import StudyMaterial, University, Student
+from .serializers import *
 from .filters import StudyMaterialFilter
 from django_filters import rest_framework as filters
+
+class SingleStudentView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentsView(generics.ListCreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
 
 class StudyMaterialsView(generics.ListCreateAPIView):
     queryset = StudyMaterial.objects.all()

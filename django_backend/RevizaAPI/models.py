@@ -31,7 +31,20 @@ class Year(models.Model):
     
 class Course(models.Model):
     year = models.ForeignKey(Year, related_name='courses', on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, unique=True)  
+    name = models.CharField(max_length=255, unique=True,)  
+
+    def __str__(self):
+        return self.name
+
+class Student(models.Model):
+    name = models.CharField(max_length=255, unique=True, primary_key=True)
+    courses = models.ManyToManyField(Course, related_name="students")
+    course_name = models.JSONField(default=list, null=True,)
+
+    def save(self, *args, **kwargs):
+        # Store the names of all courses in course_names as a list
+        self.course_name = [course.name for course in self.courses.all()]
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -65,13 +78,13 @@ class StudyMaterial(models.Model):
     size = models.CharField(max_length=50, null=True, blank=True, editable=False)
 
     # List of user IDs who liked the material
-    fans = models.JSONField(default=list)
+    fans = models.ManyToManyField(Student, related_name="liked_materials", blank=True)
     
     # List of user IDs who disliked the material
-    haters = models.JSONField(default=list)
+    haters = models.ManyToManyField(Student, related_name="disliked_materials", blank=True)
     
     # List of user IDs who reported the material
-    reports = models.JSONField(default=list)
+    reports = models.ManyToManyField(Student, related_name="reported_materials", blank=True)
 
     uploaded_at = models.DateTimeField(auto_now_add=True, null=True, editable=False)  # Automatically records the upload date
 
@@ -97,26 +110,16 @@ class StudyMaterial(models.Model):
         else:
             return f"{size_in_bytes / (1024 * 1024 * 1024):.2f} GB"
 
-    def upvote(self, user_id):
-        """Add user to fans list and remove from haters list if present."""
-        if user_id not in self.fans:
-            self.fans.append(user_id)
-        if user_id in self.haters:
-            self.haters.remove(user_id)
-        self.save()
+    # def upvote(self, student):
+    #     self.haters.remove(student) 
+    #     self.fans.add(student)
+    #     self.save()
+    
+    # def downvote(self, student):
+    #     self.fans.remove(student)  
+    #     self.haters.add(student)
+    #     self.save()
 
-    def downvote(self, user_id):
-        """Add user to haters list and remove from fans list if present."""
-        if user_id not in self.haters:
-            self.haters.append(user_id)
-        if user_id in self.fans:
-            self.fans.remove(user_id)
-        self.save()
-
-    def delete_vote(self, user_id):
-        """Remove user from both fans and haters lists."""
-        if user_id in self.fans:
-            self.fans.remove(user_id)
-        if user_id in self.haters:
-            self.haters.remove(user_id)
-        self.save()
+    # def report(self, student):
+    #     self.reports.add(student)
+    #     self.save()

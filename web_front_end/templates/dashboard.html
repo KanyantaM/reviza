@@ -10,9 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/b4c0cd408e.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='bts-5/css/dashboardStyleSheet.css') }}">
-    <link rel="icon" href="../static/logos/polygon_white_bg.png" type="image/png" />
-    <!-- New Dashboard Links -->
-    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <link rel="icon" href="../static/bts-5/image/reviza.png" type="image/png" />
     <title>Dashboard</title>
 </head>
 
@@ -23,6 +21,14 @@
         <!-- =========== Sidebar for admin dashboard =========== -->
 
         <aside id="sidebar">
+            <div class="d-flex">
+                <button class="toggle-btn" type="button">
+                    <i class="fa-solid fa-bars pe-2"></i>
+                </button>
+                <div class="sidebar-logo">
+                    <a href="#"></a>
+                </div>
+            </div>
 
             <!-- ======== Content For Sidebar ========-->
             <div class="h-100">
@@ -32,49 +38,51 @@
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link">
                             <i class="fa-solid fa-house pe-2"></i>
-                            Home
+                            <span>Home</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link">
                             <i class="fa-solid fa-layer-group pe-2"></i>
-                            My Library
+                            <span>My Library</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link">
                             <i class="fa-solid fa-robot pe-2"></i>
-                            Reviza AI
+                            <span>Reviza AI</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link">
                             <i class="fa-solid fa-comments pe-2"></i>
-                            Chats
+                            <span>Chats</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed" data-bs-target="#recent" data-bs-toggle="collapse"
-                        aria-expanded="false">
+                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#recent" aria-expanded="false" aria-controls="auth">
                             <i class="fa-solid fa-clock pe-2"></i>
-                            Recent
+                            <span>Recent</span>
                         </a>
                         <ul id="recent" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
-                                <a href="#" class="sidebar-link">You don't have any recent items yet.</a>
+                                <a href="#" class="sidebar-link">No recent items yet.</a>
                             </li>
                         </ul>
                     </li>
                     <li class="sidebar-header">
-                        My Library
+                        <div class="sidebar-head-link">
+                            <span>My Library</span>
+                        </div>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed" data-bs-target="#posts" data-bs-toggle="collapse"
-                        aria-expanded="false">
+                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#courses" aria-expanded="false" aria-controls="auth">
                             <i class="fa-solid fa-folder pe-2"></i>
-                            Courses
+                            <span>Courses</span>
                         </a>
-                        <ul id="posts" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <ul id="courses" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
                                 <a href="#" class="sidebar-link">Course 1</a>
                             </li>
@@ -83,18 +91,19 @@
                             </li>
                             <li>
                                 <div class="d-grid gap-2 col-10 mx-auto">
-                                    <button type="button" class="btn btn-outline-secondary">
+                                    <button type="button" class="btn btn-outline-info">
                                         <i class="fa-solid fa-plus"></i> Add Courses
                                     </button>
-                                  </div>
+                                    <br>
+                                </div>
                             </li>
                         </ul>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed" data-bs-target="#books" data-bs-toggle="collapse"
-                        aria-expanded="false">
+                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#books" aria-expanded="false" aria-controls="auth">
                             <i class="fa-solid fa-book pe-2"></i>
-                            Books
+                            <span>Books</span>
                         </a>
                         <ul id="books" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
@@ -105,10 +114,11 @@
                             </li>
                             <li>
                                 <div class="d-grid gap-2 col-10 mx-auto">
-                                    <button type="button" class="btn btn-outline-secondary">
+                                    <button type="button" class="btn btn-outline-info">
                                         <i class="fa-solid fa-plus"></i> Add Books
                                     </button>
-                                  </div>
+                                    <br>
+                                </div>
                             </li>
                         </ul>
                     </li>
@@ -140,15 +150,17 @@
                     -->
 
                     <li class="sidebar-header">
-                        Account Options
+                        <div class="sidebar-head-link">
+                            <span>Account Options</span>
+                        </div>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed" data-bs-target="#Multi" data-bs-toggle="collapse"
-                        aria-expanded="false">
-                        <i class="lni lni-user"></i>
+                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#account" aria-expanded="false" aria-controls="auth">
+                        <i class="fa-solid fa-user"></i>
                             <span> Account</span>
                         </a>
-                        <ul id="Multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <ul id="account" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
                                 <button id="signOutButton" class="sidebar-link">Sign Out</button>
                             </li>
@@ -164,9 +176,11 @@
 
             <!-- ========= Main navbar section of dashboard ======= -->
             <nav class="navbar navbar-expand px-3 border-bottom">
+                <!--
                 <button class="btn" id="toggle-btn" type="button">
                     <span class="navbar-toggler-icon"></span>
-                </button>
+                </button>    
+                -->
                 <div class="sidebar-logo">
                     <img src="../static/bts-5/image/reviza.png" class="avatar img-fluid rounded me-3" alt="ReViza logo"/>
                     <a href="#">Reviza</a>
@@ -213,7 +227,7 @@
                                         <div class="col-6">
                                             <div class="p-3 m-1">
                                                 <h4>Welcome Back!</h4>
-                                                <p class="mb-0">Administrator Dashboard, Polygon</p>
+                                                <p class="mb-0">Search files</p>
                                             </div>
                                         </div>
                                         <div class="col-6 align-self-end text-end">
@@ -231,17 +245,17 @@
                                     <div class="d-flex align-items-start">
                                         <div class="flex-grow-1">
                                             <h4 class="mb-2">
-                                                Andromeda
+                                                Upload files
                                             </h4>
                                             <p class="mb-2">
-                                                Version 2.0
+                                                3GB Limit
                                             </p>
                                             <div class="mb-0">
                                                 <span class="badge text-success me-2">
-                                                    Amd-2.0
+                                                    PDF
                                                 </span>
                                                 <span class="text-muted">
-                                                    Small to Medium Scale Integration for Clinics
+                                                    
                                                 </span>
                                             </div>
                                         </div>
@@ -261,6 +275,177 @@
                 <i class="fa-regular fa-sun"></i>
             </a>
 
+
+            <!-- ========= carousel secetion ======= -->
+
+            <div id="carouselExampleControls" class="carousel">
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="card">
+                        <div class="img-wrapper">
+                            <img src="../static/bts-5/image/Captureee.PNG" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Card title 2</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
             <!-- ========= footer section of dashboard ======= -->
 
             <footer class="footer">
@@ -291,6 +476,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../static/bts-5/js/moonLight.js"></script>
+    <script src="../static/bts-5/js/jquery-3.7.1.min.js"></script>
     <script type="module" src="../static/bts-5/js/dashboardScript.js"></script>
 </body>
 

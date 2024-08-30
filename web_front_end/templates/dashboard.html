@@ -41,16 +41,33 @@
                             <span>Home</span>
                         </a>
                     </li>
+                    <!--
+
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link">
                             <i class="fa-solid fa-layer-group pe-2"></i>
                             <span>My Library</span>
                         </a>
                     </li>
+
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">
+                            <i class="fa-solid fa-magnifying-glass pe-2"></i>
+                            <span>Search</span>
+                        </a>
+                    </li>
+
+                    -->
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link">
                             <i class="fa-solid fa-robot pe-2"></i>
                             <span>Reviza AI</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">
+                            <i class="fa-solid fa-bell pe-2"></i>
+                            <span>Notifications</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
@@ -80,7 +97,7 @@
                         <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#courses" aria-expanded="false" aria-controls="auth">
                             <i class="fa-solid fa-folder pe-2"></i>
-                            <span>Courses</span>
+                            <span>Study Material</span>
                         </a>
                         <ul id="courses" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
@@ -91,15 +108,17 @@
                             </li>
                             <li>
                                 <div class="d-grid gap-2 col-10 mx-auto">
-                                    <button type="button" class="btn btn-outline-info">
-                                        <i class="fa-solid fa-plus"></i> Add Courses
+                                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#courseModal">
+                                        <i class="fa-solid fa-plus  pe-2"></i> Add Courses
                                     </button>
                                     <br>
                                 </div>
                             </li>
                         </ul>
                     </li>
-                    <li class="sidebar-item">
+                    <!--
+                    
+                                        <li class="sidebar-item">
                         <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#books" aria-expanded="false" aria-controls="auth">
                             <i class="fa-solid fa-book pe-2"></i>
@@ -122,6 +141,8 @@
                             </li>
                         </ul>
                     </li>
+                    
+                    -->
                     
                     <!-- // Prospective Option for version 2
 
@@ -187,7 +208,9 @@
                 </div>
                 <div class="navbar-collapse navbar">
                     <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
+                        <!--
+
+                            <li class="nav-item dropdown">
                             <a href="#" class="nav-icon pa-md-0">
                                 <img src="../static/bts-5/image/bell.png" class="avatar img-fluid rounded me-3" alt="Notification Icon"/>
                             </a>
@@ -197,6 +220,8 @@
                                 <img src="../static/bts-5/image/chats.png" class="avatar img-fluid rounded me-3" alt="Chats Icon"/>
                             </a>
                         </li>
+
+                        -->
                         <li class="nav-item dropdown">
                             <a href="#" data-bs-toggle="dropdown" class="nav-icon pa-md-0">
                                 <img src="../static/bts-5/image/profile.png" class="avatar img-fluid rounded" alt="User Profile"/>
@@ -227,16 +252,34 @@
                                         <div class="col-6">
                                             <div class="p-3 m-1">
                                                 <h4>Welcome Back!</h4>
-                                                <p class="mb-0">Search files</p>
+                                                <p class="mb-0">Explore more courses</p>
                                             </div>
                                         </div>
                                         <div class="col-6 align-self-end text-end">
-                                            <!--
-                                                <img src="../static/bts-5/image/customer-support.jpg" class="img-fluid illustration-img" alt="admin activated" />
-                                            -->
+                                            <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-toggle="modal" data-bs-target="#courseModal">
+                                                <i class="fa-solid fa-plus pe-2"></i> Add Courses
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add courses to your Library</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                ...
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </div>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 d-flex">
@@ -245,7 +288,7 @@
                                     <div class="d-flex align-items-start">
                                         <div class="flex-grow-1">
                                             <h4 class="mb-2">
-                                                Upload files
+                                                Search content
                                             </h4>
                                             <p class="mb-2">
                                                 3GB Limit
@@ -255,17 +298,24 @@
                                                     PDF
                                                 </span>
                                                 <span class="text-muted">
-                                                    
+                                                    Books, Tests, Quizzes, etc.
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-6 align-self-end text-end">
+                                    <a href="">
+                                        <button type="button" class="btn btn-outline-secondary btn-lg">
+                                            <i class="fa-solid fa-magnifying-glass pe-2"></i> Add Courses
+                                        </button>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
+
             </main>
 
             <!-- ========= light and dark mode toggle button ======= -->
@@ -289,7 +339,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -302,7 +354,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -315,7 +369,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -328,7 +384,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -341,7 +399,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -354,7 +414,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -367,7 +429,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -380,7 +444,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -393,7 +459,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -406,7 +474,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -419,7 +489,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>
@@ -432,7 +504,9 @@
                             <h5 class="card-title">Card title 2</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                                 card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                <!--
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                                -->
                         </div>
                     </div>
                   </div>

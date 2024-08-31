@@ -20,11 +20,73 @@ body {
     width: 100%;
 }
 
+/* FORMER #sidebar
+
 #sidebar {
     max-width: 264px;
     min-width: 264px;
     background: var(--bs-dark);
 }
+
+*/ /* NEW #sidebar */ 
+#sidebar {
+    width: 70px;
+    min-width: 70px;
+    z-index: 1000;
+    transition: all .25s ease-in-out;
+    background-color: #0e2238;
+    display: flex;
+    flex-direction: column;
+
+    height: 100vh; /* Full height of the viewport */
+    background: #6B6B6B;
+}
+
+/* NEW #sidebar-expand */
+#sidebar.expand {
+    width: 260px;
+    min-width: 260px;
+}
+
+/* NEW .toggle-btn */
+.toggle-btn {
+    background-color: transparent;
+    cursor: pointer;
+    border: 0;
+    padding: 1rem 1.5rem;
+}
+
+/* NEW .toggle-btn i */
+.toggle-btn i {
+    font-size: 1.5rem;
+    color: #FFF;
+}
+
+/* NEW sidebar functions */
+
+#sidebar:not(.expand) .sidebar-logo,
+#sidebar:not(.expand) .sidebar-head-link span,
+#sidebar:not(.expand) a.sidebar-link span {
+    display: none;
+}
+
+/* NEW sidebar functions */
+#sidebar.expand .sidebar-logo,
+#sidebar.expand a.sidebar-link span {
+    animation: fadeIn .25s ease;
+}
+
+/* NEW sidebar keyframe */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
 
 .main {
     display: flex;
@@ -63,9 +125,9 @@ h4 {
 }
 
 .sidebar-logo a {
-    color: #e9ecef;
-    font-size: 1.15rem;
-    font-weight: 600;
+    color: 	#5cb85c;
+    font-size: 1.60rem;
+    font-weight: 800;
 }
 
 .sidebar-nav {
@@ -80,8 +142,12 @@ h4 {
     color: #e9ecef;
     font-size: .75rem;
     padding: 1.5rem 1.5rem .375rem;
+
+    display: block;
+    white-space: nowrap;
 }
 
+/*
 a.sidebar-link {
     padding: .625rem 1.625rem;
     color: #e9ecef;
@@ -89,6 +155,7 @@ a.sidebar-link {
     display: block;
     font-size: 0.875rem;
 }
+*/
 
 
 /* Sidebar Toggle */
@@ -96,7 +163,7 @@ a.sidebar-link {
     border: solid;
     border-width: 0 .075rem .075rem 0;
     content: "";
-    display: inline-block;
+    display: block;
     padding: 2px;
     position: absolute;
     right: 1.5rem;
@@ -193,3 +260,115 @@ html[data-bs-theme="light"] .theme-toggle .fa-sun {
     border: none;
     color: #e9ecef;
 }
+
+
+/* VERSION TWO OF SIDEBAR */
+.sidebar-nav {
+    padding: 2rem 0;
+    flex: 1 1 auto;
+}
+
+a.sidebar-link {
+    padding: .625rem 1.625rem;
+    color: #FFF;
+    display: block;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+    position: relative;
+    font-size: 0.875rem;
+    background: #6B6B6B;
+}
+
+
+
+.sidebar-link i,
+.dropdown-item i {
+    font-size: 1.1rem;
+    margin-right: .75rem;
+}
+
+a.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, .075);
+    border-left: 3px solid #3b7ddd;
+}
+
+.sidebar-item {
+    position: relative;
+}
+
+#sidebar:not(.expand) .sidebar-item .sidebar-dropdown {
+    position: absolute;
+    top: 0;
+    left: 70px;
+    background-color: #6B6B6B;
+    padding: 0;
+    min-width: 15rem;
+    display: none;
+}
+
+#sidebar:not(.expand) .sidebar-item:hover .has-dropdown+.sidebar-dropdown {
+    display: block;
+    max-height: 15em;
+    width: 100%;
+    opacity: 1;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {
+    border: solid;
+    border-width: 0 .075rem .075rem 0;
+    content: "";
+    display: inline-block;
+    padding: 2px;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.4rem;
+    transform: rotate(-135deg);
+    transition: all .2s ease-out;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+    transform: rotate(45deg);
+    transition: all .2s ease-out;
+}
+
+/* Carousel  */
+@media (min-width: 768px) {
+    .carousel-inner {
+      display: flex;
+    }
+    .carousel-item {
+      margin-right: 0;
+      flex: 0 0 14.285714%;
+      display: block;
+    }
+  }
+
+  .carousel-inner{
+    padding: 1em;
+}
+.card{
+    margin: 0 .5em;
+    box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
+    border: none;
+}
+.carousel-control-prev, .carousel-control-next{
+    background-color: #e1e1e1;
+    width: 6vh;
+    height: 6vh;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.card .img-wrapper {
+    max-width: 100%;
+    height: 13em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  img{
+    max-height: 100%;
+  }

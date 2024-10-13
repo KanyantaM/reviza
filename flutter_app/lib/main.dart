@@ -15,14 +15,14 @@ Future<void> main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-);
-  Gemini.init(apiKey: 'AIzaSyCd-Y2aqD_C8XOSZPX14ySsozyMgPMicvk', enableDebugging: true);
-      
+  );
+  Gemini.init(
+      apiKey: 'AIzaSyCd-Y2aqD_C8XOSZPX14ySsozyMgPMicvk', enableDebugging: true);
+
   HiveUserRepository();
   HiveStudyMaterialRepository();
-  final authenticationRepository = AuthenticationRepository(); 
+  final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
 
   runApp(App(authenticationRepository: authenticationRepository));
 }
-

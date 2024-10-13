@@ -45,18 +45,21 @@ class _MySubjectState extends State<MySubjectsView> {
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: BannerCarousel(
-            banners: listBanners,
+            banners: <BannerModel>[
+              BannerModel(
+                  id: 'image1', imagePath: 'assets/images/intro/fatimah.jpg')
+            ],
             customizedIndicators: const IndicatorModel.animation(
                 width: 20, height: 5, spaceBetween: 2, widthAnimation: 50),
             height: 120,
-            activeColor: ColorX.gold,
-            disableColor: ColorX.white,
+            activeColor: Theme.of(context).splashColor,
+            disableColor: Theme.of(context).splashColor.withAlpha(50),
             animation: true,
             borderRadius: 10,
             width: 250,
             indicatorBottom: false,
           ),
-        ),,
+        ),
         isEditSubjects
             ? _subjectsHeading(
                 IconButton(
@@ -142,10 +145,11 @@ class _MySubjectState extends State<MySubjectsView> {
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: Text(
-                 '\t ${title.split(':').first}',
-                 style: const TextStyle(fontWeight: FontWeight.w600,
-                fontSize: 20,
-                // color: Colors.white
+                '\t ${title.split(':').first}',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                  // color: Colors.white
                 ),
               ),
             ),

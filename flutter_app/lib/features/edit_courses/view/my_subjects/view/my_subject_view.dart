@@ -47,7 +47,17 @@ class _MySubjectState extends State<MySubjectsView> {
           child: BannerCarousel(
             banners: <BannerModel>[
               BannerModel(
-                  id: 'image1', imagePath: 'assets/images/intro/fatimah.jpg')
+                id: 'image1',
+                imagePath: 'assets/images/intro/fatimah.jpg',
+              ),
+              BannerModel(
+                id: 'image2',
+                imagePath: 'assets/images/intro/graduate.jpg',
+              ),
+              BannerModel(
+                id: 'image3',
+                imagePath: 'assets/images/intro/sharing ideas.jpg',
+              ),
             ],
             customizedIndicators: const IndicatorModel.animation(
                 width: 20, height: 5, spaceBetween: 2, widthAnimation: 50),
@@ -56,8 +66,8 @@ class _MySubjectState extends State<MySubjectsView> {
             disableColor: Theme.of(context).splashColor.withAlpha(50),
             animation: true,
             borderRadius: 10,
-            width: 250,
-            indicatorBottom: false,
+            width: 400,
+            indicatorBottom: true,
           ),
         ),
         isEditSubjects

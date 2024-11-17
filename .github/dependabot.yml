@@ -1,0 +1,69 @@
+# Dependabot Configuration File
+# This configuration manages dependency updates for various parts of your repository.
+
+version: 2
+updates:
+  # For Python (Django backend)
+  - package-ecosystem: "pip"            # Python dependencies
+    directory: "/django_backend"        # Path to the Django backend folder
+    schedule:
+      interval: "weekly"                # Check for updates weekly
+      day: "monday"                     # Updates on Mondays
+      time: "03:00"                     # At 3 AM UTC
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # For JavaScript/TypeScript (Next.js app)
+  - package-ecosystem: "npm"            # Node.js dependencies for Next.js
+    directory: "/nextjs_app"            # Path to the Next.js app folder
+    schedule:
+      interval: "weekly"
+      day: "tuesday"                    # Updates on Tuesdays
+      time: "03:00"
+    commit-message:
+      prefix: "deps"
+
+  # For Flutter (mobile app)
+  - package-ecosystem: "pub"            # Flutter/Dart dependencies
+    directory: "/flutter_app"           # Path to the Flutter app folder
+    schedule:
+      interval: "weekly"
+      day: "wednesday"                  # Updates on Wednesdays
+      time: "03:00"
+    commit-message:
+      prefix: "deps"
+
+  # # For JavaScript (web front-end)
+  # - package-ecosystem: "npm"            # Node.js dependencies for the front-end
+  #   directory: "/web_front_end"         # Path to the web front-end folder
+  #   schedule:
+  #     interval: "weekly"
+  #     day: "thursday"                   # Updates on Thursdays
+  #     time: "03:00"
+  #   commit-message:
+  #     prefix: "deps"
+
+  # For GitHub Actions workflows
+  - package-ecosystem: "github-actions" # GitHub Actions updates
+    directory: "/.github/workflows"     # Path to GitHub workflows
+    schedule:
+      interval: "monthly"               # Monthly updates for GitHub Actions
+      time: "03:00"
+    commit-message:
+      prefix: "chore"
+
+  # For reviza-doc (documentation dependencies, if applicable)
+  - package-ecosystem: "npm"            # Assuming documentation dependencies use npm
+    directory: "/reviza-doc"            # Path to the documentation folder
+    schedule:
+      interval: "weekly"
+      day: "friday"                     # Updates on Fridays
+      time: "03:00"
+    commit-message:
+      prefix: "docs"
+
+# Notes:
+# - You can add additional directories for other dependencies as needed.
+# - Adjust the `schedule` intervals to fit your workflow.
+# - Use `ignore` blocks if specific dependencies need to be skipped.

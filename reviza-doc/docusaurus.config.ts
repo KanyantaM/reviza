@@ -106,19 +106,19 @@ const config: Config = {
           ],
         },
         {
-          title: 'Community',
+          title: 'Team',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'Kangwa Mukuka',
+              href: 'https://linkedin/in/kmukuka',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              label: 'Kanynata M. Makasa',
+              href: 'https://linkedin/in/kanyanta-makasa',
             },
             {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              label: 'Yanda Chilufya',
+              href: 'https://www.linkedin.com/in/yande-chilufya-486a83286',
             },
           ],
         },

@@ -20,6 +20,16 @@ kangwa:
     github: kangwa623
     linkedin: kmukuka
 
+yande:
+  name: Yande Chilufya
+  title: COO @ ReviZa
+  url: https://www.linkedin.com/in/yande-chilufya-486a83286
+  image_url: https://media.licdn.com/dms/image/v2/D4E03AQFG47EY6Z2i2w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1691344572704?e=1737590400&v=beta&t=RsgMHnje3Hapu5lsQKvdLde8poRK9qoOEAP_rusTGWo
+  page: true
+  socials:
+    # x: Its_Kanyanta
+    # github: kangwa623
+    linkedin: yande-chilufya-486a83286
 # yande:
 #   name: Sébastien Lorber
 #   title: Docusaurus maintainer

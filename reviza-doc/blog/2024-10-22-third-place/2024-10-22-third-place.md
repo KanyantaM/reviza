@@ -16,3 +16,5 @@ The theme, “60 Years Strong: Honouring our Heritage, Embracing our Future,” 
 Our app, ReviZa, is a platform designed to revolutionize access to quality study materials in Zambian universities. Keep an eye out for it when it becomes available on your app store!
 
 I am incredibly grateful to my teammates, Kanyanta Makasa, and Kangwa Mukuka, for their unwavering support throughout this journey. The late nights spent refining our pitch truly paid off. I would also like to extend my sincere thanks to all the cooperating partners who made this event possible.🙌
+
+![certificate](ReviZa-Zambia60_cert.jpg)

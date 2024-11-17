@@ -24,6 +24,13 @@ jobs:
         with:
           flutter-version: 'stable' # Use the stable version of Flutter
 
+      # Ensure Flutter channel is correct
+      - name: Ensure Flutter Stable Channel
+        run: |
+          flutter channel stable
+          flutter upgrade
+          flutter doctor
+
       # Verify Flutter is set up correctly
       - name: Flutter Version
         run: flutter --version

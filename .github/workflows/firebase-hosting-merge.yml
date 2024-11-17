@@ -6,12 +6,21 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci && npm run build
+      
+      # Change directory to reviza-docs and install dependencies, then build the project
+      - name: Install dependencies and build
+        run: |
+          cd reviza-docs
+          npm ci && npm run build
+        working-directory: ./reviza-docs
+
+      # Deploy to Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

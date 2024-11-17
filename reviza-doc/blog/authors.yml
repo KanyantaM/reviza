@@ -9,6 +9,17 @@ kanyanta:
     github: KanyantaM
     linkedin: kanyanta-makasa
 
+kangwa:
+  name: Kangwa Mukuka
+  title: co-founder and CTO @ ReviZa
+  url: https://github.com/kangwa623
+  image_url: https://github.com/kangwa623.png
+  page: true
+  socials:
+    # x: Its_Kanyanta
+    github: kangwa623
+    linkedin: kmukuka
+
 # yande:
 #   name: Sébastien Lorber
 #   title: Docusaurus maintainer

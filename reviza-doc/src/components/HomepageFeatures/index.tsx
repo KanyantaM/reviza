@@ -32,7 +32,7 @@ const features = [
 
 function FeatureCard({ title, description, imgSrc }: { title: string; description: string; imgSrc: string }) {
   return (
-    <div className={clsx('col col--4', styles.featureCard)}>
+    <div className={clsx('col col--3', styles.featureCard)}>
       <div className={clsx('text--center', styles.featureImageContainer)}>
         <img src={imgSrc} alt={title} className={styles.featureImage} />
       </div>

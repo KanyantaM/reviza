@@ -174,6 +174,21 @@ const config: Config = {
 
       //... other Algolia params
     },
+    plugins: [
+      [
+        '@docusaurus/plugin-content-docs',
+        {
+          lastVersion: 'current', // Specify versions if applicable
+          versions: {
+            current: {
+              label: 'Latest', // Label for the current version
+            },
+          },
+          showLastUpdateTime: true, // Enable this option
+          showLastUpdateAuthor: true, // Enable this option
+        },
+      ],
+    ],
   } satisfies Preset.ThemeConfig,
 };
 

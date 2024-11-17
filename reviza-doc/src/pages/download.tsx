@@ -30,12 +30,12 @@ const downloadLinks = [
     link: 'https://example.com/mac', // Replace with actual link
     description: 'Download ReviZa for your macOS device.',
   },
-  {
-    name: 'Online',
-    icon: '/img/net.svg', 
-    link: 'https://reviza.com', // Replace with the actual website link
-    description: 'Use ReviZa directly in your browser.',
-  },
+//   {
+//     name: 'Online',
+//     icon: '/img/net.svg', 
+//     link: 'https://reviza.com', // Replace with the actual website link
+//     description: 'Use ReviZa directly in your browser.',
+//   },
 ];
 
 function DownloadCard({ name, icon, link, description }) {

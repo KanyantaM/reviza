@@ -1,47 +1,45 @@
 ---
 sidebar_position: 1
+description: An introduction to ReviZa documentation
+label: Introduction
+title: Intro
 ---
 
-# Tutorial Intro
+# Welcome to ReviZa Documentation
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Welcome to the **ReviZa** documentation—your go-to guide for exploring and mastering the features of **ReviZa**, the ultimate study app designed to make higher education more accessible and efficient.
 
-## Getting Started
+## About ReviZa
 
-Get started by **creating a new site**.
+**ReviZa** is a platform tailored to help students succeed by simplifying the process of accessing and sharing study materials. Whether you’re preparing for exams, collaborating on projects, or organizing your learning resources, ReviZa has got you covered with intuitive tools and a user-friendly interface.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+---
 
-### What you'll need
+## What You’ll Find Here
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+This documentation is your comprehensive resource to:
 
-## Generate a new site
+- **Understand ReviZa's Features**: Explore what makes ReviZa unique, from its material-sharing functionality to its seamless collaboration tools.
+- **Learn How to Use the Platform**: Step-by-step guides to help you navigate ReviZa on mobile, desktop, and the web.
+- **Get Technical Insights**: For developers, dive into the technical details behind ReviZa's APIs, integrations, and open-source contributions.
+- **Troubleshooting**: Find solutions to common issues and ensure a smooth experience on ReviZa.
 
-Generate a new Docusaurus site using the **classic template**.
+---
 
-The classic template will automatically be added to your project after you run the command:
+## Who is This For?
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+This documentation is designed for:
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+- **Students and Educators**: Learn how to make the most out of ReviZa's powerful tools.
+- **Developers**: Contribute to or customize the platform through open-source collaboration.
+<!-- - **Admins and Moderators**: Manage the platform efficiently with our in-depth guides. -->
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+---
 
-## Start your site
+## Ready to Dive In?
 
-Run the development server:
+Begin your journey with ReviZa by [downloading the app](../download) section.
 
-```bash
-cd my-website
-npm run start
-```
+From setting up your account to mastering advanced features, we’ll guide you every step of the way!
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+---

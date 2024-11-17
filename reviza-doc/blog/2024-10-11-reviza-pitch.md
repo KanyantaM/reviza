@@ -1,7 +1,7 @@
 ---
 slug: reviza-pitch
 title: What are we building?
-authors: kanyanta
+authors: [kanyanta]
 tags: [reviza, education, ai, collaboration, business-strategy]
 ---
 

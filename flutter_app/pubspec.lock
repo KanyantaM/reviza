@@ -401,10 +401,10 @@ packages:
     dependency: "direct main"
     description:
       name: flow_builder
-      sha256: e5f7c0fbff5ac9c4c65728939e00d96c288e2a482ec740d2d57562d7e918e5f2
+      sha256: "9e66aa7209e9a31c347bb316abf191d2300db41cd6b7254f89abd4e76d9b3f8d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.10"
+    version: "0.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -422,10 +422,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_gemini
-      sha256: c6079dc6f95c6191e609e9cc627c268ef0bf2526cbba6a2f61aa41ea0053e9a0
+      sha256: "993765fafb595e5d32153f393b9c5e71f853caa5bef123d292c21f672d2b9675"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   flutter_highlighter:
     dependency: "direct main"
     description:
@@ -446,18 +446,18 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_lints
-      sha256: a25a15ebbdfc33ab1cd26c63a6ee519df92338a9c10f122adda92938253bef04
+      sha256: "5398f14efa795ffb7a33e9b6a08798b26a180edac4ad7db3f231e40f82ce11e1"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.3"
+    version: "5.0.0"
   flutter_markdown:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: "04c4722cc36ec5af38acc38ece70d22d3c2123c61305d555750a091517bbe504"
+      sha256: f0e599ba89c9946c8e051780f0ec99aba4ba15895e0380a7ab68f420046fc44e
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.23"
+    version: "0.7.4+1"
   flutter_math_fork:
     dependency: "direct main"
     description:
@@ -799,10 +799,10 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: "0a217c6c989d21039f1498c3ed9f3ed71b354e69873f13a8dfc3c9fe76f1b452"
+      sha256: "3315600f3fb3b135be672bf4a178c55f274bebe368325ae18462c89ac1e3b413"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "5.0.0"
   local_storage_study_material_api:
     dependency: "direct main"
     description:

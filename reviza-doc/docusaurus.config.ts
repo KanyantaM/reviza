@@ -163,6 +163,7 @@ const config: Config = {
           label: "Download",
           position: "left",
         },
+        {type: "docsVersionDropdown",position: "right",},
         {
           type: "docSidebar",
           sidebarId: "tutorialSidebar",

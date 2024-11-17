@@ -1,0 +1,47 @@
+name: Check Flutter App
+
+on:
+  push:
+    paths:
+      - "flutter_app/**"
+  pull_request:
+    paths:
+      - "flutter_app/**"
+
+jobs:
+  test_flutter_app:
+    name: Test Flutter Application
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Set up Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable' # Use the stable version of Flutter
+
+      # Verify Flutter is set up correctly
+      - name: Flutter Version
+        run: flutter --version
+
+      # Navigate to flutter_app and install dependencies
+      - name: Install Dependencies
+        run: |
+          cd flutter_app
+          flutter pub get
+
+      # Run build to verify the app compiles
+      - name: Verify Build
+        run: |
+          cd flutter_app
+          flutter build apk --debug # Adjust build type as necessary
+
+      # (Optional) Run tests to ensure functionality
+      - name: Run Tests
+        run: |
+          cd flutter_app
+          flutter test

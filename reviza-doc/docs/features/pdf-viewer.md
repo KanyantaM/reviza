@@ -3,10 +3,6 @@ sidebar_position: 6
 title: PDF Viewer
 ---
 
----
-
-# PDF Viewer with AI Assistance
-
 The **PDF Viewer** in ReviZa is a powerful tool designed to enhance your study experience. More than just a viewer, it integrates intelligent features to make accessing and interacting with course materials seamless, insightful, and collaborative.
 
 ---

@@ -56,7 +56,7 @@ dependencies:
   iconsax: ^0.0.8
   flutter_svg: ^2.0.9
   firebase_storage: ^11.6.0
-  intl: ^0.19.0
+  intl: ^0.20.0
   cloud_firestore: ^4.14.0
   dio: ^5.4.0
   path_provider: ^2.1.2

@@ -1,42 +1,80 @@
+import React from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
+import ReviZaFeatures from '@site/src/components/HomepageFeatures';
 
 function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <Heading as="h1" className="hero__title">
+        <Heading as="h1" className={styles.heroTitle}>
           {siteConfig.title}
         </Heading>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <p className={styles.heroSubtitle}>{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            to="/docs/intro"
+          >
+            Get to Know ReviZa - 5min ⏱️
           </Link>
+          <Link
+          className="button button--outline button--lg"
+          to="/download"
+        >
+          Download
+        </Link>
         </div>
+      </div>
+      <div className={styles.heroImage}>
+        <img
+          src="/img/hero_image.png"
+          alt="ReviZa Hero"
+        />
       </div>
     </header>
   );
 }
 
+function CallToAction() {
+  return (
+    <section className={styles.ctaSection}>
+      <div className="container text--center">
+        <h2 className={styles.ctaTitle}>
+          Ready to Collaborate and Share Knowledge?
+        </h2>
+        <p className={styles.ctaSubtitle}>
+          Discover the power of collaboration with ReviZa, where students come
+          together to excel.
+        </p>
+        <Link
+          className="button button--primary button--lg"
+          to="/download"
+        >
+          Download
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 export default function Home(): JSX.Element {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={`Welcome to ${siteConfig.title}`}
+      description="ReviZa - Making higher education easier for everyone."
+    >
       <HomepageHeader />
       <main>
-        <HomepageFeatures />
+        <ReviZaFeatures />
+        <CallToAction />
       </main>
     </Layout>
   );

@@ -1,23 +1,69 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
 .heroBanner {
-  padding: 4rem 0;
-  text-align: center;
+  background: linear-gradient(135deg, #004d40, #00796b);
+  color: white;
+  padding: 4rem 2rem;
   position: relative;
-  overflow: hidden;
+  text-align: center;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.heroTitle {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.heroSubtitle {
+  font-size: 1.2rem;
+  color: #e0f2f1;
+  margin-bottom: 2rem;
+}
+
+.heroImage img {
+  width: 100%;
+  max-width: 600px;
+  height: auto; /* Ensures the aspect ratio is maintained */
+  display: block; /* Removes inline image styling issues */
+  margin: 2rem auto; /* Centers the image */
+  border-radius: 10px; /* Adds slight rounding for a modern touch */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth animations */
+}
+
+.heroImage img:hover {
+  transform: scale(1.05); /* Adds a slight zoom effect on hover */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Enhances shadow on hover */
+}
+
+
+.buttons .button {
+  margin: 0.5rem;
+}
+
+.ctaSection {
+  background: #f5f5f5;
+  padding: 3rem 1rem;
+  margin-top: 2rem;
+}
+
+.ctaTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #004d40;
+}
+
+.ctaSubtitle {
+  font-size: 1rem;
+  color: #616161;
+  margin-bottom: 2rem;
+}
+
+.ctaSection .button--primary {
+  background: #00796b;
+  color: white;
+  border: none;
+}
+
+.ctaSection .button--primary:hover {
+  background: #004d40;
 }

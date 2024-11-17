@@ -28,7 +28,7 @@ dependencies:
   authentication_repository:
     path: packages/auth_packages/authentication_repository
   bloc: ^8.1.0
-  flow_builder: ^0.0.9
+  flow_builder: ^0.1.0
   flutter_bloc: ^8.1.1
   font_awesome_flutter: ^10.1.0
   form_inputs:

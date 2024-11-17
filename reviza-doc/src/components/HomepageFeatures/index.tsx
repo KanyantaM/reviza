@@ -1,67 +1,65 @@
+import React from 'react';
 import clsx from 'clsx';
-import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 
-type FeatureItem = {
-  title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
-  description: JSX.Element;
-};
-
-const FeatureList: FeatureItem[] = [
+const features = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
-    description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
-    ),
+    title: 'Share Study Materials',
+    description: 'Easily upload, organize, and share your study resources with classmates and peers across your university.',
+    imgSrc: '/img/share_study_materials.svg', // Replace with an SVG in your static/img directory
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
-    description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
-    ),
+    title: 'Collaborative Learning',
+    description: 'Engage in discussions, get feedback on shared resources, and learn together in a dynamic environment.',
+    imgSrc: '/img/collaborative_learning.svg', // Replace with an SVG in your static/img directory
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
-    description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
-      </>
-    ),
+    title: 'Smart Organization',
+    description: 'Keep your materials sorted by course, type, and importance to quickly find what you need when you need it.',
+    imgSrc: '/img/smart_organization.svg', // Replace with an SVG in your static/img directory
+  },
+  {
+    title: 'Cross-Platform Access',
+    description: 'Use ReviZa on any device—whether you’re on your phone, tablet, or desktop, your materials are always accessible.',
+    imgSrc: '/img/cross_platform_access.svg', // Replace with an SVG in your static/img directory
+  },
+  {
+    title: 'Insightful Analytics',
+    description: 'Track the impact of your contributions with statistics like downloads, upvotes, and interactions.',
+    imgSrc: '/img/insightful_analytics.svg', // Replace with an SVG in your static/img directory
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function FeatureCard({ title, description, imgSrc }: { title: string; description: string; imgSrc: string }) {
   return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+    <div className={clsx('col col--4', styles.featureCard)}>
+      <div className={clsx('text--center', styles.featureImageContainer)}>
+        <img src={imgSrc} alt={title} className={styles.featureImage} />
       </div>
       <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
+        <h3 className={styles.featureTitle}>{title}</h3>
+        <p className={styles.featureDescription}>{description}</p>
       </div>
     </div>
   );
 }
 
-export default function HomepageFeatures(): JSX.Element {
+export default function ReviZaFeatures(): JSX.Element {
   return (
-    <section className={styles.features}>
+    <section className={styles.featuresSection}>
       <div className="container">
+        <h2 className={clsx('text--center', styles.featuresHeader)}>Why Choose ReviZa?</h2>
+        <p className={clsx('text--center', styles.featuresTagline)}>
+          Empowering students with tools to share, collaborate, and succeed.
+        </p>
         <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
+          {features.map((feature, idx) => (
+            <FeatureCard
+              key={idx}
+              title={feature.title}
+              description={feature.description}
+              imgSrc={feature.imgSrc}
+            />
           ))}
         </div>
       </div>

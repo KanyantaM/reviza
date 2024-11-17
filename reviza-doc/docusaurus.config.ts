@@ -176,16 +176,21 @@ const config: Config = {
     },
     plugins: [
       [
-        '@docusaurus/plugin-content-docs',
+        '@docusaurus/preset-classic',
         {
-          lastVersion: 'current', // Specify versions if applicable
-          versions: {
-            current: {
-              label: 'Latest', // Label for the current version
-            },
+          docs: {
+            path: 'docs',
+            rehypePlugins: [],
+            beforeDefaultRemarkPlugins: [],
+            beforeDefaultRehypePlugins: [],
+            showLastUpdateAuthor: true,
+            showLastUpdateTime: true,
+            editCurrentVersion: false,
+            disableVersioning: false,
+            includeCurrentVersion: true,
+            lastVersion: undefined,            
+            
           },
-          showLastUpdateTime: true, // Enable this option
-          showLastUpdateAuthor: true, // Enable this option
         },
       ],
     ],

@@ -13,12 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      # Change directory to reviza-docs and install dependencies, then build the project
+      # Change directory to reviza-doc and install dependencies, then build the project
       - name: Install dependencies and build
         run: |
-          cd reviza-docs
+          cd reviza-doc
           npm ci && npm run build
-        working-directory: /reviza-docs
+        # working-directory: ./reviza-doc
 
       # Deploy to Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0
@@ -27,3 +27,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_REVIZA_31466 }}
           channelId: live
           projectId: reviza-31466
+          entryPoint: reviza-doc

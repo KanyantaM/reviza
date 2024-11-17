@@ -1,4 +1,4 @@
-name: Check Flutter App
+name: Test Flutter Application
 
 on:
   push:
@@ -10,40 +10,51 @@ on:
 
 jobs:
   test_flutter_app:
-    name: Test Flutter Application
+    name: Validate Flutter App
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repository
+      # Step 1: Checkout the repository
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Set up Flutter
+      # Step 2: Set up Flutter environment
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.4' # Explicit Flutter version
+          flutter-version: '3.24.4' # Specify your Flutter version
+          channel: stable           # Specify the stable channel
+          cache: true               # Enable caching for dependencies
 
-      # Verify Flutter installation
+      # Step 3: Verify Flutter installation and environment
       - name: Verify Flutter Installation
         run: |
           flutter --version
           flutter doctor
 
-      # Navigate to flutter_app and install dependencies
+      # Step 4: Navigate to the Flutter app directory and install dependencies
       - name: Install Dependencies
         run: |
           cd flutter_app
           flutter pub get
 
-      # Run build to verify the app compiles
+      # Step 5: Run Flutter build to verify the app compiles successfully
       - name: Verify Build
         run: |
           cd flutter_app
-          flutter build apk --debug # Adjust build type as necessary
+          flutter build apk --debug
 
-      # (Optional) Run tests to ensure functionality
+      # Step 6: Run Flutter tests (if applicable)
       - name: Run Tests
         run: |
           cd flutter_app
           flutter test
+
+      # Step 7: Cache results (optional, if caching was not enabled earlier)
+      - name: Cache Pub Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-

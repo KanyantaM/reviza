@@ -61,7 +61,7 @@ Once the materials are displayed, users can:
 
 <div style={{ textAlign: 'center', margin: '20px 0' }}>
   <img
-    src="/img/screen-shots/downloads.jpg"
+    src="/img/screen-shots/downloads_view.jpg"
     alt="Downloads View Interface"
     style={{
       border: '1px solid #ddd',

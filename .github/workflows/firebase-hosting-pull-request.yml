@@ -28,3 +28,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_REVIZA_31466 }}
           projectId: reviza-31466
+          entryPoint: reviza-doc

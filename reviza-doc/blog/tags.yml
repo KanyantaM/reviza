@@ -22,3 +22,18 @@ business-strategy:
   label: Business Strategy
   permalink: /business-strategy
   description: Posts about the strategies behind building and scaling ReviZa.
+
+competions:
+  label: Business Strategy
+  permalink: /competions
+  description: Hackathons ReviZa has taken part in
+
+zambia@60:
+  label: Zambia @60 Hackathon
+  permalink: /zambia@60
+  description: Zambia at 60 innovation Hackathon
+
+pitches:
+  label: pitches
+  permalink: /pitches
+  description: Pitches by Reviza.

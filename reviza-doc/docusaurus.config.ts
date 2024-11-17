@@ -1,6 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -33,7 +34,7 @@ const config: Config = {
 
   presets: [
     [
-      'classic',
+      '@docusaurus/preset-classic',
       {
         docs: {
           sidebarPath: './sidebars.ts',
@@ -41,6 +42,14 @@ const config: Config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/KanyantaM/reviza/tree/main/reviza-doc/docs',
+            breadcrumbs: true,
+            beforeDefaultRemarkPlugins: [],
+            beforeDefaultRehypePlugins: [],
+            showLastUpdateAuthor: true,
+            showLastUpdateTime: true,
+            disableVersioning: false,
+            includeCurrentVersion: true,
+            lastVersion: undefined,
         },
         blog: {
           showReadingTime: true,
@@ -174,21 +183,6 @@ const config: Config = {
 
       //... other Algolia params
     },
-    plugins: [
-      [
-        '@docusaurus/plugin-content-docs',
-        {
-          lastVersion: 'current', // Specify versions if applicable
-          versions: {
-            current: {
-              label: 'Latest', // Label for the current version
-            },
-          },
-          showLastUpdateTime: true, // Enable this option
-          showLastUpdateAuthor: true, // Enable this option
-        },
-      ],
-    ],
   } satisfies Preset.ThemeConfig,
 };
 

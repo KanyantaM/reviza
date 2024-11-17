@@ -34,7 +34,7 @@ dependencies:
   form_inputs:
     path: packages/auth_packages/form_inputs
   formz: ^0.6.0
-  google_fonts: ^4.0.0
+  google_fonts: ^6.2.1
   study_material_api:
     path: packages/crud_packages/study_material_api
   local_storage_study_material_api:

@@ -3,26 +3,26 @@
 
 version: 2
 updates:
-  # For Python (Django backend)
-  - package-ecosystem: "pip"            # Python dependencies
-    directory: "/django_backend"        # Path to the Django backend folder
-    schedule:
-      interval: "weekly"                # Check for updates weekly
-      day: "monday"                     # Updates on Mondays
-      time: "03:00"                     # At 3 AM UTC
-    commit-message:
-      prefix: "deps"
-      include: "scope"
+  # # For Python (Django backend)
+  # - package-ecosystem: "pip"            # Python dependencies
+  #   directory: "/django_backend"        # Path to the Django backend folder
+  #   schedule:
+  #     interval: "weekly"                # Check for updates weekly
+  #     day: "monday"                     # Updates on Mondays
+  #     time: "03:00"                     # At 3 AM UTC
+  #   commit-message:
+  #     prefix: "deps"
+  #     include: "scope"
 
-  # For JavaScript/TypeScript (Next.js app)
-  - package-ecosystem: "npm"            # Node.js dependencies for Next.js
-    directory: "/nextjs_app"            # Path to the Next.js app folder
-    schedule:
-      interval: "weekly"
-      day: "tuesday"                    # Updates on Tuesdays
-      time: "03:00"
-    commit-message:
-      prefix: "deps"
+  # # For JavaScript/TypeScript (Next.js app)
+  # - package-ecosystem: "npm"            # Node.js dependencies for Next.js
+  #   directory: "/nextjs_app"            # Path to the Next.js app folder
+  #   schedule:
+  #     interval: "weekly"
+  #     day: "tuesday"                    # Updates on Tuesdays
+  #     time: "03:00"
+  #   commit-message:
+  #     prefix: "deps"
 
   # For Flutter (mobile app)
   - package-ecosystem: "pub"            # Flutter/Dart dependencies

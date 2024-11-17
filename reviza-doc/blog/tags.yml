@@ -1,19 +1,24 @@
-facebook:
-  label: Facebook
-  permalink: /facebook
-  description: Facebook tag description
+reviza:
+  label: ReviZa
+  permalink: /reviza
+  description: Posts about ReviZa, the smart study app revolutionizing learning.
 
-hello:
-  label: Hello
-  permalink: /hello
-  description: Hello tag description
+education:
+  label: Education
+  permalink: /education
+  description: Topics focused on improving education and learning experiences.
 
-docusaurus:
-  label: Docusaurus
-  permalink: /docusaurus
-  description: Docusaurus tag description
+ai:
+  label: Artificial Intelligence
+  permalink: /ai
+  description: Posts discussing AI-driven solutions like Gemini Pro for enhanced studying.
 
-hola:
-  label: Hola
-  permalink: /hola
-  description: Hola tag description
+collaboration:
+  label: Collaboration
+  permalink: /collaboration
+  description: Posts about fostering collaboration in study environments and resource sharing.
+
+business-strategy:
+  label: Business Strategy
+  permalink: /business-strategy
+  description: Posts about the strategies behind building and scaling ReviZa.

@@ -18,7 +18,7 @@ jobs:
       # Change directory to reviza-docs and install dependencies, then build the project
       - name: Install dependencies and build
         run: |
-          cd reviza-docs
+          cd reviza-doc
           npm ci && npm run build
         working-directory: ./reviza-doc
 

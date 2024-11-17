@@ -1,7 +1,3 @@
-Here’s the updated **`SECURITY.md`** file for your **Reviza** repository with the version information adjusted:  
-
----
-
 # Security Policy  
 
 ## Supported Versions  

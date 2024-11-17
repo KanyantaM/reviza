@@ -18,7 +18,7 @@ jobs:
         run: |
           cd reviza-docs
           npm ci && npm run build
-        working-directory: ./reviza-docs
+        working-directory: /reviza-docs
 
       # Deploy to Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0

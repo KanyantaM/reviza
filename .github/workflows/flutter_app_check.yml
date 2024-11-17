@@ -13,6 +13,10 @@ jobs:
     name: Validate Flutter App
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: flutter_app
+
     steps:
       # Step 1: Checkout the repository
       - name: Checkout Code
@@ -22,9 +26,9 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.4' # Specify your Flutter version
-          channel: stable           # Specify the stable channel
-          cache: true               # Enable caching for dependencies
+          flutter-version: '3.24.4'
+          channel: stable
+          cache: true
 
       # Step 3: Verify Flutter installation and environment
       - name: Verify Flutter Installation
@@ -32,25 +36,19 @@ jobs:
           flutter --version
           flutter doctor
 
-      # Step 4: Navigate to the Flutter app directory and install dependencies
+      # Step 4: Install dependencies
       - name: Install Dependencies
-        run: |
-          cd flutter_app
-          flutter pub get
+        run: flutter pub get
 
-      # Step 5: Run Flutter build to verify the app compiles successfully
+      # Step 5: Verify Build
       - name: Verify Build
-        run: |
-          cd flutter_app
-          flutter build apk --debug
+        run: flutter build apk --debug
 
-      # Step 6: Run Flutter tests (if applicable)
+      # Step 6: Run Tests
       - name: Run Tests
-        run: |
-          cd flutter_app
-          flutter test
+        run: flutter test
 
-      # Step 7: Cache results (optional, if caching was not enabled earlier)
+      # Step 7: Cache results (optional)
       - name: Cache Pub Dependencies
         uses: actions/cache@v3
         with:

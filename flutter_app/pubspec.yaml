@@ -30,7 +30,7 @@ dependencies:
   bloc: ^8.1.0
   flow_builder: ^0.1.0
   flutter_bloc: ^8.1.1
-  font_awesome_flutter: ^10.1.0
+  font_awesome_flutter: ^10.8.0
   form_inputs:
     path: packages/auth_packages/form_inputs
   formz: ^0.6.0

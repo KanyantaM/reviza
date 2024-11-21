@@ -34,17 +34,17 @@ jobs:
 
       #4 Install Dependencies
       - name: Install Dependencies
-        working-directory: reviza_app
+        working-directory: flutter_app
         run: flutter pub get
 
       #5 Setup Keystore
       - name: Decode Keystore
-        working-directory: reviza_app
+        working-directory: flutter_app
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
 
       - name: Create key.properties
-        working-directory: reviza_app
+        working-directory: flutter_app
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
@@ -53,22 +53,22 @@ jobs:
         
       #6 Build APK
       - name: Build APK
-        working-directory: reviza_app
+        working-directory: flutter_app
         run: flutter build apk --release
 
       #7 Build App Bundle (aab)
       - name: Build App Bundle
-        working-directory: reviza_app
+        working-directory: flutter_app
         run: flutter build appbundle
 
       #8 Build IPA (iOS Build)
       - name: Build IPA
-        working-directory: reviza_app
+        working-directory: flutter_app
         run: flutter build ipa --no-codesign
 
       #9 Compress Archives and IPAs
       - name: Compress Archives and IPAs
-        working-directory: reviza_app
+        working-directory: flutter_app
         run: |
           cd build
           tar -czf ios_build.tar.gz ios
@@ -79,14 +79,14 @@ jobs:
         with:
           name: Releases
           path: |
-            reviza_app/build/app/outputs/flutter-apk/app-release.apk
-            reviza_app/build/app/outputs/bundle/release/app-release.aab
-            reviza_app/build/ios_build.tar.gz
+            flutter_app/build/app/outputs/flutter-apk/app-release.apk
+            flutter_app/build/app/outputs/bundle/release/app-release.aab
+            flutter_app/build/ios_build.tar.gz
 
       #11 Extract Version
       - name: Extract Version from pubspec.yaml
         id: extract_version
-        working-directory: reviza_app
+        working-directory: flutter_app
         run: |
           version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
           echo "VERSION=$version" >> $GITHUB_ENV
@@ -94,7 +94,7 @@ jobs:
       #12 Check if Tag Exists
       - name: Check if Tag Exists
         id: check_tag
-        working-directory: reviza_app
+        working-directory: flutter_app
         run: |
           if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
             echo "TAG_EXISTS=true" >> $GITHUB_ENV
@@ -115,8 +115,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            reviza_app/build/app/outputs/flutter-apk/app-release.apk
-            reviza_app/build/app/outputs/bundle/release/app-release.aab
-            reviza_app/build/ios_build.tar.gz
+            flutter_app/build/app/outputs/flutter-apk/app-release.apk
+            flutter_app/build/app/outputs/bundle/release/app-release.aab
+            flutter_app/build/ios_build.tar.gz
           tag: v${{ env.VERSION }}
           token: ${{ secrets.TOKEN }}

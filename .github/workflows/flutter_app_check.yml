@@ -35,7 +35,10 @@ jobs:
       #4 Install Dependencies
       - name: Install Dependencies
         working-directory: flutter_app
-        run: flutter pub get
+        run: |
+          flutter pub get
+          dart run flutter_launcher_icons
+          dart run rename_app:main all="ReviZa"
 
       #5 Setup Keystore
       - name: Decode Keystore

@@ -194,11 +194,11 @@ const config: Config = {
           items: [
             {
               label: "Kangwa Mukuka",
-              href: "https://linkedin/in/kmukuka",
+              href: "https://www.linkedin.com/in/kmukuka",
             },
             {
               label: "Kanynata M. Makasa",
-              href: "https://linkedin/in/kanyanta-makasa",
+              href: "https://www.linkedin.com/in/kanyanta-makasa",
             },
             {
               label: "Yanda Chilufya",

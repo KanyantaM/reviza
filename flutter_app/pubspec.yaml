@@ -76,12 +76,6 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
-flutter_launcher_icons:
-  ios: true
-  remove_alpha_ios: true
-  android: "launcher_icon"
-  image_path: "assets/images/logo.jpeg"
-
 # The following section is specific to Flutter packages.
 flutter:
 

@@ -63,6 +63,7 @@ dependencies:
   url_launcher: ^6.2.4
   flutter_launcher_icons: ^0.13.1
   banner_carousel: ^1.2.1
+  rename_app: ^1.6.1
 
 
 dev_dependencies:

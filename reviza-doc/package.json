@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@docusaurus/core": "3.6.1",
-    "@docusaurus/plugin-content-docs": "^3.6.1",
+    "@docusaurus/plugin-content-docs": "^3.6.2",
     "@docusaurus/preset-classic": "^3.6.1",
     "@docusaurus/theme-search-algolia": "^3.6.1",
     "@mdx-js/react": "^3.0.0",

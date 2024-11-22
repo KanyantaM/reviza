@@ -1,7 +1,6 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
-import useBaseUrl from "@docusaurus/useBaseUrl";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -30,7 +29,7 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: "en",
-    locales: ["en"],
+    // locales: ["en"],
   },
 
   presets: [

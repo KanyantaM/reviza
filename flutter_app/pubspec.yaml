@@ -54,7 +54,7 @@ dependencies:
   file_picker: ^6.1.1
   share_plus: ^7.2.1
   iconsax: ^0.0.8
-  flutter_svg: ^2.0.9
+  flutter_svg: ^2.0.16
   firebase_storage: ^11.6.0
   intl: ^0.19.0
   cloud_firestore: ^4.14.0

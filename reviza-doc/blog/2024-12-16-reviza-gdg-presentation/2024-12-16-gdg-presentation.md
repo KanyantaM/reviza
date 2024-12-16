@@ -1,8 +1,8 @@
 ---
 slug: redefining-education-with-revisa
 title: "ReviZa: Redefining Education with Google Tools"
-authors: ["Kanyanta M. Makasa"]
-tags: ["education", "AI", "Google", "GDG DevFest", "technology"]
+authors: [kanyanta]
+tags: [education, ai, google, gdg-devfest, technology]
 date: 2024-12-16
 ---
 

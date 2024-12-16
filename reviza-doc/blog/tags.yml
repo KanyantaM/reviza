@@ -1,4 +1,4 @@
-reviza:
+revisa:
   label: ReviZa
   permalink: /reviza
   description: Posts about ReviZa, the smart study app revolutionizing learning.
@@ -23,17 +23,32 @@ business-strategy:
   permalink: /business-strategy
   description: Posts about the strategies behind building and scaling ReviZa.
 
-competions:
-  label: Business Strategy
-  permalink: /competions
-  description: Hackathons ReviZa has taken part in
+competitions:
+  label: Competitions
+  permalink: /competitions
+  description: Hackathons ReviZa has taken part in.
 
 zambia@60:
   label: Zambia @60 Hackathon
   permalink: /zambia@60
-  description: Zambia at 60 innovation Hackathon
+  description: Zambia at 60 innovation Hackathon.
 
 pitches:
-  label: pitches
+  label: Pitches
   permalink: /pitches
-  description: Pitches by Reviza.
+  description: Pitches by ReviZa.
+
+google:
+  label: Google
+  permalink: /google
+  description: Posts discussing Google tools and technologies.
+
+gdg-devfest:
+  label: GDG DevFest
+  permalink: /gdg-devfest
+  description: Insights from GDG DevFest events.
+
+technology:
+  label: Technology
+  permalink: /technology
+  description: Posts exploring advancements in technology and innovation.

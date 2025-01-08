@@ -467,10 +467,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: "999a4e3cb3e1532a971c86d6c73a480264f6a687959d4887cb4e2990821827e4"
+      sha256: e37f4c69a07b07bb92622ef6b131a53c9aae48f64b176340af9e8e5238718487
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.4+2"
+    version: "0.7.5"
   flutter_math_fork:
     dependency: "direct main"
     description:

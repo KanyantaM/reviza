@@ -111,27 +111,32 @@ class _SectionChatState extends State<SectionChat> {
               final searchedText = controller.text;
               if (selectedImage == null) {
                 chats.add(
-                    Content(role: 'user', parts: [Parts(text: searchedText)]));
+                    Content(role: 'user', parts: [Part.text(searchedText)]));
                 controller.clear();
                 loading = true;
 
                 gemini.chat(chats).then((value) {
                   chats.add(Content(
-                      role: 'model', parts: [Parts(text: value?.output)]));
+                      role: 'model', parts: [Part.text(value?.output ?? '')]));
                   loading = false;
                 });
               } else {
                 chats.add(
-                    Content(role: 'user', parts: [Parts(text: searchedText)]));
+                    Content(role: 'user', parts: [Part.text(searchedText)]));
                 controller.clear();
                 loading = true;
 
-                gemini.textAndImage(
-                    text: searchedText, images: [selectedImage!]).then((value) {
+                gemini.prompt(
+                  parts: [
+                    Part.text(searchedText),
+                    Part.uint8List(selectedImage!)
+                  ],
+                ).then((value) {
                   chats.add(Content(
-                      role: 'model', parts: [Parts(text: value?.output)]));
+                      role: 'model', parts: [Part.text(value?.output ?? '')]));
                   loading = false;
                   selectedImage = null;
+                  setState(() {});
                 });
               }
             }
@@ -145,7 +150,21 @@ class _SectionChatState extends State<SectionChat> {
     final Content content = chats[index];
     final bool isUserMessage = content.role == 'user';
 
-    String text = content.parts?.lastOrNull?.text ?? 'cannot generate data!';
+    // Get the text content from the last part if it is a TextPart.
+    String text = '';
+    if (content.parts?.isNotEmpty ?? false) {
+      final lastPart = content.parts?.last;
+      if (lastPart is TextPart) {
+        text = lastPart.text;
+      } else if (lastPart is InlinePart) {
+        // If you have inline data that you want to convert to text,
+        // adjust this according to your InlinePart implementation.
+        text = '\n[media item]\n';
+      }
+      // Add additional checks if you expect other types.
+    }
+
+    // Split the text by code fence markers.
     List<String> parts = text.split('```');
 
     return Card(
@@ -155,12 +174,8 @@ class _SectionChatState extends State<SectionChat> {
           : Theme.of(context).colorScheme.tertiaryContainer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: isUserMessage
-              ? const Radius.circular(16.0)
-              : const Radius.circular(0),
-          topRight: isUserMessage
-              ? const Radius.circular(0)
-              : const Radius.circular(16.0),
+          topLeft: isUserMessage ? const Radius.circular(16.0) : Radius.zero,
+          topRight: isUserMessage ? Radius.zero : const Radius.circular(16.0),
           bottomLeft: const Radius.circular(16.0),
           bottomRight: const Radius.circular(16.0),
         ),
@@ -191,9 +206,18 @@ class _SectionChatState extends State<SectionChat> {
                       if (i % 2 == 0) {
                         return readText(context, parts[i]);
                       } else {
+                        // Ensure the code part has at least one newline.
+                        final codeText = parts[i];
+                        final newLineIndex = codeText.indexOf('\n');
+                        final language = newLineIndex != -1
+                            ? codeText.substring(0, newLineIndex)
+                            : '';
+                        final code = newLineIndex != -1
+                            ? codeText.substring(newLineIndex + 1)
+                            : codeText;
                         return HighlightView(
-                          parts[i].substring(parts[i].indexOf('\n') + 1),
-                          language: parts[i].split('\n').first,
+                          code,
+                          language: language,
                           theme: githubTheme,
                           textStyle: const TextStyle(fontSize: 16.0),
                         );

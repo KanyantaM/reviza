@@ -8,6 +8,7 @@ import 'package:local_student_api/local_student_api.dart';
 import 'package:reviza/app/bloc_observer.dart';
 import 'package:reviza/app/view/app.dart';
 import 'package:reviza/firebase_options.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +17,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Gemini.init(
-      apiKey: '******************', enableDebugging: true);
+  await dotenv.load(fileName: ".env");
+  final String apiKey = dotenv.env['GEMINI_API_KEY']!;
+  Gemini.init(apiKey: apiKey, enableDebugging: true);
 
   HiveUserRepository();
   HiveStudyMaterialRepository();

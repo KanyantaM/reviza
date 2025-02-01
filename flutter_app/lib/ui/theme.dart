@@ -5,20 +5,35 @@ class ReviZaTheme {
   static ThemeData get light {
     return ThemeData(
       useMaterial3: true,
-      textTheme: GoogleFonts.openSansTextTheme().apply(
-        bodyColor: Colors.black,  // Adjust text color for better visibility
+      textTheme: GoogleFonts.montserratTextTheme().apply(
+        bodyColor: Colors.black,
         displayColor: Colors.black,
       ),
-      appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 117, 208, 247)),
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF13B9FF),
+      appBarTheme: const AppBarTheme(
+        color: Color(0xFF0F2D35),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Color(0xFF00E676), // Vibrant green from the logo
+        primary: Color(0xFF00E676),
+        secondary: Color(0xFF0F2D35), // Dark blue shade
+      ),
+      scaffoldBackgroundColor: Colors.white,
       snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
       ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF00E676),
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
@@ -27,23 +42,36 @@ class ReviZaTheme {
   static ThemeData get dark {
     return ThemeData(
       useMaterial3: true,
-      textTheme: GoogleFonts.openSansTextTheme().apply(
-        bodyColor: Colors.white,  // Adjust text color for better visibility
+      textTheme: GoogleFonts.montserratTextTheme().apply(
+        bodyColor: Colors.white,
         displayColor: Colors.white,
       ),
       appBarTheme: const AppBarTheme(
-        color: Color.fromARGB(255, 16, 46, 59),
+        color: Color(0xFF0A1E26),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       colorScheme: ColorScheme.fromSeed(
         brightness: Brightness.dark,
-        seedColor: const Color(0xFF13B9FF),
+        seedColor: Color(0xFF00E676),
+        primary: Color(0xFF00E676),
+        secondary: Color(0xFF0A1E26),
       ),
+      scaffoldBackgroundColor: Color(0xFF121212),
       snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
       ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF00E676),
+          foregroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );

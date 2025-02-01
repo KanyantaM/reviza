@@ -13,6 +13,11 @@ class ReviZaTheme {
         color: Color(0xFF0F2D35),
         iconTheme: IconThemeData(color: Colors.white),
       ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Color(0xFF0F2D35),
+        selectedItemColor: Color(0xFF00E676),
+        unselectedItemColor: Colors.white70,
+      ),
       colorScheme: ColorScheme.fromSeed(
         seedColor: Color(0xFF00E676), // Vibrant green from the logo
         primary: Color(0xFF00E676),
@@ -49,6 +54,11 @@ class ReviZaTheme {
       appBarTheme: const AppBarTheme(
         color: Color(0xFF0A1E26),
         iconTheme: IconThemeData(color: Colors.white),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Color(0xFF0A1E26),
+        selectedItemColor: Color(0xFF00E676),
+        unselectedItemColor: Colors.white70,
       ),
       colorScheme: ColorScheme.fromSeed(
         brightness: Brightness.dark,

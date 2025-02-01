@@ -56,7 +56,18 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
     }
     _tabController = TabController(length: 4, vsync: this);
     _deleteMode = false;
+    _tabController.addListener(() {
+      setState(() {});
+    });
+    // Listen for swipe gestures and update animationValue
+    _tabController.animation!.addListener(() {
+      setState(() {
+        _animationValue = _tabController.animation!.value;
+      });
+    });
   }
+
+  double _animationValue = 0.0;
 
   @override
   void dispose() {
@@ -344,40 +355,82 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
     return AppBar(
       automaticallyImplyLeading: true,
       centerTitle: true,
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       title: const Text('Downloads'),
     );
   }
 
+  /// Custom AppBar with Smooth Animated Tabs
   AppBar cloudAppBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       title: const Text('ReviZa'),
-      bottom: TabBar(controller: _tabController, tabs: const [
-        Tab(
-          child: Icon(Icons.note),
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(4, (index) {
+              return _buildTab(index, _icons[index], _labels[index]);
+            }),
+          ),
         ),
-        Tab(
-          icon: Icon(Icons.question_answer),
-        ),
-        Tab(
-          child: Icon(Icons.book),
-        ),
-        Tab(
-          icon: Icon(Icons.link),
-        ),
-      ]),
+      ),
       actions: [
         IconButton(
-            onPressed: () {
-              commingSoon(context);
-            },
-            icon: const Icon(Icons.notifications)),
-        SizedBox(
-          width: 12.h,
-        )
+          onPressed: () {
+            commingSoon(context);
+          },
+          icon: const Icon(Icons.notifications),
+        ),
+        SizedBox(width: 12),
       ],
     );
   }
+
+  /// Custom Tab with Smooth Resizing
+  Widget _buildTab(int index, IconData icon, String label) {
+    double selectedFactor =
+        (1 - (_animationValue - index).abs()).clamp(0.0, 1.0);
+
+    return GestureDetector(
+      onTap: () => _tabController.animateTo(index),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(
+            horizontal: 10 + (10 * selectedFactor), vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: selectedFactor * 0.2),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 20 + (10 * selectedFactor), color: Colors.white),
+            if (selectedFactor > 0.5) ...[
+              SizedBox(width: 6),
+              Text(label,
+                  style: TextStyle(
+                      fontSize: 12 + (4 * selectedFactor),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  final List<IconData> _icons = [
+    Icons.note,
+    Icons.question_answer,
+    Icons.book,
+    Icons.link,
+  ];
+  final List<String> _labels = [
+    "Notes",
+    "Papers",
+    "Books",
+    "Links",
+  ];
 }

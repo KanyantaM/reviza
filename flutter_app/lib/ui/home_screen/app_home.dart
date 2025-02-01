@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.bookmark)),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('ReviZa'),
         actions: [
           IconButton(

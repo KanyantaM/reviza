@@ -66,7 +66,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-              icon: const Icon(FontAwesomeIcons.robot),
+              icon: const Icon(Icons.assistant),
               onPressed: () {
                 // Handle share action
                 showDialog(
@@ -97,8 +97,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
             onPageError: (page, error) {
               showErrorDialog(context, '$page: ${error.toString()}');
             },
-            onViewCreated: (PDFViewController pdfViewController) {
-            },
+            onViewCreated: (PDFViewController pdfViewController) {},
             onPageChanged: (int? page, int? total) {
               setState(() {
                 currentPage = page ?? 0;

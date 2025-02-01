@@ -75,7 +75,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
             return generateCards(
                 context,
                 widget.uid,
-                widget.courseName,
+                course ?? widget.courseName,
                 type,
                 state,
                 () {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
 import 'package:reviza/features/edit_courses/view/home_tab_page.dart';
 import 'package:reviza/features/view_subjects/view_subjects.dart';
@@ -51,11 +50,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ViewMaterialPage(
-        isDownloadedView: true,
-        uid: widget.uid,
-      )));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ViewMaterialPage(
+                            isDownloadedView: true,
+                            uid: widget.uid,
+                          )));
             },
             icon: const Icon(Icons.bookmark)),
         automaticallyImplyLeading: false,
@@ -91,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              FontAwesomeIcons.robot,
+              Icons.assistant,
             ),
             label: 'reviza ai',
           ),

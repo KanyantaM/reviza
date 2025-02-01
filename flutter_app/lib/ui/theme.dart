@@ -9,9 +9,16 @@ class ReviZaTheme {
         bodyColor: Colors.black,
         displayColor: Colors.black,
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         color: Color(0xFF0F2D35),
         iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: GoogleFonts.montserrat(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+        elevation: 4,
+        centerTitle: true,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: Color(0xFF0F2D35),
@@ -51,9 +58,16 @@ class ReviZaTheme {
         bodyColor: Colors.white,
         displayColor: Colors.white,
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         color: Color(0xFF0A1E26),
         iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: GoogleFonts.montserrat(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+        elevation: 4,
+        centerTitle: true,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: Color(0xFF0A1E26),

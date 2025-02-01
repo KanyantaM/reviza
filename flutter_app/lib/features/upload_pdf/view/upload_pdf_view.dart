@@ -19,8 +19,7 @@ import 'package:student_api/student_api.dart';
 class UploadPdfView extends StatefulWidget {
   final String id;
   final Types type;
-  const UploadPdfView({Key? key, required this.type, required this.id})
-      : super(key: key);
+  const UploadPdfView({super.key, required this.type, required this.id});
 
   @override
   State<UploadPdfView> createState() => _CreateUpdateNoteViewState();
@@ -28,7 +27,7 @@ class UploadPdfView extends StatefulWidget {
 
 class _CreateUpdateNoteViewState extends State<UploadPdfView>
     with SingleTickerProviderStateMixin {
-      bool _uploading = false;
+  bool _uploading = false;
   Student? _student;
   List<String> _myCourses = [];
   File? _file;
@@ -91,7 +90,6 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: widgetSelector(
           pp: const Text('Upload Past Paper'),
           notes: const Text('Upload Notes'),
@@ -129,19 +127,19 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                             radius: const Radius.circular(10),
                             dashPattern: const [10, 4],
                             strokeCap: StrokeCap.round,
-                            color: Colors.blue.shade400,
+                            // color: Colors.blue.shade400,
                             child: Container(
                               width: double.infinity,
                               height: 150,
                               decoration: BoxDecoration(
-                                  color: Colors.blue.shade50.withOpacity(.3),
+                                  // color: Colors.blue.shade50.withOpacity(.3),
                                   borderRadius: BorderRadius.circular(10)),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const Icon(
                                     Iconsax.folder_open,
-                                    color: Colors.blue,
+                                    // color: Colors.blue,
                                     size: 40,
                                   ),
                                   const SizedBox(
@@ -151,7 +149,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                     'Select your file',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      color: Colors.grey.shade400,
+                                      // color: Colors.grey.shade400,
                                     ),
                                   ),
                                 ],
@@ -232,7 +230,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                               'Selected File:',
                               style: TextStyle(
                                 fontSize: 15,
-                                color: Colors.grey.shade400,
+                                // color: Colors.grey.shade400,
                               ),
                             ),
                             const SizedBox(
@@ -242,10 +240,10 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
+                                  // color: Colors.white,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.shade200,
+                                      // color: Colors.grey.shade200,
                                       offset: const Offset(0, 1),
                                       blurRadius: 3,
                                       spreadRadius: 2,
@@ -335,45 +333,45 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                 const Spacer(
                   flex: 2,
                 ),
-                
-                     SizedBox(
-                        height: (29.7),
-                        width: (170.7),
-                        child: (_uploading)
-                            ? const Center(child: Text('UPloading....', style: TextStyle(fontWeight: FontWeight.w700),))
-                            : OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular((20.86)),
+                SizedBox(
+                    height: (29.7),
+                    width: (170.7),
+                    child: (_uploading)
+                        ? const Center(
+                            child: Text(
+                            'UPloading....',
+                            style: TextStyle(fontWeight: FontWeight.w700),
+                          ))
+                        : OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Theme.of(context).hoverColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular((20.86)),
+                              ),
+                            ),
+                            onPressed: () async {
+                              setState(() {
+                                _uploading = true;
+                              });
+                              await uploadFile(context, state);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(
+                                  width: (9.86),
+                                ),
+                                Text(
+                                  "Upload Material",
+                                  style: GoogleFonts.poppins(
+                                    // color: Colors.white,
+                                    fontSize: (12.51),
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                onPressed: () async {
-                                  setState(() {
-                                    _uploading = true;
-                                  });
-                                  await uploadFile(context, state);
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(
-                                      width: (9.86),
-                                    ),
-                                    Text(
-                                      "Upload Material",
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontSize: (12.51),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                  
+                              ],
+                            ),
+                          )),
                 const SizedBox(
                   height: 12,
                 )
@@ -492,7 +490,8 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
   }
 
   uploadFile(BuildContext context, UploadPdfState state) async {
-    if (_file != null && (_courseName.isNotEmpty || widget.type == Types.links)) {
+    if (_file != null &&
+        (_courseName.isNotEmpty || widget.type == Types.links)) {
       isuploaded = true;
       String type = '';
       String desc = '';
@@ -549,7 +548,6 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                 '$startingUnit ${(authorNameController.text.isNotEmpty) ? 'by ${authorNameController.text}' : ''}';
           }
           break;
-        default:
       }
       context.read<UploadPdfBloc>().add(
             UploadPdf(

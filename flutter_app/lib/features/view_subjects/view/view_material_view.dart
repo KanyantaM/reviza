@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:reviza/features/view_subjects/view/widgets/list_generator.dart';
 import 'package:reviza/features/view_subjects/view/widgets/custom_view.dart';

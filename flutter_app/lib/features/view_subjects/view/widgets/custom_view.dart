@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
@@ -60,7 +59,6 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_studyMaterial?.title ?? ''),
         actions: [
           Padding(
@@ -171,18 +169,13 @@ class _VotingBarState extends State<VotingBar> {
             width: MediaQuery.of(context).size.width * 0.95,
             padding: const EdgeInsets.all(15.0),
             decoration: BoxDecoration(
-              color: Colors.grey[800],
+              color: Theme.of(context)
+                  .appBarTheme
+                  .backgroundColor
+                  ?.withValues(alpha: .9),
               borderRadius: const BorderRadius.all(
                 Radius.circular(20.0),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3),
-                ),
-              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -12,7 +12,6 @@ final class ViewMaterialInitial extends ViewMaterialState {}
 final class FetchingMaterialsState extends ViewMaterialState {}
 
 final class MaterialsFetchedState extends ViewMaterialState {
-  ///This should all the materials that can be fetched if they are form the device else it is the list per subject if it is coming from an online source
   final List<StudyMaterial> studyMaterials;
   final List<String> courses;
 
@@ -53,8 +52,6 @@ final class MaterialsFetchedState extends ViewMaterialState {
                   filteredResults.add(material);
                 }
                 break;
-              default:
-                return [];
             }
           } else {
             filteredResults.add(material);
@@ -66,10 +63,11 @@ final class MaterialsFetchedState extends ViewMaterialState {
         filteredResults.add(material);
       }
     }
-      return filteredResults;
+    return filteredResults;
   }
 
-  const MaterialsFetchedState({required this.courses, required this.studyMaterials});
+  const MaterialsFetchedState(
+      {required this.courses, required this.studyMaterials});
 }
 
 final class MaterialDownloadedSuccesfully extends ViewMaterialState {}
@@ -85,7 +83,10 @@ final class StudyMaterialOpened extends ViewMaterialState {
   final String uid;
   final StudyMaterial originalStudyMaterial;
 
-  const StudyMaterialOpened({required this.originalStudyMaterial, required this.studyMaterial, required this.uid});
+  const StudyMaterialOpened(
+      {required this.originalStudyMaterial,
+      required this.studyMaterial,
+      required this.uid});
 }
 
 final class DownloadedCourse extends ViewMaterialState {}
@@ -98,4 +99,4 @@ final class ErrorState extends ViewMaterialState {
   const ErrorState({required this.message});
 }
 
-final class MaterialBanedState extends ViewMaterialState{}
+final class MaterialBanedState extends ViewMaterialState {}

@@ -3,7 +3,7 @@ import 'package:reviza/features/upload_pdf/upload_pdf.dart';
 import 'package:reviza/misc/course_info.dart';
 
 class UploadTypeScreen extends StatelessWidget {
-  const UploadTypeScreen({Key? key, required this.uid}) : super(key: key);
+  const UploadTypeScreen({super.key, required this.uid});
   final String uid;
 
   @override
@@ -27,16 +27,19 @@ class UploadTypeScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => (UploadPdfPage(
-                          uploadType: Types.notes,uid: uid,
+                          uploadType: Types.notes,
+                          uid: uid,
                         )),
                       ),
                     );
-                  }),_buildUploadTypeCard('PAPERS', Icons.note, () {
+                  }),
+                  _buildUploadTypeCard('PAPERS', Icons.note, () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ( UploadPdfPage(
-                          uploadType: Types.papers, uid: uid,
+                        builder: (context) => (UploadPdfPage(
+                          uploadType: Types.papers,
+                          uid: uid,
                         )),
                       ),
                     );
@@ -46,7 +49,8 @@ class UploadTypeScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => (UploadPdfPage(
-                          uploadType: Types.books, uid: uid,
+                          uploadType: Types.books,
+                          uid: uid,
                         )),
                       ),
                     );
@@ -56,7 +60,8 @@ class UploadTypeScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => (UploadPdfPage(
-                          uploadType: Types.links, uid: uid,
+                          uploadType: Types.links,
+                          uid: uid,
                         )),
                       ),
                     );

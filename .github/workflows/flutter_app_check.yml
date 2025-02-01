@@ -24,7 +24,7 @@ jobs:
 
       #2 Setup Java
       - name: Set Up Java
-        uses: actions/setup-java@v4.5.0
+        uses: actions/setup-java@v4.7.0
         with:
           distribution: 'oracle'
           java-version: '17'

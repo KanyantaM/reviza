@@ -186,12 +186,13 @@ class _SectionChatState extends State<SectionChat> {
           crossAxisAlignment:
               isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            Text(
-              content.role?.replaceAll('model', 'ReviZa AI') ?? 'role',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
+            if (!isUserMessage)
+              Text(
+                content.role?.replaceAll('model', 'ReviZa AI') ?? 'role',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
             isUserMessage
                 ? Markdown(
                     shrinkWrap: true,

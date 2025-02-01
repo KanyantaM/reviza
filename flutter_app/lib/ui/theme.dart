@@ -20,6 +20,16 @@ class ReviZaTheme {
         elevation: 4,
         centerTitle: true,
       ),
+      cardTheme: CardTheme(
+        color: const Color(0xFFF2F7F5), // Light grayish tint (matches theme)
+        shadowColor: Colors.black12,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(16), // More rounded for consistency
+          side: BorderSide(color: Color(0xFF0F2D35), width: 1), // Soft border
+        ),
+      ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: Color(0xFF0F2D35),
         selectedItemColor: Color(0xFF00E676),
@@ -68,6 +78,14 @@ class ReviZaTheme {
         ),
         elevation: 4,
         centerTitle: true,
+      ),
+      cardTheme: CardTheme(
+        color: Color(0xFF1E1E1E),
+        shadowColor: Colors.black54,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: Color(0xFF0A1E26),

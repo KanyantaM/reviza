@@ -226,25 +226,48 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width *
+                              0.7, // Responsive width
+                          height: MediaQuery.of(context).size.height *
+                              0.3, // Responsive height
                           child: LottieBuilder.asset(
-                              'assets/lottie/downloading_cloud.json'),
+                            'assets/lottie/downloading_cloud.json',
+                            fit: BoxFit.contain, // Prevent overflow
+                          ),
                         ),
                         BlocBuilder(
                             bloc: downLoadProgressCubit,
                             builder: (context, ownloadProgressCubit) {
                               return Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: Wrap(
-                                  children: [
-                                    LinearProgressIndicator(
-                                      value: downLoadProgressCubit.state,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                  ),
+                                  child: FittedBox(
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.8,
+                                          child: LinearProgressIndicator(
+                                            value: downLoadProgressCubit.state,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          '${(downLoadProgressCubit.state * 100).toStringAsFixed(1)} %',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                        '${(downLoadProgressCubit.state * 100).toStringAsFixed(1)} %')
-                                  ],
+                                  ),
                                 ),
                               );
                             }),

@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:reviza/features/view_subjects/utils/important_functions.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:study_material_api/study_material_api.dart';
 
@@ -10,7 +8,7 @@ class StudyMaterialCard extends StatelessWidget {
   final Function(StudyMaterial) onTap;
   final Function onLongPress;
   final bool isDeleteMode;
-  final Function(StudyMaterial path) onAddToDeleteList;
+  final Function(StudyMaterial) onAddToDeleteList;
   final List<StudyMaterial> shouldBeDeleted;
 
   const StudyMaterialCard({
@@ -25,180 +23,163 @@ class StudyMaterialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final textSize = screenWidth < 400 ? 13.0 : 15.0; // Responsive text size
+
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
       child: InkWell(
         onLongPress: () => onLongPress(),
-        onTap: () async {
+        onTap: () {
           if (isDeleteMode) {
-            // String devicePath = await getPathTodDelete(studyMaterial);
             onAddToDeleteList(studyMaterial);
           } else {
             onTap(studyMaterial);
           }
         },
         child: Card(
-          child: Column(
-            children: [
-              // Top section with text
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (isDeleteMode)
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              FutureBuilder(
-                                  future:  getPathTodDelete(studyMaterial),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.data?.isNotEmpty ?? false) {
-                                      if (shouldBeDeleted
-                                          .contains(studyMaterial)) {
-                                        return const Icon(
-                                            Icons.check_circle_outline_rounded);
-                                      } else {
-                                        return const Icon(
-                                            Icons.circle_outlined);
-                                      }
-                                    } else {
-                                      return const Wrap();
-                                    }
-                                  }),
-                              // (shouldBeDeleted)?const Icon(Icons.check_circle_outline_rounded):const Icon(Icons.circle_outlined),
-                            ],
-                          ),
-                        Text(
-                          '️🗒️',
-                          textScaleFactor: (isDeleteMode) ? 3 : 4,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.5,
+                    if (isDeleteMode)
+                      FutureBuilder(
+                        future: getPathToDelete(studyMaterial),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                shouldBeDeleted.contains(studyMaterial)
+                                    ? Icons.check_circle
+                                    : Icons.radio_button_unchecked,
+                                color: shouldBeDeleted.contains(studyMaterial)
+                                    ? Colors.green
+                                    : Colors.grey,
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    const Text('🗒️', textScaleFactor: 2.5),
+                    const SizedBox(width: 10),
+
+                    /// **Title & Description (Flexible to avoid overflow)**
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             studyMaterial.title,
-                            style: const TextStyle(
-                              fontSize: 16.0,
+                            style: TextStyle(
+                              fontSize: textSize,
                               fontWeight: FontWeight.bold,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 5.0),
+                          const SizedBox(height: 2),
                           Text(
-                            "desc: ${studyMaterial.description}",
-                            style: const TextStyle(fontSize: 14.0),
-                            // overflow: TextOverflow.ellipsis,
+                            studyMaterial.description,
+                            style: TextStyle(
+                              fontSize: textSize - 2,
+                              color: Colors.grey[700],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
                     ),
+
+                    /// **Share Button**
                     IconButton(
                       onPressed: () => commingSoon(context),
-                      icon: const Icon(Icons.share),
+                      icon: const Icon(Icons.share, color: Colors.blueGrey),
+                      constraints: const BoxConstraints(),
+                      padding: EdgeInsets.zero,
                     ),
                   ],
                 ),
-              ),
-
-              const Divider(),
-
-              // Bottom section with thumbs up and download size
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        (studyMaterial.fans.length >=
-                                studyMaterial.haters.length)
-                            ? const Icon(
-                                Icons.thumb_up,
-                                color: Colors.green,
-                              )
-                            : const Icon(
-                                Icons.thumb_down,
-                                color: Colors.red,
-                              ),
-                        Text(
-                          "${(((studyMaterial.fans.length >= studyMaterial.haters.length) ? studyMaterial.fans.length : studyMaterial.haters.length) / (studyMaterial.fans.length + studyMaterial.haters.length)).toStringAsFixed(1)}% (${(studyMaterial.fans.length + studyMaterial.haters.length).toString()})",
-                          style: TextStyle(
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      /// **Like/Dislike Percentage**
+                      Row(
+                        children: [
+                          Icon(
+                            studyMaterial.fans.length >=
+                                    studyMaterial.haters.length
+                                ? Icons.thumb_up_alt_rounded
+                                : Icons.thumb_down_alt_rounded,
+                            size: 16,
+                            color: studyMaterial.fans.length >=
+                                    studyMaterial.haters.length
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "${((studyMaterial.fans.length >= studyMaterial.haters.length ? studyMaterial.fans.length : studyMaterial.haters.length) / (studyMaterial.fans.length + studyMaterial.haters.length)).toStringAsFixed(1)}% (${studyMaterial.fans.length + studyMaterial.haters.length})",
+                            style: TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,
-                              color: (studyMaterial.fans.length >=
-                                      studyMaterial.haters.length)
+                              color: studyMaterial.fans.length >=
+                                      studyMaterial.haters.length
                                   ? Colors.green
-                                  : Colors.red),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        FutureBuilder(
-                            future: getFilePath(
+                                  : Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      /// **File Status & Size**
+                      Row(
+                        children: [
+                          FutureBuilder(
+                            future: isFileDownloaded(
                                 studyMaterial.title, studyMaterial.subjectName),
                             builder: (context, snapshot) {
-                              if (snapshot.data ?? false) {
-                                return const Icon(Icons.phone_android_outlined);
-                              } else {
-                                return const Icon(Icons.cloud_outlined);
-                              }
-                            }),
-                        Text(
-                          (studyMaterial.size! <= 1000)
-                              ? ' ${studyMaterial.size.toString()} KB'
-                              : ' ${(studyMaterial.size! / 1000).toStringAsFixed(2)} MB',
-                          style: const TextStyle(
-                              fontSize: 12.0, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ],
+                              return Icon(
+                                snapshot.data ?? false
+                                    ? Icons.phone_android
+                                    : Icons.cloud_download_outlined,
+                                size: 16,
+                                color: snapshot.data ?? false
+                                    ? Colors.blue
+                                    : Colors.grey,
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            studyMaterial.size! <= 1000
+                                ? ' ${studyMaterial.size} KB'
+                                : ' ${(studyMaterial.size! / 1000).toStringAsFixed(2)} MB',
+                            style: const TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
-  }
-}
-
-Future<bool> getFilePath(String filename, String subjectName) async {
-  final dir = await getApplicationDocumentsDirectory();
-  if (await File("${dir.path}/$subjectName/$filename").exists()) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-Future<String> getPathTodDelete(StudyMaterial studyMaterial) async {
-  final dir = await getApplicationDocumentsDirectory();
-  if (await File(
-          "${dir.path}/${studyMaterial.subjectName}/${studyMaterial.title}")
-      .exists()) {
-    return "${dir.path}/${studyMaterial.subjectName}/${studyMaterial.title}";
-  }
-  return '';
-}
-
-Future deleteFile(StudyMaterial studyMaterial) async {
-  final dir = await getApplicationDocumentsDirectory();
-  if (await File(
-          "${dir.path}/${studyMaterial.subjectName}/${studyMaterial.title}")
-      .exists()) {
-    File("${dir.path}/${studyMaterial.subjectName}/${studyMaterial.title}")
-        .delete();
   }
 }

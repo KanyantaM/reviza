@@ -22,93 +22,93 @@ Widget generateCards(
     Function onDelete) {
   List<StudyMaterial> studyMaterials = state.filterByType(course, type);
   if (studyMaterials.isNotEmpty) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (deleteMode)
-          Column(
-            children: [
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (deleteMode)
+              Column(
                 children: [
-                  IconButton(
-                      onPressed: () {
-                        onCancel();
-                      },
-                      icon: const Icon(Icons.cancel)),
-                  IconButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              HiveStudyMaterialRepository local =
-                                  HiveStudyMaterialRepository();
-                              return AlertDialog(
-                                icon: const Icon(Icons.delete),
-                                title: Text(
-                                    'Delete ${pathsToDelete.length} file(s)'),
-                                content: const Text(
-                                    'Are you sure you want to delete?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(
-                                          context); // Close the dialog
-                                    },
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      // Perform the deletion
-                                      Navigator.pop(
-                                        context,
-                                      );
-                                      for (StudyMaterial path
-                                          in pathsToDelete) {
-                                        await local.deleteStudyMaterial(path);
-                                      }
-                                      onDelete();
-                                      // Close the dialog
-                                    },
-                                    child: const Text('Delete'),
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                      icon: const Icon(Icons.delete))
+                  const Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                          onPressed: () => onCancel(),
+                          icon: const Icon(Icons.cancel)),
+                      IconButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  HiveStudyMaterialRepository local =
+                                      HiveStudyMaterialRepository();
+                                  return AlertDialog(
+                                    icon: const Icon(Icons.delete),
+                                    title: Text(
+                                        'Delete ${pathsToDelete.length} file(s)'),
+                                    content: const Text(
+                                        'Are you sure you want to delete?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                          for (StudyMaterial path
+                                              in pathsToDelete) {
+                                            await local
+                                                .deleteStudyMaterial(path);
+                                          }
+                                          onDelete();
+                                        },
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                          icon: const Icon(Icons.delete))
+                    ],
+                  ),
+                  const Divider(),
                 ],
               ),
-              const Divider(),
-            ],
-          ),
-        Flexible(
-          child: ListView.builder(
-              // physics: const ClampingScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: studyMaterials.length,
-              itemBuilder: ((context, index) {
-                if (type == Types.links) {
-                  return LinksCard(
-                    studyMaterial: studyMaterials[index],
-                  );
-                }
-                // print(studyMaterials[index]);
-                return StudyMaterialCard(
-                  studyMaterial: studyMaterials[index],
-                  onTap: (studyMaterial) {
-                    context.read<ViewMaterialBloc>().add(DownLoadMaterial(
-                        course: studyMaterials[index], uid: uid));
-                  },
-                  onLongPress: onLongPress,
-                  isDeleteMode: deleteMode,
-                  onAddToDeleteList: onAddToDeleteList,
-                  shouldBeDeleted: pathsToDelete,
-                );
-              })),
-        ),
-      ],
+            Expanded(
+              child: GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: (constraints.maxWidth > 600) ? 2 : 1,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: (constraints.maxWidth > 600) ? 3.5 : 2.5,
+                ),
+                itemCount: studyMaterials.length,
+                itemBuilder: (context, index) {
+                  return type == Types.links
+                      ? LinksCard(studyMaterial: studyMaterials[index])
+                      : StudyMaterialCard(
+                          studyMaterial: studyMaterials[index],
+                          onTap: (studyMaterial) {
+                            context.read<ViewMaterialBloc>().add(
+                                  DownLoadMaterial(
+                                      course: studyMaterials[index], uid: uid),
+                                );
+                          },
+                          onLongPress: onLongPress,
+                          isDeleteMode: deleteMode,
+                          onAddToDeleteList: onAddToDeleteList,
+                          shouldBeDeleted: pathsToDelete,
+                        );
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   } else {
     return Center(

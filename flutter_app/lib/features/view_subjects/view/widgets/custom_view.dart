@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
+import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
-import 'package:reviza/utilities/dialogues/error_dialog.dart';
+// import 'package:reviza/utilities/dialogues/error_dialog.dart';
 import 'package:study_material_api/study_material_api.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class CustomPDFViewer extends StatefulWidget {
   final bool viewOnline;
@@ -30,9 +32,9 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
   StudyMaterial? _studyMaterial;
   String? _uid;
   bool? _hasVotedUp;
-  final GlobalKey<State<StatefulWidget>> pdfViewerKey = GlobalKey();
   int currentPage = 1;
   int? totalPage;
+  final PdfViewerController _pdfViewerController = PdfViewerController();
 
   void _checkVoteStatus(StudyMaterial? studyMaterial, String? uid) {
     setState(() {
@@ -55,53 +57,47 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
   }
 
   @override
+  void dispose() {
+    _pdfViewerController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(_studyMaterial?.title ?? ''),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-              icon: const Icon(Icons.assistant),
-              onPressed: () {
-                // Handle share action
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const AlertDialog(
-                        content: AiScreen(),
-                      );
-                    });
-              },
-            ),
+          IconButton(
+            icon: const Icon(Icons.assistant),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return const AlertDialog(
+                    content: AiScreen(),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
       body: Stack(
         children: [
-          PDFView(
-            key: pdfViewerKey,
-            filePath: _studyMaterial!.filePath,
-            onRender: (pages) {
+          SfPdfViewer.file(
+            File(_studyMaterial?.filePath ?? ''),
+            controller: _pdfViewerController,
+            onDocumentLoaded: (PdfDocumentLoadedDetails details) {
               setState(() {
-                totalPage = pages;
+                totalPage = details.document.pages.count;
               });
             },
-            onError: (error) {
-              showErrorDialog(context, error.toString());
-            },
-            onPageError: (page, error) {
-              showErrorDialog(context, '$page: ${error.toString()}');
-            },
-            onViewCreated: (PDFViewController pdfViewController) {},
-            onPageChanged: (int? page, int? total) {
+            onPageChanged: (PdfPageChangedDetails details) {
               setState(() {
-                currentPage = page ?? 0;
+                currentPage = details.newPageNumber;
               });
-
-              // showErrorDialog(context, 'page change: $page/$total');
             },
           ),
           Positioned(
@@ -110,11 +106,8 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Text(
-                'Page ${currentPage + 1}/${totalPage ?? ''}',
-                style: const TextStyle(
-                  fontSize: 16.0,
-                  // color: Colors.white,
-                ),
+                'Page $currentPage/${totalPage ?? ''}',
+                style: const TextStyle(fontSize: 16.0),
               ),
             ),
           ),
@@ -125,14 +118,14 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                   onDownVote: widget.onDownVote,
                   onReport: widget.onReport,
                 )
-              : const Wrap(),
+              : const SizedBox.shrink(),
         ],
       ),
     );
   }
 }
 
-class VotingBar extends StatefulWidget {
+class VotingBar extends StatelessWidget {
   final bool? hasVotedUp;
   final Function onUpVote;
   final Function onDownVote;
@@ -144,19 +137,6 @@ class VotingBar extends StatefulWidget {
     required this.onDownVote,
     required this.onReport,
   });
-
-  @override
-  State<VotingBar> createState() => _VotingBarState();
-}
-
-class _VotingBarState extends State<VotingBar> {
-  bool? _hasVotedUp;
-
-  @override
-  void initState() {
-    _hasVotedUp = widget.hasVotedUp;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,81 +152,39 @@ class _VotingBarState extends State<VotingBar> {
               color: Theme.of(context)
                   .appBarTheme
                   .backgroundColor
-                  ?.withValues(alpha: .9),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(20.0),
-              ),
+                  ?.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(20.0),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    widget.onUpVote();
-                    setState(() {
-                      if (_hasVotedUp == false || _hasVotedUp == null) {
-                        _hasVotedUp = true;
-                      } else {
-                        _hasVotedUp = null;
-                      }
-                    });
-                  },
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.thumb_up,
-                        color: _hasVotedUp ?? false
-                            ? Colors.green
-                            : Colors.lightGreen[100],
-                        size: 30,
-                      ),
-                      const SizedBox(height: 8),
-                    ],
+                IconButton(
+                  icon: Icon(
+                    Icons.thumb_up,
+                    color: hasVotedUp == true
+                        ? Colors.green
+                        : Colors.lightGreen[100],
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      widget.onDownVote();
-                      if (_hasVotedUp == true || _hasVotedUp == null) {
-                        _hasVotedUp = false;
-                      } else {
-                        _hasVotedUp = null;
-                      }
-                    });
-                  },
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.thumb_down,
-                        color:
-                            _hasVotedUp ?? true ? Colors.red[100] : Colors.red,
-                        size: 30,
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-                  ),
+                  onPressed: () => onUpVote(),
                 ),
                 IconButton(
-                    onPressed: () {
-                      commingSoon(context);
-                    },
-                    icon: const Icon(
-                      Icons.share,
-                      color: Colors.blue,
-                    )),
+                  icon: Icon(
+                    Icons.thumb_down,
+                    color: hasVotedUp == false ? Colors.red : Colors.red[100],
+                  ),
+                  onPressed: () => onDownVote(),
+                ),
+                IconButton(
+                  onPressed: () => commingSoon(context),
+                  icon: const Icon(Icons.share, color: Colors.blue),
+                ),
                 InkWell(
-                  onTap: () => widget.onReport(),
+                  onTap: () => onReport(),
                   child: const Row(
                     children: [
-                      Text(
-                        "Report",
-                        style: TextStyle(fontSize: 16.0, color: Colors.red),
-                      ),
-                      Icon(
-                        Icons.report_rounded,
-                        color: Colors.red,
-                      ),
+                      Text("Report",
+                          style: TextStyle(fontSize: 16.0, color: Colors.red)),
+                      Icon(Icons.report_rounded, color: Colors.red),
                     ],
                   ),
                 ),

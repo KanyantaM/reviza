@@ -8,19 +8,28 @@ class UploadTypeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    final crossAxisCount = isMobile ? 2 : 4;
+    final padding = isMobile ? 20.0 : 40.0;
+    final fontSize = isMobile ? 24.0 : 32.0;
+
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(padding),
         child: Column(
           children: [
-            const Text(
+            Text(
               'Select Upload Type',
-              style: TextStyle(fontSize: 24),
+              style: TextStyle(fontSize: fontSize),
             ),
             const SizedBox(height: 20),
             Expanded(
               child: GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: crossAxisCount,
+                childAspectRatio: 1.0,
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 20.0,
                 children: [
                   _buildUploadTypeCard('NOTES', Icons.note, () {
                     Navigator.push(
@@ -84,12 +93,14 @@ class UploadTypeScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(title),
+              Icon(icon, size: 40),
               const SizedBox(height: 10),
-              Icon(icon),
+              Text(title,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              const Text('>'),
+              // const Text('>', style: TextStyle(fontSize: 24)),
             ],
           ),
         ),

@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -55,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCpyyXFbDWUQmj_6kO5Nc0NZ3ZwJePVNoE',
-    appId: '1:585015455552:android:80ad8211e2ed7f24f2d4a5',
+    appId: '1:585015455552:android:335ff823d219d65df2d4a5',
     messagingSenderId: '585015455552',
     projectId: 'reviza-31466',
     storageBucket: 'reviza-31466.appspot.com',
@@ -73,11 +70,22 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCKeGraITk7HJEVXyMWqJfc96GMAw-3fZA',
-    appId: '1:585015455552:ios:2e6fe7575d5c2240f2d4a5',
+    appId: '1:585015455552:ios:5b44f71d6e13f751f2d4a5',
     messagingSenderId: '585015455552',
     projectId: 'reviza-31466',
     storageBucket: 'reviza-31466.appspot.com',
-    iosClientId: '585015455552-r1l4qbc1mlmd0vfijg2jhuiigveb69n5.apps.googleusercontent.com',
-    iosBundleId: 'com.example.reviza.RunnerTests',
+    iosClientId: '585015455552-smt38qt7qu7q2rccmo7170apo8at3qgc.apps.googleusercontent.com',
+    iosBundleId: 'com.example.reviza',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBJWNooqA0Gcj6WxYtSvJB8OCMMS0hfNjo',
+    appId: '1:585015455552:web:c04f2a9c05db1102f2d4a5',
+    messagingSenderId: '585015455552',
+    projectId: 'reviza-31466',
+    authDomain: 'reviza-31466.firebaseapp.com',
+    storageBucket: 'reviza-31466.appspot.com',
+    measurementId: 'G-FH9ZNJLMHY',
+  );
+
 }

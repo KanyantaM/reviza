@@ -15,6 +15,7 @@ import 'package:reviza/misc/course_info.dart';
 import 'package:reviza/utilities/cloud.dart';
 import 'package:reviza/utilities/dialogues/cannot_share_empty_not_dialog.dart';
 import 'package:student_api/student_api.dart';
+import 'package:path/path.dart' as p;
 
 class UploadPdfView extends StatefulWidget {
   final String id;
@@ -240,10 +241,10 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  // color: Colors.white,
+                                  color: Colors.white,
                                   boxShadow: [
                                     BoxShadow(
-                                      // color: Colors.grey.shade200,
+                                      color: Colors.grey.shade200,
                                       offset: const Offset(0, 1),
                                       blurRadius: 3,
                                       spreadRadius: 2,
@@ -549,6 +550,8 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
           }
           break;
       }
+      String normalizedPath = p.normalize(_file!.path);
+      String pdfFileName = p.basename(normalizedPath);
       context.read<UploadPdfBloc>().add(
             UploadPdf(
               subjectName: _courseName,
@@ -556,7 +559,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
               id: generateRandomString((DateTime.now().hour) % 5 + 5),
               title: (titleController.text.isNotEmpty)
                   ? titleController.text
-                  : _file!.path.split('/').last,
+                  : pdfFileName,
               description: desc,
               pdfFile: _file!,
             ),

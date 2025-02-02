@@ -9,7 +9,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  cloud_firestore: ^4.14.0
+  cloud_firestore: ^5.6.2
   flutter:
     sdk: flutter
   student_api:

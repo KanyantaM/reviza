@@ -1,57 +1,76 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 
 class PdfOps {
-  ///subject name and title should be compulsory fields
+  /// Upload PDF to Firebase Storage
+  /// - `subjectName` and `title` are required fields.
+  /// - `uploadProgress` is a callback function to track progress.
+  Future<String?> uploadPdfToFirebase(File pdfFile, String subjectName,
+      String title, Function(double) uploadProgress) async {
+    try {
+      if (!pdfFile.existsSync()) {
+        throw Exception("Upload failed: File does not exist.");
+      }
 
+      double progress = 0;
 
-Future<String?> uploadPdfToFirebase(File pdfFile, String subjectName, String title, Function(double) uploadProgress) async {
-  try {
-    double progress = 0;
-    String pdfFileName = pdfFile.path.split('/').last;
-    Reference storageReference = FirebaseStorage.instance.ref().child('$subjectName/$title/$pdfFileName');
+      String normalizedPath = p.normalize(pdfFile.path);
+      String pdfFileName = (Platform.isWindows)
+          ? pdfFile.path.split('\\').last
+          : p.basename(normalizedPath);
 
-    UploadTask uploadTask = storageReference.putFile(pdfFile);
-    uploadTask.snapshotEvents.listen((TaskSnapshot event) {
-     progress = event.bytesTransferred / event.totalBytes;
-      uploadProgress(progress); // Call the function with the progress value
-      // Update your UI here
-    });
-    await uploadTask;
-    String downloadUrl = await storageReference.getDownloadURL();
-    return downloadUrl;
-  } catch (e) {
-    return null;
-  }
-}
+      Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('$subjectName/$title/$pdfFileName');
 
-Future<String> downloadPdfFromFirebase(String pdfUrl) async {
-  try {
-    String pdfFileName = pdfUrl.split('/').last; // Extracting file name from URL
+      SettableMetadata metadata = SettableMetadata(
+        contentType: 'application/pdf',
+        cacheControl: 'public,max-age=300',
+      );
 
-    // Get the documents directory
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    
-    // Create the desired subdirectory '/downloads/reviza/'
-    String subdirectoryPath = '${documentsDirectory.path}/downloads/reviza/';
-    Directory subdirectory = Directory(subdirectoryPath);
-    if (!subdirectory.existsSync()) {
-      subdirectory.createSync(recursive: true);
+      UploadTask uploadTask = storageReference.putFile(pdfFile, metadata);
+
+      uploadTask.snapshotEvents.listen((TaskSnapshot event) {
+        progress = event.bytesTransferred / event.totalBytes;
+        uploadProgress(progress);
+      }, onError: (error) {
+        uploadProgress(-1);
+      });
+
+      await uploadTask;
+      return await storageReference.getDownloadURL();
+    } catch (e) {
+      return null;
     }
+  }
 
-    // Create the local PDF file
-    File pdfFile = File('$subdirectoryPath$pdfFileName');
+  /// Download PDF from Firebase Storage
+  /// - Saves file in `/downloads/reviza/`
+  Future<String> downloadPdfFromFirebase(String pdfUrl) async {
+    try {
+      String pdfFileName =
+          Uri.parse(pdfUrl).pathSegments.last; // ✅ Safer extraction of filename
 
-    // Download the PDF from Firebase Storage
-    await FirebaseStorage.instance.refFromURL(pdfUrl).writeToFile(pdfFile);
+      // ✅ Get the documents directory
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      String subdirectoryPath = '${documentsDirectory.path}/downloads/reviza/';
+      Directory subdirectory = Directory(subdirectoryPath);
 
-    return pdfFile.path;
-  } catch (e) {
-    log("Error downloading PDF: $e");
-    return '';
+      if (!await subdirectory.exists()) {
+        await subdirectory.create(recursive: true);
+      }
+
+      // ✅ Define local file path
+      File pdfFile = File('$subdirectoryPath$pdfFileName');
+
+      // ✅ Download the PDF
+      await FirebaseStorage.instance.refFromURL(pdfUrl).writeToFile(pdfFile);
+
+      return pdfFile.path;
+    } catch (e) {
+      throw Exception("Error downloading PDF: $e");
+    }
   }
 }
-}
-

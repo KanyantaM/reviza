@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/app/bloc/app_bloc.dart';
 import 'package:reviza/features/login/login.dart';
-// import 'package:reviza/features/report.dart';
 import 'package:reviza/ui/theme.dart';
 import 'package:reviza/utilities/dialogues/error_dialog.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class UserScreen extends StatelessWidget {
   const UserScreen({super.key});
 
   Future<void> launchAppStoreForRating(BuildContext context) async {
-    const String packageName =
-        'your_app_package_name'; // Replace with your app's package name
+    const String packageName = '....';
 
     // For Android
     const String androidUrl = 'market://details?id=$packageName';
@@ -163,10 +162,14 @@ class UserScreen extends StatelessWidget {
             //   },
             // ),
             // const Divider(),
-            const ListTile(
+            ListTile(
               leading: Icon(Icons.info),
               title: Text('App Version'),
-              subtitle: Text('1.0.0'), // Replace with actual app version
+              subtitle: FutureBuilder(
+                  future: getAppVersion(),
+                  builder: (context, version) {
+                    return Text(version.data ?? '...');
+                  }), // Replace with actual app version
             ),
             const Divider(),
             ListTile(
@@ -183,4 +186,9 @@ class UserScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<String> getAppVersion() async {
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  return packageInfo.version; // e.g., "1.0.0"
 }

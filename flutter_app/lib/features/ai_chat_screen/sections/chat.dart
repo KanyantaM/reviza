@@ -4,7 +4,7 @@ import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_highlighter/flutter_highlighter.dart';
 import 'package:flutter_highlighter/themes/github.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
+// import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:reviza/features/ai_chat_screen/widgets/chat_input_box.dart';

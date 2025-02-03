@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:reviza/features/edit_courses/view/home_button/views/components/filter_dialogue.dart';
 import 'package:reviza/widgets/search_widget.dart';
-import 'package:reviza/misc/course_info.dart';
 import 'package:reviza/utilities/search_filters.dart';
 import 'package:student_api/student_api.dart';
 
@@ -21,24 +21,24 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
   List<String> _searchResults = [];
   final List<String> _selectedSubjects = [];
   bool _isSearching = false;
-
   String _university = '';
   String _school = '';
   String _department = '';
   String _year = '';
 
-  void _fetchCourses(String uni, String sch, String dep, String yr) async {
+  _startFromScratch(uni, sch, dep, yr) async {
     _filteredCourses = await filterBy(uni, sch, dep, yr);
-    setState(() {});
+    setState(() {
+      _university = uni;
+      _school = sch;
+      _department = dep;
+      _year = yr;
+    });
   }
 
   @override
   void initState() {
-    _fetchCourses('', '', '', '');
-    _university = '';
-    _school = '';
-    _department = '';
-    _year = '';
+    _startFromScratch(_university, _school, _department, _year);
     super.initState();
   }
 
@@ -46,10 +46,7 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
   void dispose() {
     _filteredCourses = [];
     _searchResults = [];
-    _university = '';
-    _school = '';
-    _department = '';
-    _year = '';
+
     super.dispose();
   }
 
@@ -203,150 +200,18 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
       selected: term.isNotEmpty,
       onSelected: (bool selected) {
         setState(() {
-          showFilterDialogue(context, depth);
+          showFilterDialogue(context, depth, (uni, sch, dep, yr) async {
+            _filteredCourses = await filterBy(uni, sch, dep, yr);
+            setState(() {
+              _university = uni;
+              _school = sch;
+              _department = dep;
+              _year = yr;
+            });
+          });
         });
       },
     );
-  }
-
-  Future<dynamic> showFilterDialogue(BuildContext context, int depth) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          switch (depth) {
-            case 1:
-              return AlertDialog(
-                content: Wrap(
-                  children: [
-                    _buildDropdown('University', data.keys.toList(), (value) {
-                      Navigator.pop(context);
-                      setState(() {
-                        _fetchCourses(value!, '', '', '');
-                        _university = value;
-                        _school = '';
-                        _department = '';
-                        _year = '';
-                      });
-                    }, true),
-                  ],
-                ),
-              );
-            case 2:
-              return AlertDialog(
-                content: Wrap(
-                  children: [
-                    _buildSearchableDropdown(
-                        'School', data[_university]?.keys.toList() ?? [],
-                        (value) {
-                      Navigator.pop(context);
-                      setState(() {
-                        _school = value;
-                        _department = '';
-                        _year = '';
-                        _fetchCourses(_university, value, '', '');
-                        //
-                      });
-                    }, (_university.isNotEmpty)),
-                  ],
-                ),
-              );
-            case 3:
-              return AlertDialog(
-                content: Wrap(
-                  children: [
-                    _buildSearchableDropdown('Department',
-                        data[_university]?[_school]?.keys.toList() ?? [],
-                        (value) {
-                      Navigator.pop(context);
-                      setState(() {
-                        _department = value;
-                        _year = '';
-                        _fetchCourses(_university, _department, value, '');
-                        //
-                      });
-                    }, (_school.isNotEmpty)),
-                  ],
-                ),
-              );
-            case 4:
-              return AlertDialog(
-                content: Wrap(
-                  children: [
-                    _buildDropdown(
-                        'Year',
-                        data[_university]?[_school]?[_department]
-                                ?.keys
-                                .toList()
-                                .cast<String>() ??
-                            [], (value) {
-                      Navigator.pop(context);
-                      setState(() {
-                        _year = value ?? '';
-                        _fetchCourses(_university, _department, _year, value!);
-                        //
-                      });
-                    }, (_department.isNotEmpty)),
-                  ],
-                ),
-              );
-
-            default:
-              return AlertDialog(
-                content: Wrap(
-                  children: [
-                    _buildDropdown('University', data.keys.toList(), (value) {
-                      Navigator.pop(context);
-                      setState(() {
-                        _fetchCourses(value!, '', '', '');
-                        _university = value;
-                        _school = '';
-                        _department = '';
-                        _year = '';
-                      });
-                    }, true),
-                    _buildSearchableDropdown(
-                        'School', data[_university]?.keys.toList() ?? [],
-                        (value) {
-                      Navigator.pop(context);
-                      setState(() {
-                        _school = value;
-                        _department = '';
-                        _year = '';
-                        _fetchCourses(_university, value, '', '');
-                        //
-                      });
-                    }, (_university.isNotEmpty)),
-                    _buildSearchableDropdown('Department',
-                        data[_university]?[_school]?.keys.toList() ?? [],
-                        (value) {
-                      Navigator.pop(context);
-                      setState(() {
-                        _department = value;
-                        _year = '';
-                        _fetchCourses(_university, _department, value, '');
-                        //
-                      });
-                    }, (_school.isNotEmpty)),
-                    _buildDropdown(
-                        'Year',
-                        data[_university]?[_school]?[_department]
-                                ?.keys
-                                .toList()
-                                .cast<String>() ??
-                            [], (value) {
-                      Navigator.pop(context);
-                      setState(() {
-                        _year = value ?? '';
-                        _fetchCourses(_university, _department, _year, value!);
-                        //
-                      });
-                    }, (_department.isNotEmpty)),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              );
-          }
-        });
   }
 }
 
@@ -403,55 +268,4 @@ class AddSubjectListTile extends StatelessWidget {
       ],
     );
   }
-}
-
-Widget _buildDropdown(String label, List<String> options,
-    Function(String?)? onChanged, bool isEnabled) {
-  return isEnabled
-      ? Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: DropdownButtonFormField<String>(
-            decoration: InputDecoration(labelText: label),
-            items: options
-                .map((option) =>
-                    DropdownMenuItem(value: option, child: Text(option)))
-                .toList(),
-            value: options.isEmpty ? null : options.first, // Set initial value
-            onChanged: onChanged,
-          ),
-        )
-      : const Wrap();
-}
-
-Widget _buildSearchableDropdown(String label, List<String> options,
-    Function(String) onChanged, bool isEnabled) {
-  return isEnabled
-      ? Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Autocomplete<String>(
-            optionsBuilder: (TextEditingValue textEditingValue) {
-              if (textEditingValue.text.isEmpty) {
-                return const Iterable<String>.empty();
-              }
-              return options.where((option) =>
-                  option
-                      .toLowerCase()
-                      .startsWith(textEditingValue.text.toLowerCase()) ||
-                  option
-                      .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase()));
-            },
-            onSelected: onChanged,
-            fieldViewBuilder:
-                (context, textEditingController, focusNode, onEditingComplete) {
-              return TextFormField(
-                decoration: InputDecoration(labelText: label),
-                controller: textEditingController,
-                focusNode: focusNode,
-                onEditingComplete: onEditingComplete,
-              );
-            },
-          ),
-        )
-      : const Wrap();
 }

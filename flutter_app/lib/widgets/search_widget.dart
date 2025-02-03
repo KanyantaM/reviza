@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchWidget extends StatefulWidget {
   final Function(List<String> results) onChanged;
   final List<String> searchItems;
   const SearchWidget({
-    super.key, required this.searchItems, required this.onChanged,
+    super.key,
+    required this.searchItems,
+    required this.onChanged,
   });
 
   @override
@@ -25,10 +26,8 @@ class _SearchPageState extends State<SearchWidget> {
   }
 
   void _startSearch() {
-    setState(() {
-    });
+    setState(() {});
   }
-
 
   void search(String query, List<String> itemList) {
     if (query.isNotEmpty) {
@@ -65,26 +64,19 @@ class _SearchPageState extends State<SearchWidget> {
     return _searchBar(context, widget.searchItems);
   }
 
-  Widget _searchBar(BuildContext context,List<String> courses) {
-    return Container(
-      height: 60.h,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: SearchBar(
-        controller: _searchController,
-        hintText: "Search for course",
-        focusNode: _searchFocusNode,
-        onChanged: (value) {
-          // Implement search logic here
-          _startSearch();
-          search(value, courses);
-          widget.onChanged(_searchResults);
-        },
-        onTap: () {
-          _searchFocusNode.requestFocus();
-        },
-      ),
+  Widget _searchBar(BuildContext context, List<String> courses) {
+    return SearchBar(
+      controller: _searchController,
+      hintText: "Search for course",
+      focusNode: _searchFocusNode,
+      onChanged: (value) {
+        _startSearch();
+        search(value, courses);
+        widget.onChanged(_searchResults);
+      },
+      onTap: () {
+        _searchFocusNode.requestFocus();
+      },
     );
   }
 }

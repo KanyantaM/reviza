@@ -340,7 +340,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                     child: (_uploading)
                         ? const Center(
                             child: Text(
-                            'UPloading....',
+                            'Uploading....',
                             style: TextStyle(fontWeight: FontWeight.w700),
                           ))
                         : OutlinedButton(

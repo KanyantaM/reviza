@@ -8,7 +8,7 @@ import 'my_subjects/view/my_subject_page.dart';
 class HomeTabView extends StatelessWidget {
   final String studentId;
 
-  const HomeTabView({Key? key, required this.studentId}) : super(key: key);
+  const HomeTabView({super.key, required this.studentId});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,6 @@ class HomeTabView extends StatelessWidget {
       return ListView(
         shrinkWrap: true,
         children: <Widget>[
-          
           const SizedBox(
             height: 30,
           ),
@@ -82,7 +81,7 @@ class HomeTabView extends StatelessWidget {
       context
           .read<EditMyCoursesBloc>()
           .add(FetchMyCourses(studentId: studentId));
-      return const  Center(child: CircularProgressIndicator.adaptive());
+      return const Center(child: CircularProgressIndicator.adaptive());
     }
   }
 

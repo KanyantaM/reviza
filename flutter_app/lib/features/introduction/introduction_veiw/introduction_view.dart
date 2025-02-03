@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:lottie/lottie.dart';
 import 'package:reviza/ui/home_screen/app_home.dart';
 import 'package:reviza/features/introduction/introduction_bloc/bloc/introduction_bloc_bloc.dart';
-import 'package:reviza/features/introduction/introduction_veiw/helpers/color_sys.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:reviza/features/introduction/introduction_veiw/helpers/const_strings.dart';
 import 'package:reviza/features/introduction/introduction_veiw/widgets/register_student.dart';
@@ -73,28 +72,26 @@ class _IntroductionViewState extends State<IntroductionView> {
 
   Scaffold _introductionView() {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        title:
+            (currentIndex != 3) ? Text("Welcome") : Text('Select Your Courses'),
         actions: <Widget>[
-          InkWell(
-            onTap: () {
-              setState(() {
-                currentIndex = 3;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 20, top: 20),
+          if (currentIndex != 3)
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  currentIndex = 3;
+                });
+              },
               child: Text(
                 'Skip',
                 style: TextStyle(
-                    color: ColorSys.gray,
+                    color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w400),
               ),
-            ),
-          )
+            )
         ],
       ),
       body: Stack(
@@ -130,13 +127,14 @@ class _IntroductionViewState extends State<IntroductionView> {
               ),
             ],
           ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 60),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _buildIndicator(),
-            ),
-          )
+          if (currentIndex != 3)
+            Container(
+              margin: const EdgeInsets.only(bottom: 60),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _buildIndicator(),
+              ),
+            )
         ],
       ),
     );
@@ -173,7 +171,7 @@ class _IntroductionViewState extends State<IntroductionView> {
               child: Text(
                 title,
                 style: TextStyle(
-                    color: ColorSys.primary,
+                    color: Theme.of(context).primaryColorDark,
                     fontSize: 30,
                     fontWeight: FontWeight.bold),
               )),
@@ -185,10 +183,7 @@ class _IntroductionViewState extends State<IntroductionView> {
               child: Text(
                 content,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: ColorSys.gray,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
               )),
           reverse
               ? Column(
@@ -215,13 +210,14 @@ class _IntroductionViewState extends State<IntroductionView> {
       width: isActive ? 30 : 6,
       margin: const EdgeInsets.only(right: 5),
       decoration: BoxDecoration(
-          color: ColorSys.secoundry, borderRadius: BorderRadius.circular(5)),
+          color: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(5)),
     );
   }
 
   List<Widget> _buildIndicator() {
     List<Widget> indicators = [];
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       if (currentIndex == i) {
         indicators.add(_indicator(true));
       } else {

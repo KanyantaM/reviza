@@ -20,19 +20,53 @@ class SignUpForm extends StatelessWidget {
             );
         }
       },
-      child: Align(
-        alignment: const Alignment(0, -1 / 3),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _EmailInput(),
-            const SizedBox(height: 8),
-            _PasswordInput(),
-            const SizedBox(height: 8),
-            _ConfirmPasswordInput(),
-            const SizedBox(height: 8),
-            _SignUpButton(),
-          ],
+      child: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/images/logo.jpeg',
+                  width: 100,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Welcome to ReviZa',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _EmailInput(),
+                        const SizedBox(height: 12),
+                        _PasswordInput(),
+                        const SizedBox(height: 12),
+                        _ConfirmPasswordInput(),
+                        const SizedBox(height: 16),
+                        _SignUpButton(),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  textAlign: TextAlign.center,
+                  'By signing up, you agree to our Terms and Conditions.',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -50,10 +84,11 @@ class _EmailInput extends StatelessWidget {
           onChanged: (email) => context.read<SignUpCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            labelText: 'email',
-            helperText: '',
+            labelText: 'Email',
+            prefixIcon: const Icon(Icons.email),
             errorText:
-                state.email.displayError != null ? 'invalid email' : null,
+                state.email.displayError != null ? 'Invalid email' : null,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );
       },
@@ -61,7 +96,14 @@ class _EmailInput extends StatelessWidget {
   }
 }
 
-class _PasswordInput extends StatelessWidget {
+class _PasswordInput extends StatefulWidget {
+  @override
+  _PasswordInputState createState() => _PasswordInputState();
+}
+
+class _PasswordInputState extends State<_PasswordInput> {
+  bool _obscureText = true;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SignUpCubit, SignUpState>(
@@ -71,12 +113,18 @@ class _PasswordInput extends StatelessWidget {
           key: const Key('signUpForm_passwordInput_textField'),
           onChanged: (password) =>
               context.read<SignUpCubit>().passwordChanged(password),
-          obscureText: true,
+          obscureText: _obscureText,
           decoration: InputDecoration(
-            labelText: 'password',
-            helperText: '',
+            labelText: 'Password',
+            prefixIcon: const Icon(Icons.lock),
+            suffixIcon: IconButton(
+              icon:
+                  Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+              onPressed: () => setState(() => _obscureText = !_obscureText),
+            ),
             errorText:
-                state.password.displayError != null ? 'invalid password' : null,
+                state.password.displayError != null ? 'Invalid password' : null,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );
       },
@@ -84,12 +132,18 @@ class _PasswordInput extends StatelessWidget {
   }
 }
 
-class _ConfirmPasswordInput extends StatelessWidget {
+class _ConfirmPasswordInput extends StatefulWidget {
+  @override
+  _ConfirmPasswordInputState createState() => _ConfirmPasswordInputState();
+}
+
+class _ConfirmPasswordInputState extends State<_ConfirmPasswordInput> {
+  bool _obscureText = true;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SignUpCubit, SignUpState>(
       buildWhen: (previous, current) =>
-          previous.password != current.password ||
           previous.confirmedPassword != current.confirmedPassword,
       builder: (context, state) {
         return TextField(
@@ -97,13 +151,19 @@ class _ConfirmPasswordInput extends StatelessWidget {
           onChanged: (confirmPassword) => context
               .read<SignUpCubit>()
               .confirmedPasswordChanged(confirmPassword),
-          obscureText: true,
+          obscureText: _obscureText,
           decoration: InputDecoration(
-            labelText: 'confirm password',
-            helperText: '',
+            labelText: 'Confirm Password',
+            prefixIcon: const Icon(Icons.lock),
+            suffixIcon: IconButton(
+              icon:
+                  Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+              onPressed: () => setState(() => _obscureText = !_obscureText),
+            ),
             errorText: state.confirmedPassword.displayError != null
-                ? 'passwords do not match'
+                ? 'Passwords do not match'
                 : null,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );
       },
@@ -121,15 +181,16 @@ class _SignUpButton extends StatelessWidget {
             : ElevatedButton(
                 key: const Key('signUpForm_continue_raisedButton'),
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  backgroundColor: Colors.orangeAccent,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
                 ),
                 onPressed: state.isValid
                     ? () => context.read<SignUpCubit>().signUpFormSubmitted()
                     : null,
-                child: const Text('SIGN UP'),
+                child: const Text(
+                  'SIGN UP',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               );
       },
     );

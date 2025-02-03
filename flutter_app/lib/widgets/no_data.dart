@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 class NoDataCuate extends StatelessWidget {
@@ -16,16 +15,16 @@ class NoDataCuate extends StatelessWidget {
       children: [
         LottieBuilder.asset(
           "assets/lottie/indian_searching.json",
-          height: 177.h,
+          height: 177,
         ),
         Padding(
           padding: const EdgeInsets.all(11.0),
           child: Text(
-             issue,
+            issue,
           ),
         ),
         SizedBox(
-          height: 30.h,
+          height: 30,
         ),
       ],
     );

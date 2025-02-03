@@ -67,10 +67,9 @@ class StudyMaterialCard extends StatelessWidget {
                           return const SizedBox.shrink();
                         },
                       ),
-                    const Text('🗒️', textScaleFactor: 2.5),
+                    Text('🗒️', textScaler: TextScaler.linear(2)),
                     const SizedBox(width: 10),
 
-                    /// **Title & Description (Flexible to avoid overflow)**
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +112,6 @@ class StudyMaterialCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      /// **Like/Dislike Percentage**
                       Row(
                         children: [
                           Icon(

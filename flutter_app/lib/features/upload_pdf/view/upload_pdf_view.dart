@@ -1,14 +1,13 @@
 import 'dart:io';
 
-import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconsax/iconsax.dart';
-// import 'package:image_picker/image_picker.dart';
 import 'package:reviza/features/upload_pdf/uplead_pdf_bloc/upload_pdf_bloc.dart';
+import 'package:reviza/features/upload_pdf/view/components/platform_file_upload.dart';
+import 'package:reviza/features/upload_pdf/view/components/upload_box.dart';
+import 'package:reviza/features/upload_pdf/view/components/upload_snack_bar.dart';
 import 'package:reviza/utilities/generator.dart';
 import 'package:reviza/widgets/range_slider.dart';
 import 'package:reviza/misc/course_info.dart';
@@ -107,278 +106,174 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
               child: CircularProgressIndicator(),
             );
           }
-          return Container(
-            padding: const EdgeInsets.all(16),
-            child: ListView(
-              children: [
-                _buildSearchableDropdown('Course', _myCourses, (selected) {
-                  _courseName = selected;
-                }),
-                const Spacer(
-                  flex: 1,
-                ),
-                _platformFile == null && widget.type != Types.links
-                    ? GestureDetector(
-                        onTap: getfile,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 40.0, vertical: 20.0),
-                          child: DottedBorder(
-                            borderType: BorderType.RRect,
-                            radius: const Radius.circular(10),
-                            dashPattern: const [10, 4],
-                            strokeCap: StrokeCap.round,
-                            color: Colors.blue.shade400,
-                            child: Container(
-                              width: double.infinity,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                  // color: Colors.blue.shade50.withOpacity(.3),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Iconsax.folder_open,
-                                    // color: Colors.blue,
-                                    size: 40,
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  Text(
-                                    'Select your file',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      // color: Colors.grey.shade400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : widgetSelector(
-                        pp: Column(
-                          children: [
-                            _buildRadioButtons(),
-                            if (_isRangeSelected) _buildYearRangeDropdowns(),
-                            if (!_isRangeSelected) _buildSingleYearDropdown(),
-                            const SizedBox(height: 16),
-                            _buildCategoryChips(),
-                            const SizedBox(height: 16),
-                          ],
-                        ),
-                        notes: _documentUpload(),
-                        ass: _documentUpload(),
-                        book: _documentUpload(),
-                        lab: _documentUpload(),
-                        link: Column(children: [
-                          // const SizedBox(height: 16),
-                          // _buildTextFieldWithTitle(
-                          //   title: 'Title',
-                          //   controller: titleController,
-                          // ),
-                          const SizedBox(height: 16),
-                          _buildTextFieldWithTitle(
-                            title: 'Description',
-                            controller: titleController,
-                          ),
-                          const SizedBox(height: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+          if (_myCourses.isNotEmpty) {
+            return Container(
+              padding: const EdgeInsets.all(16),
+              child: ListView(
+                children: [
+                  _buildSearchableDropdown('Course', _myCourses, (selected) {
+                    _courseName = selected;
+                  }),
+                  const Spacer(
+                    flex: 1,
+                  ),
+                  _platformFile == null && widget.type != Types.links
+                      ? UploadBox(
+                          onTap: getfile,
+                        )
+                      : widgetSelector(
+                          pp: Column(
                             children: [
-                              const Text(
-                                'URL',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value?.isEmpty ?? true) {
-                                    return 'enter url';
-                                  } else if (value?.startsWith('https://') ??
-                                      false) {
-                                    return null;
-                                  } else {
-                                    return 'enter a valid url';
-                                  }
-                                },
-                                controller: _url,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                ),
-                                maxLines: 1,
-                              ),
-                              const SizedBox(height: 8),
+                              _buildRadioButtons(),
+                              if (_isRangeSelected) _buildYearRangeDropdowns(),
+                              if (!_isRangeSelected) _buildSingleYearDropdown(),
+                              const SizedBox(height: 16),
+                              _buildCategoryChips(),
+                              const SizedBox(height: 16),
                             ],
                           ),
-                        ]),
-                      ),
-                (_platformFile != null && widget.type != Types.links)
-                    ? Container(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Selected File:',
-                              style: TextStyle(
-                                fontSize: 15,
-                                // color: Colors.grey.shade400,
-                              ),
+                          notes: _documentUpload(),
+                          ass: _documentUpload(),
+                          book: _documentUpload(),
+                          lab: _documentUpload(),
+                          link: Column(children: [
+                            const SizedBox(height: 16),
+                            _buildTextFieldWithTitle(
+                              title: 'Description',
+                              controller: titleController,
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.shade200,
-                                      offset: const Offset(0, 1),
-                                      blurRadius: 3,
-                                      spreadRadius: 2,
-                                    )
-                                  ]),
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.asset(
-                                        'assets/images/pdf.png',
-                                        width: 70,
-                                      )),
-                                  const SizedBox(
-                                    width: 10,
+                            const SizedBox(height: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'URL',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          _platformFile!.name,
-                                          style: const TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.black),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          '${(_platformFile!.size / 1024).ceil()} KB',
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.grey.shade500),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Container(
-                                          height: 5,
-                                          clipBehavior: Clip.hardEdge,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: Colors.blue.shade50,
-                                          ),
-                                          child: BlocBuilder(
-                                            bloc: uploadProgressCubit,
-                                            builder: (context, state) {
-                                              return LinearProgressIndicator(
-                                                value:
-                                                    uploadProgressCubit.state,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
+                                  validator: (value) {
+                                    if (value?.isEmpty ?? true) {
+                                      return 'enter url';
+                                    } else if (value?.startsWith('https://') ??
+                                        false) {
+                                      return null;
+                                    } else {
+                                      return 'enter a valid url';
+                                    }
+                                  },
+                                  controller: _url,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  BlocBuilder(
-                                      bloc: uploadProgressCubit,
-                                      builder: (context, state) {
-                                        return (uploadProgressCubit.state < 0.1)
-                                            ? IconButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _file = null;
-                                                    _platformFile = null;
-                                                    _uploading = false;
-                                                  });
-                                                },
-                                                icon: const Icon(
-                                                    Icons.cancel_outlined))
-                                            : const Wrap();
-                                      }),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Container(),
-                const Spacer(
-                  flex: 2,
-                ),
-                SizedBox(
-                    height: (29.7),
-                    width: (170.7),
-                    child: (_uploading)
-                        ? const Center(
-                            child: Text(
-                            'Uploading....',
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ))
-                        : OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Theme.of(context).hoverColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular((20.86)),
-                              ),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                _uploading = true;
-                              });
-                              await uploadFile(context, state);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  width: (9.86),
+                                  maxLines: 1,
                                 ),
-                                Text(
-                                  "Upload Material",
-                                  style: GoogleFonts.poppins(
-                                    // color: Colors.white,
-                                    fontSize: (12.51),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
+                                const SizedBox(height: 8),
                               ],
                             ),
-                          )),
-                const SizedBox(
-                  height: 12,
-                )
-              ],
-            ),
-          );
+                          ]),
+                        ),
+                  if (_platformFile != null && widget.type != Types.links)
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Selected File:',
+                            style: TextStyle(
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SharingFileWidget(
+                            onCancelShare: () {
+                              setState(() {
+                                _file = null;
+                                _platformFile = null;
+                                _uploading = false;
+                              });
+                            },
+                            platformFile: _platformFile!,
+                          ),
+                        ],
+                      ),
+                    ),
+                  const Spacer(
+                    flex: 2,
+                  ),
+                  SizedBox(
+                      height: (29.7),
+                      width: (170.7),
+                      child: (_uploading)
+                          ? const Center(
+                              child: Text(
+                              'Uploading....',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ))
+                          : OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Theme.of(context).hoverColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular((20.86)),
+                                ),
+                              ),
+                              onPressed: () async {
+                                setState(() {
+                                  _uploading = true;
+                                });
+                                await uploadFile();
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(
+                                    width: (9.86),
+                                  ),
+                                  Text(
+                                    "Upload Material",
+                                    style: GoogleFonts.poppins(
+                                      // color: Colors.white,
+                                      fontSize: (12.51),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                  const SizedBox(
+                    height: 12,
+                  )
+                ],
+              ),
+            );
+          } else {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.warning_amber_rounded,
+                      size: 48, color: Colors.orange),
+                  SizedBox(height: 10),
+                  Text(
+                    'Please add your courses first!',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          }
         }),
         listener: (context, state) {
           if (state is UploadedPdfState) {
@@ -479,10 +374,8 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
     );
 
     if (result != null) {
-      setState(() {
-        _file = File(result.files.single.path!);
-        _platformFile = result.files.first;
-      });
+      _file = File(result.files.single.path!);
+      _platformFile = result.files.first;
     }
 
     setState(() {});
@@ -490,7 +383,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
     uploadProgressCubit.updateProgress(0);
   }
 
-  uploadFile(BuildContext context, UploadPdfState state) async {
+  uploadFile() async {
     if (_file != null &&
         (_courseName.isNotEmpty || widget.type == Types.links)) {
       isuploaded = true;
@@ -818,106 +711,6 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
             ),
           ),
         ),
-      ],
-    );
-  }
-}
-
-class CustomSnackBar extends StatelessWidget {
-  const CustomSnackBar({
-    super.key,
-    required this.errorText,
-    required this.headingText,
-    required this.color,
-    required this.image,
-  });
-
-  final String errorText, headingText;
-  final Color? color;
-  final Image? image;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
-          ),
-          height: 90,
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 48,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      headingText,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      errorText,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 17,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-            ),
-            child: Stack(
-              children: [
-                SvgPicture.asset(
-                  'assets/icon/test.svg',
-                  height: 48,
-                  width: 40,
-                  // ignore: deprecated_member_use
-                  color: Colors.transparent,
-                ),
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          top: -20,
-          left: 12,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Image(
-                image: image!.image,
-                height: 35,
-                width: 35,
-              ),
-              Positioned(
-                top: 10,
-                child: SvgPicture.asset(
-                  'assets/icon/vhat.svg',
-                  height: 16,
-                ),
-              ),
-            ],
-          ),
-        )
       ],
     );
   }

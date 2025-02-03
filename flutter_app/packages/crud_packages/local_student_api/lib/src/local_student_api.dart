@@ -1,9 +1,8 @@
-// import 'package:hive/hive.dart';
 import 'package:student_api/student_api.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveUserRepository implements UserRepository {
-  late Box _box;
+  Box? _box; // Nullable to prevent premature access
   bool _isInitialized = false;
 
   HiveUserRepository() {
@@ -11,14 +10,16 @@ class HiveUserRepository implements UserRepository {
   }
 
   Future<void> _initHive() async {
-    if (!_isInitialized) {
-      await Hive.initFlutter();
-      if (!Hive.isAdapterRegistered(0)) {
-        Hive.registerAdapter(StudentAdapter());
-      }
-      _box = await Hive.openBox('users');
-      _isInitialized = true;
+    if (_isInitialized) return;
+
+    await Hive.initFlutter();
+
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(StudentAdapter());
     }
+
+    _box = await Hive.openBox('users');
+    _isInitialized = true;
   }
 
   Future<void> _ensureInitialized() async {
@@ -30,33 +31,30 @@ class HiveUserRepository implements UserRepository {
   @override
   Future<void> addUser(Student user) async {
     await _ensureInitialized();
-    await _box.put(user.userId, user);
+    await _box?.put(user.userId, user);
   }
 
   @override
   Future<Student?> getUserById(String userId) async {
     await _ensureInitialized();
-    var json = _box.get(userId);
-    return json;
+    return _box?.get(userId);
   }
 
   @override
   Future<void> updateUser(Student user) async {
     await _ensureInitialized();
-    await _box.put(user.userId, user);
+    await _box?.put(user.userId, user);
   }
 
   @override
   Future<void> deleteUser(String userId) async {
     await _ensureInitialized();
-    await _box.delete(userId);
+    await _box?.delete(userId);
   }
 
   @override
   Future<bool> isStudentRegistered(String userId) async {
     await _ensureInitialized();
-    var json = await _box.get(userId);
-    return (json != null);
+    return _box?.containsKey(userId) ?? false;
   }
 }
-

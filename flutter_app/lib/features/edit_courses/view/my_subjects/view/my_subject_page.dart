@@ -13,8 +13,12 @@ class MySubjectsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EditMyCoursesBloc(studentOffline: HiveUserRepository(), studentOnline: FirestoreUserRepository()),
-      child: MySubjectsView(student: userId,),
+      create: (context) => EditMyCoursesBloc(
+          studentOffline: HiveUserRepository(),
+          studentOnline: FirestoreUserRepository()),
+      child: MySubjectsView(
+        student: userId,
+      ),
     );
   }
 }

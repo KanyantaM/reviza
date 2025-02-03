@@ -1,7 +1,7 @@
 name: local_storage_study_material_api
 description: A new Flutter package project.
 version: 0.0.1
-homepage:
+# homepage:
 publish_to: none
 
 environment:
@@ -25,7 +25,7 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
-flutter:
+# flutter:
 
   # To add assets to your package, add an assets section, like this:
   # assets:

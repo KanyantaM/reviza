@@ -152,7 +152,7 @@ class VotingBar extends StatelessWidget {
               color: Theme.of(context)
                   .appBarTheme
                   .backgroundColor
-                  ?.withOpacity(0.9),
+                  ?.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: Row(

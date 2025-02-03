@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
 import 'package:reviza/features/sign_up/cubit/sign_up_cubit.dart';
 
@@ -74,6 +75,17 @@ class SignUpForm extends StatelessWidget {
 }
 
 class _EmailInput extends StatelessWidget {
+  String? getEmailErrorMessage(EmailValidationError? error) {
+    switch (error) {
+      case EmailValidationError.empty:
+        return 'Email cannot be empty.';
+      case EmailValidationError.invalidFormat:
+        return 'Please enter a valid email address.';
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SignUpCubit, SignUpState>(
@@ -86,8 +98,7 @@ class _EmailInput extends StatelessWidget {
           decoration: InputDecoration(
             labelText: 'Email',
             prefixIcon: const Icon(Icons.email),
-            errorText:
-                state.email.displayError != null ? 'Invalid email' : null,
+            errorText: getEmailErrorMessage(state.email.displayError),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );
@@ -103,6 +114,19 @@ class _PasswordInput extends StatefulWidget {
 
 class _PasswordInputState extends State<_PasswordInput> {
   bool _obscureText = true;
+
+  String? getPasswordErrorMessage(PasswordValidationError? error) {
+    switch (error) {
+      case PasswordValidationError.tooShort:
+        return 'at least 8 characters long.';
+      case PasswordValidationError.missingLetter:
+        return 'at least one letter.';
+      case PasswordValidationError.missingNumber:
+        return 'at least one number.';
+      default:
+        return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,8 +146,7 @@ class _PasswordInputState extends State<_PasswordInput> {
                   Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
               onPressed: () => setState(() => _obscureText = !_obscureText),
             ),
-            errorText:
-                state.password.displayError != null ? 'Invalid password' : null,
+            errorText: getPasswordErrorMessage(state.password.displayError),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );

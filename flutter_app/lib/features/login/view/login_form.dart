@@ -89,8 +89,8 @@ class _EmailInput extends StatelessWidget {
             labelText: 'Email',
             prefixIcon: const Icon(Icons.email_outlined),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            errorText:
-                state.email.displayError != null ? 'Invalid email' : null,
+            // errorText:
+            //     state.email.displayError != null ? 'Invalid email' : null,
           ),
         );
       },
@@ -165,15 +165,29 @@ class _GoogleLoginButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
-        icon: Icon(
-          FontAwesomeIcons.google,
-          color: Colors.white,
+        icon: Container(
+          padding: const EdgeInsets.all(6), // Adds spacing around the icon
+          decoration: const BoxDecoration(
+            color: Colors.white, // White background for the Google logo
+            shape:
+                BoxShape.circle, // Circular shape for better Google-like design
+          ),
+          child: Icon(
+            FontAwesomeIcons.google,
+            color: Colors.redAccent, // Google's primary blue
+            size: 20,
+          ),
         ),
         label: const Text(
-          'SIGN IN WITH GOOGLE',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          'Sign in with Google',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Colors.white,
+          ),
         ),
         style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.orangeAccent, // Google blue
           padding: const EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),

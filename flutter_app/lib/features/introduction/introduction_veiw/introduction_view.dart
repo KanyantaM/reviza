@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:lottie/lottie.dart';
 import 'package:reviza/ui/home_screen/app_home.dart';
 import 'package:reviza/features/introduction/introduction_bloc/bloc/introduction_bloc_bloc.dart';
 import 'package:animate_do/animate_do.dart';
@@ -20,16 +19,15 @@ class IntroductionView extends StatefulWidget {
 }
 
 class _IntroductionViewState extends State<IntroductionView> {
-  late PageController _pageController;
+  final PageController _pageController = PageController(initialPage: 0);
   int currentIndex = 0;
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: 0);
+    super.initState();
     context
         .read<IntroductionBloc>()
         .add(CheckIntroductionStatus(studentId: widget.studentId));
-    super.initState();
   }
 
   @override
@@ -42,31 +40,31 @@ class _IntroductionViewState extends State<IntroductionView> {
   Widget build(BuildContext context) {
     return BlocBuilder<IntroductionBloc, IntroductionState>(
       builder: (context, state) {
-        if (kDebugMode) {
-          print(state);
-        }
-        if (state is IntroductionNotIntroduced) {
+        if (kDebugMode) print(state);
+
+        if (state is IntroductionCheckingStatus) {
+          return _buildLoadingState();
+        } else if (state is IntroductionIntroduced) {
+          return MyHomePage(uid: widget.studentId);
+        } else if (state is IntroductionErrorState) {
+          return NoDataCuate(issue: state.message);
+        } else if (state is IntroductionNotIntroduced) {
           return _introductionView();
         }
-        if (state is IntroductionCheckingStatus) {
-          return Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: const Center(
-              child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: CircularProgressIndicator.adaptive(),
-              ),
-            ),
-          );
-        }
-        if (state is IntroductionIntroduced) {
-          return MyHomePage(uid: widget.studentId);
-        }
-        if (state is IntroductionErrorState) {
-          NoDataCuate(issue: state.message);
-        }
-        return Container();
+
+        return const SizedBox.shrink();
       },
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      alignment: Alignment.center,
+      child: const Padding(
+        padding: EdgeInsets.all(20.0),
+        child: CircularProgressIndicator.adaptive(),
+      ),
     );
   }
 
@@ -74,49 +72,28 @@ class _IntroductionViewState extends State<IntroductionView> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title:
-            (currentIndex != 3) ? Text("Welcome") : Text('Select Your Courses'),
-        actions: <Widget>[
-          if (currentIndex != 3)
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  currentIndex = 3;
-                });
-              },
-              child: Text(
-                'Skip',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400),
-              ),
-            )
-        ],
+        title: Text(currentIndex != 3 ? "Welcome" : 'Select Your Courses'),
+        actions: [if (currentIndex != 3) _buildSkipButton()],
       ),
       body: Stack(
         alignment: Alignment.bottomCenter,
-        children: <Widget>[
+        children: [
           PageView(
-            onPageChanged: (int page) {
-              setState(() {
-                currentIndex = page;
-              });
-            },
             controller: _pageController,
-            children: <Widget>[
-              _makePage(
+            onPageChanged: (page) => setState(() => currentIndex = page),
+            children: [
+              _buildIntroPage(
                 image: 'assets/images/intro/fatimah.jpg',
                 title: Strings.stepOneTitle,
                 content: Strings.stepOneContent,
               ),
-              _makePage(
-                reverse: true,
+              _buildIntroPage(
                 image: 'assets/images/intro/sharing ideas.jpg',
                 title: Strings.stepTwoTitle,
                 content: Strings.stepTwoContent,
+                reverse: true,
               ),
-              _makePage(
+              _buildIntroPage(
                 image: 'assets/images/intro/graduate.jpg',
                 title: Strings.stepThreeTitle,
                 content: Strings.stepThreeContent,
@@ -127,104 +104,105 @@ class _IntroductionViewState extends State<IntroductionView> {
               ),
             ],
           ),
-          if (currentIndex != 3)
-            Container(
-              margin: const EdgeInsets.only(bottom: 60),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _buildIndicator(),
-              ),
-            )
+          if (currentIndex != 3) _buildPageIndicator(),
         ],
       ),
     );
   }
 
-  Widget _makePage({
-    image,
-    title,
-    content,
-    reverse = false,
+  Widget _buildSkipButton() {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          currentIndex = 3;
+          _pageController
+              .jumpToPage(3); // Ensure PageView navigates to the last page
+        });
+      },
+      child: const Text(
+        'Skip',
+        style: TextStyle(
+            color: Colors.white, fontSize: 18, fontWeight: FontWeight.w400),
+      ),
+    );
+  }
+
+  Widget _buildIntroPage({
+    required String image,
+    required String title,
+    required String content,
+    bool reverse = false,
   }) {
-    return Container(
-      padding: const EdgeInsets.only(left: 50, right: 50, bottom: 60),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 60),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          !reverse
-              ? Column(
-                  children: <Widget>[
-                    FadeInUp(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Image.asset(image),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                  ],
-                )
-              : const SizedBox(),
-          FadeInUp(
-              duration: const Duration(milliseconds: 900),
-              child: Text(
-                title,
-                style: TextStyle(
-                    color: Theme.of(context).primaryColorDark,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold),
-              )),
-          const SizedBox(
-            height: 20,
-          ),
-          FadeInUp(
-              duration: const Duration(milliseconds: 1200),
-              child: Text(
-                content,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-              )),
-          reverse
-              ? Column(
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Image.asset(image),
-                    ),
-                  ],
-                )
-              : const SizedBox(),
+        children: [
+          if (!reverse) _buildImage(image),
+          _buildTitleText(title),
+          const SizedBox(height: 20),
+          _buildContentText(content),
+          if (reverse) _buildImage(image),
         ],
       ),
     );
   }
 
-  Widget _indicator(bool isActive) {
+  Widget _buildImage(String image) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: FadeInUp(child: Image.asset(image)),
+    );
+  }
+
+  Widget _buildTitleText(String title) {
+    return FadeInUp(
+      duration: const Duration(milliseconds: 900),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: Theme.of(context).primaryColorDark,
+          fontSize: 30,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContentText(String content) {
+    return FadeInUp(
+      duration: const Duration(milliseconds: 1200),
+      child: Text(
+        content,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+      ),
+    );
+  }
+
+  Widget _buildPageIndicator() {
+    return Positioned(
+      bottom: 60,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(
+          3,
+          (index) => _buildIndicator(isActive: currentIndex == index),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIndicator({required bool isActive}) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       height: 6,
       width: isActive ? 30 : 6,
-      margin: const EdgeInsets.only(right: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 3),
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(5)),
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(5),
+      ),
     );
-  }
-
-  List<Widget> _buildIndicator() {
-    List<Widget> indicators = [];
-    for (int i = 0; i < 3; i++) {
-      if (currentIndex == i) {
-        indicators.add(_indicator(true));
-      } else {
-        indicators.add(_indicator(false));
-      }
-    }
-
-    return indicators;
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reviza/features/login/cubit/login_cubit.dart';
 import 'package:reviza/features/sign_up/view/sign_up_page.dart';
+import 'package:sign_in_button/sign_in_button.dart' show SignInButton, Buttons;
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
@@ -145,10 +145,7 @@ class _LoginButton extends StatelessWidget {
                 ? () => context.read<LoginCubit>().logInWithCredentials()
                 : null,
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
             ),
             child: const Text('LOGIN',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -162,39 +159,40 @@ class _LoginButton extends StatelessWidget {
 class _GoogleLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        icon: Container(
-          padding: const EdgeInsets.all(6), // Adds spacing around the icon
-          decoration: const BoxDecoration(
-            color: Colors.white, // White background for the Google logo
-            shape:
-                BoxShape.circle, // Circular shape for better Google-like design
-          ),
-          child: Icon(
-            FontAwesomeIcons.google,
-            color: Colors.redAccent, // Google's primary blue
-            size: 20,
-          ),
-        ),
-        label: const Text(
-          'Sign in with Google',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: Colors.white,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orangeAccent, // Google blue
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
-      ),
+    return SignInButton(
+      Buttons.google,
+      // width: double.infinity,
+      // child: ElevatedButton.icon(
+      //   icon: Container(
+      //     padding: const EdgeInsets.all(6), // Adds spacing around the icon
+      //     decoration: const BoxDecoration(
+      //       color: Colors.white, // White background for the Google logo
+      //       shape:
+      //           BoxShape.circle, // Circular shape for better Google-like design
+      //     ),
+      //     child: Icon(
+      //       FontAwesomeIcons.google,
+      //       color: Colors.redAccent, // Google's primary blue
+      //       size: 20,
+      //     ),
+      //   ),
+      //   label: const Text(
+      //     'Sign in with Google',
+      //     style: TextStyle(
+      //       fontWeight: FontWeight.bold,
+      //       fontSize: 16,
+      //       color: Colors.white,
+      //     ),
+      //   ),
+      //   style: ElevatedButton.styleFrom(
+      //     backgroundColor: Colors.orangeAccent, // Google blue
+      //     padding: const EdgeInsets.symmetric(vertical: 12),
+      //     shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(8),
+      //     ),
+      //   ),
+      onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
+      // ),
     );
   }
 }

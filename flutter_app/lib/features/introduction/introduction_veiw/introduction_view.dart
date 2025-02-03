@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/ui/home_screen/app_home.dart';
@@ -40,8 +39,6 @@ class _IntroductionViewState extends State<IntroductionView> {
   Widget build(BuildContext context) {
     return BlocBuilder<IntroductionBloc, IntroductionState>(
       builder: (context, state) {
-        if (kDebugMode) print(state);
-
         if (state is IntroductionCheckingStatus) {
           return _buildLoadingState();
         } else if (state is IntroductionIntroduced) {
@@ -52,7 +49,7 @@ class _IntroductionViewState extends State<IntroductionView> {
           return _introductionView();
         }
 
-        return const SizedBox.shrink();
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }

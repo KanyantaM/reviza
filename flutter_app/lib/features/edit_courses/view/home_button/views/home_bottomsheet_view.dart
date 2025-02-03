@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:reviza/features/edit_courses/view/home_button/views/components/add_subject_listile.dart';
 import 'package:reviza/features/edit_courses/view/home_button/views/components/filter_dialogue.dart';
 import 'package:reviza/widgets/search_widget.dart';
@@ -25,14 +26,18 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
   final ValueNotifier<List<String>> _searchResults = ValueNotifier([]);
   final ValueNotifier<bool> _isSearching = ValueNotifier(false);
 
-  String _university = '';
-  String _school = '';
-  String _department = '';
-  String _year = '';
+  String? _university;
+  String? _school;
+  String? _department;
+  String? _year;
 
   Future<void> _startFromScratch() async {
-    _filteredCourses.value =
-        await filterBy(_university, _school, _department, _year);
+    _filteredCourses.value = await filterBy(
+      _university ?? '',
+      _school ?? '',
+      _department ?? '',
+      _year ?? '',
+    );
   }
 
   @override
@@ -54,6 +59,16 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
     });
   }
 
+  void _resetFilter(int depth) {
+    setState(() {
+      if (depth == 1) _university = null;
+      if (depth == 2) _school = null;
+      if (depth == 3) _department = null;
+      if (depth == 4) _year = null;
+      _startFromScratch();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
@@ -63,25 +78,24 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
       expand: false,
       builder: (context, scrollController) {
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
-              SizedBox(height: 12),
+              _buildActionButtons(),
+              SizedBox(height: 12.h),
               SearchWidget(
                 searchItems: _filteredCourses.value,
                 onChanged: _onSearchChanged,
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 12.h),
               _buildFilterChips(),
-              SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Expanded(child: _buildCourseList(scrollController)),
-              _buildBottomActionBar(),
             ],
           ),
         );
@@ -89,29 +103,30 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildActionButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        IconButton(
+        TextButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.close, color: Colors.redAccent),
+          child: Text("Cancel", style: TextStyle(color: Colors.red)),
         ),
-        const Text(
+        Text(
           'Select Subjects',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        IconButton(
+        TextButton(
           onPressed: _selectedSubjects.isNotEmpty
               ? () {
                   Navigator.pop(context);
                   widget.onSave(_selectedSubjects);
                 }
               : null,
-          icon: Icon(
-            Icons.check_circle_outline,
-            color: _selectedSubjects.isNotEmpty ? Colors.green : Colors.grey,
-          ),
+          child: Text("Add",
+              style: TextStyle(
+                  color: _selectedSubjects.isNotEmpty
+                      ? Colors.green
+                      : Colors.grey)),
         ),
       ],
     );
@@ -119,34 +134,35 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
 
   Widget _buildFilterChips() {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: 8.w,
+      runSpacing: 8.h,
       children: [
         _buildFilterChip('Institution', _university, 1),
-        if (_university.isNotEmpty) _buildFilterChip('School', _school, 2),
-        if (_school.isNotEmpty) _buildFilterChip('Department', _department, 3),
-        if (_department.isNotEmpty) _buildFilterChip('Year', _year, 4),
+        if (_university != null) _buildFilterChip('School', _school, 2),
+        if (_school != null) _buildFilterChip('Department', _department, 3),
+        if (_department != null) _buildFilterChip('Year', _year, 4),
       ],
     );
   }
 
-  Widget _buildFilterChip(String label, String value, int depth) {
+  Widget _buildFilterChip(String label, String? value, int depth) {
     return GestureDetector(
-      onTap: () =>
-          showFilterDialogue(context, depth, (uni, sch, dep, yr) async {
-        _filteredCourses.value = await filterBy(uni, sch, dep, yr);
-        setState(() {
-          _university = uni;
-          _school = sch;
-          _department = dep;
-          _year = yr;
-        });
-      }),
+      onTap: () => value == null
+          ? showFilterDialogue(context, depth, (uni, sch, dep, yr) async {
+              _filteredCourses.value = await filterBy(uni, sch, dep, yr);
+              setState(() {
+                if (depth == 1) _university = uni;
+                if (depth == 2) _school = sch;
+                if (depth == 3) _department = dep;
+                if (depth == 4) _year = yr;
+              });
+            })
+          : _resetFilter(depth),
       child: Chip(
-        backgroundColor: value.isNotEmpty
-            ? Colors.blueAccent.withValues(alpha: 0.2)
+        backgroundColor: value != null
+            ? Colors.blueAccent.withOpacity(0.2)
             : Colors.grey.shade200,
-        label: Text(label),
+        label: Text(value ?? label),
         avatar: Icon(
           Icons.filter_alt_outlined,
           size: 18,
@@ -164,7 +180,6 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
           valueListenable: isSearching ? _searchResults : _filteredCourses,
           builder: (_, courses, __) {
             if (courses.isEmpty) return _buildEmptyState();
-
             return ListView.builder(
               controller: scrollController,
               itemCount: courses.length,
@@ -181,50 +196,11 @@ class _HomeBottomSheetViewState extends State<HomeBottomSheetView> {
   }
 
   Widget _buildEmptyState() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'No courses found.\nPlease contact us to add your course!',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBottomActionBar() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey.shade300)),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton(
-              onPressed: _selectedSubjects.isNotEmpty
-                  ? () {
-                      Navigator.pop(context);
-                      widget.onSave(_selectedSubjects);
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _selectedSubjects.isNotEmpty
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                padding: EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: Text(
-                "Save Subjects",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        ],
+    return Center(
+      child: Text(
+        'No courses found. Please contact us to add your course!',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     );
   }

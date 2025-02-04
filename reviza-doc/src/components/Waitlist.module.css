@@ -1,0 +1,53 @@
+.waitlistContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .waitlistTitle {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #1e3a34;
+    margin-bottom: 0.5rem;
+  }
+  
+  .waitlistSubtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+  
+  .waitlistForm {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .waitlistInput {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 300px;
+    font-size: 1rem;
+  }
+  
+  .waitlistButton {
+    background-color: #1e3a34;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .waitlistButton:hover {
+    background-color: #145a50;
+  }
+  

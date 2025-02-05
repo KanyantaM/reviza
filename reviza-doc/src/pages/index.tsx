@@ -7,7 +7,7 @@ import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
 import ReviZaFeatures from '@site/src/components/HomepageFeatures';
-import Waitlist from '../components/wait_list';
+// import Waitlist from '../components/wait_list';
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -70,7 +70,7 @@ export default function Home(): JSX.Element {
       description="ReviZa - Making higher education easier for everyone."
     >
       <HomepageHeader />
-      <Waitlist />
+      {/* <Waitlist /> */}
       <main>
         <ReviZaFeatures />
         <CallToAction />

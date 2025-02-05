@@ -48,8 +48,11 @@ class _IntroductionViewState extends State<IntroductionView> {
         } else if (state is IntroductionNotIntroduced) {
           return _introductionView();
         }
-
-        return const Center(child: CircularProgressIndicator());
+        return Scaffold(
+          body: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
       },
     );
   }

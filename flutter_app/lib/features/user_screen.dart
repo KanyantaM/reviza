@@ -11,24 +11,27 @@ import 'package:package_info_plus/package_info_plus.dart';
 class UserScreen extends StatelessWidget {
   const UserScreen({super.key});
 
-  Future<void> launchAppStoreForRating(BuildContext context) async {
-    const String packageName = '....';
-
-    // For Android
-    const String androidUrl = 'market://details?id=$packageName';
-
-    // For iOS
-    const String iOSUrl = 'itms-apps://itunes.apple.com/app/id$packageName';
-
-    if (await canLaunchUrl(Uri(path: androidUrl))) {
-      await launchUrl(Uri(path: androidUrl));
-    } else if (await canLaunchUrl(Uri(path: iOSUrl))) {
-      await launchUrl(Uri(path: iOSUrl));
-    } else {
-      // Handle the case where neither the Android nor iOS URL can be launched
-      showErrorDialog(
-          context, 'Could not launch the app store on both Android and iOS');
+  Future<void> _launchUrl(BuildContext context, String url) async {
+    try {
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        showErrorDialog(context, 'Could not open the link.');
+      }
+    } catch (e) {
+      showErrorDialog(context, 'An error occurred: $e');
     }
+  }
+
+  Future<void> launchAppStoreForRating(BuildContext context) async {
+    const String packageName = 'info.reviza.app';
+
+    final String androidUrl = 'market://details?id=$packageName';
+    final String iOSUrl = 'itms-apps://itunes.apple.com/app/id$packageName';
+
+    await _launchUrl(context, androidUrl);
+    await _launchUrl(context, iOSUrl);
   }
 
   void showAboutUsDialog(BuildContext context) {
@@ -37,42 +40,39 @@ class UserScreen extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('About Us'),
-          content: const Wrap(
-            // crossAxisAlignment: CrossAxisAlignment.start,
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                  'Welcome to ReviZa,\n\nA powerful study app brought to you by Luso Software.\n\nReviZa is designed to facilitate seamless collaboration among students, enabling them to share study materials such as past papers and school notes. The app also features an AI chatbot for quick assistance with study-related questions.'),
+                'Welcome to ReviZa,\n\nReviZa facilitates seamless collaboration among students, '
+                'enabling them to share study materials such as past papers and school notes. '
+                'The app also features an AI chatbot for quick assistance with study-related questions.',
+              ),
               SizedBox(height: 16),
               Text(
-                '\nLuso Software - A Zambian Software Development Company',
+                'Thank you for downloading - Kanyanta M. (Founder ReviZa)',
                 style: TextStyle(fontStyle: FontStyle.italic),
               ),
             ],
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                launchUrl(Uri(path: 'https://www.lusosoftware.com'));
-              },
+              onPressed: () => _launchUrl(context, 'https://reviza.info'),
               child: const Text('Visit Us 🌐'),
             ),
             TextButton(
-              onPressed: () {
-                launchUrl(Uri(path: 'mailto:team@lusosoftware.com'));
-              },
+              onPressed: () =>
+                  _launchUrl(context, 'mailto:support@reviza.info'),
               child: const Text('Email Us 📧'),
             ),
             TextButton(
-              onPressed: () {
-                const phoneNumber = '+260762878107';
-                launchUrl(Uri(path: 'https://wa.me/$phoneNumber/'));
-              },
-              child: const Text('WhatsApp Us 💬'),
+              onPressed: () =>
+                  _launchUrl(context, 'https://wa.me/+260762878107/'),
+              child: const Text('WhatsApp Us 📞'),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Close'),
             ),
           ],
@@ -81,17 +81,18 @@ class UserScreen extends StatelessWidget {
     );
   }
 
+  Future<String> getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.version;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Screen'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('User Screen'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             BlocBuilder<AppBloc, AppState>(
               builder: (context, state) {
@@ -99,11 +100,8 @@ class UserScreen extends StatelessWidget {
                   leading: const Icon(Icons.brightness_6),
                   title: const Text('Switch Theme'),
                   trailing: Switch(
-                    value: state.theme ==
-                        ReviZaTheme
-                            .light, // Replace with actual theme switch logic
+                    value: state.theme == ReviZaTheme.light,
                     onChanged: (bool value) {
-                      // Dispatch a ChangeTheme event to trigger the theme switch logic
                       context.read<AppBloc>().add(ChangeTheme());
                     },
                   ),
@@ -114,62 +112,40 @@ class UserScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.feedback),
               title: const Text('Feedback'),
-              onTap: () async {
-                const phoneNumber = '+260762878107';
-                launchUrl(Uri(path: 'https://wa.me/$phoneNumber/'));
-              },
+              onTap: () => _launchUrl(context, 'https://wa.me/+260762878107/'),
             ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.star),
               title: const Text('Rate this App'),
-              onTap: () {
-                // Open app store for rating
-                launchAppStoreForRating(context);
-                // commingSoon(context);
-              },
+              onTap: () => launchAppStoreForRating(context),
             ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.info),
               title: const Text('About Us'),
-              onTap: () {
-                showAboutUsDialog(context);
-              },
+              onTap: () => showAboutUsDialog(context),
             ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.person_add),
               title: const Text('Tell a Friend'),
               onTap: () {
-                // Implement tell a friend logic, should be able to let the app be shared on various social media platforms
-                Share.share('hello');
-                // commingSoon(context);
+                const String shareText =
+                    'Download ReviZa:\nhttps://reviza.info';
+                Share.share(shareText);
               },
             ),
             const Divider(),
-            // ListTile(
-            //   leading: const Icon(Icons.code),
-            //   title: const Text('Check us out on Github'),
-            //   onTap: () {},
-            // ),
-            // const Divider(),
-            // ListTile(
-            //   leading: const Icon(Icons.chat),
-            //   title: const Text('Join us on WhatsApp'),
-            //   onTap: () {
-            //     // Implement WhatsApp join logic to let one join business whatsapp group
-            //   },
-            // ),
-            // const Divider(),
             ListTile(
-              leading: Icon(Icons.info),
-              title: Text('App Version'),
-              subtitle: FutureBuilder(
-                  future: getAppVersion(),
-                  builder: (context, version) {
-                    return Text(version.data ?? '...');
-                  }), // Replace with actual app version
+              leading: const Icon(Icons.info),
+              title: const Text('App Version'),
+              subtitle: FutureBuilder<String>(
+                future: getAppVersion(),
+                builder: (context, snapshot) {
+                  return Text(snapshot.data ?? 'Loading...');
+                },
+              ),
             ),
             const Divider(),
             ListTile(
@@ -177,8 +153,10 @@ class UserScreen extends StatelessWidget {
               title: const Text('Logout'),
               onTap: () {
                 context.read<AppBloc>().add(const AppLogoutRequested());
-                Navigator.pop(context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
               },
             ),
           ],
@@ -186,9 +164,4 @@ class UserScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<String> getAppVersion() async {
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  return packageInfo.version; // e.g., "1.0.0"
 }

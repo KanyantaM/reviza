@@ -4,7 +4,6 @@ import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 
 import styles from './downloads.module.css';
-import Waitlist from '../components/wait_list';
 
 const downloadLinks = [
   {
@@ -71,7 +70,6 @@ export default function Downloads(): JSX.Element {
             Choose your platform and start your learning journey with ReviZa.
           </p>
         </div>
-        <div><Waitlist/></div>
       </header>
       <main>
         <section className={styles.downloadSection}>

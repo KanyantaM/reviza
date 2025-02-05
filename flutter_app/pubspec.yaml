@@ -47,7 +47,7 @@ dependencies:
     path: packages/crud_packages/local_student_api
   cloud_student_api:
     path: packages/crud_packages/cloud_student_api
-  animate_do: ^3.1.2
+  animate_do: ^3.3.7
   hive_flutter: ^1.1.0
   dotted_border: ^2.1.0
   file_picker: ^8.3.1

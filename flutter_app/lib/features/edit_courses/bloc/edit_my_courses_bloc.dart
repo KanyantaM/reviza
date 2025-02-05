@@ -52,13 +52,6 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
               hiveStudyMaterialRepository.deleteStudyMaterial(material);
             }
           }
-          // for (var courseToDelete in event.coursesToDelete) {
-          //   event.student.myCourses.remove(courseToDelete);
-          //   final dir = await getApplicationDocumentsDirectory();
-          //   if (await File("${dir.path}/$courseToDelete").exists()) {
-          //     File("${dir.path}/$courseToDelete").delete(recursive: true);
-          //   }
-          // }
           await _studentOfflineDataRepository.updateUser(event.student);
           await _studentOnlineDataRepository.updateUser(event.student);
           emit(CoursesEditedSuccesfully());

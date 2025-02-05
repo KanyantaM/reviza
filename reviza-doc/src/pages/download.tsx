@@ -15,7 +15,7 @@ const downloadLinks = [
   {
     name: 'Play Store',
     icon: 'https://upload.wikimedia.org/wikipedia/commons/5/55/Google_Play_2016_icon.svg',
-    link: 'https://play.google.com/store', // Replace with actual link
+    link: 'https://play.google.com/store/apps/details?id=info.reviza.app', // Replace with actual link
     description: 'Download ReviZa for your Android device.',
   },
   {

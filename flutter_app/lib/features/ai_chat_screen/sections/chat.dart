@@ -1,186 +1,226 @@
-import 'dart:typed_data';
+import 'package:cross_cache/cross_cache.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:flutter_highlighter/flutter_highlighter.dart';
-import 'package:flutter_highlighter/themes/github.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-// import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:flutter_chat_core/flutter_chat_core.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flyer_chat_image_message/flyer_chat_image_message.dart';
+import 'package:flyer_chat_text_message/flyer_chat_text_message.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
-import 'package:reviza/features/ai_chat_screen/widgets/chat_input_box.dart';
+import 'package:reviza/features/ai_chat_screen/sections/controller/reviza_chat_controller.dart';
+import 'package:sembast/sembast.dart';
+import 'package:uuid/uuid.dart';
 
-class SectionChat extends StatefulWidget {
-  const SectionChat({super.key});
+import 'widgets/input_action_bar.dart';
+
+class AIChatScreen extends StatefulWidget {
+  final String geminiApiKey;
+
+  const AIChatScreen({
+    super.key,
+    required this.geminiApiKey,
+  });
 
   @override
-  State<SectionChat> createState() => _SectionChatState();
+  AIChatScreenState createState() => AIChatScreenState();
 }
 
-class _SectionChatState extends State<SectionChat> {
-  final ImagePicker picker = ImagePicker();
-  Uint8List? selectedImage;
-  final controller = TextEditingController();
-  final gemini = Gemini.instance;
-  bool _loading = false;
-  final List<Content> chats = [];
+class AIChatScreenState extends State<AIChatScreen> {
+  final _uuid = const Uuid();
+  final _crossCache = CrossCache();
+  final _scrollController = ScrollController();
 
-  bool get loading => _loading;
-  set loading(bool set) => setState(() => _loading = set);
+  final _currentUser = const User(id: 'me');
+  final _agent = const User(id: 'agent');
+
+  late final ChatController _chatController;
+  late final GenerativeModel _model;
+  late ChatSession _chatSession;
+
+  Message? _currentGeminiResponse;
+
+  @override
+  void initState() {
+    super.initState();
+    _chatController = ReviZaChatRoomController(chatRoomId: chatRoomId);
+    _model = GenerativeModel(
+      model: 'gemini-1.5-flash-latest',
+      apiKey: widget.geminiApiKey,
+      safetySettings: [
+        SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.none),
+      ],
+    );
+
+    _chatSession = _model.startChat(
+      history: _chatController.messages
+          .whereType<TextMessage>()
+          .map((message) => Content.text(message.text))
+          .toList(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _chatController.dispose();
+    _scrollController.dispose();
+    _crossCache.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Column(
-          children: [
-            Expanded(
-              child: chats.isNotEmpty
-                  ? Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SingleChildScrollView(
-                        reverse: true,
-                        child: ListView.builder(
-                          itemBuilder: chatItem,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: chats.length,
-                        ),
-                      ),
-                    )
-                  : const Center(child: Text('Search something!')),
-            ),
-            if (selectedImage != null)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.memory(
-                    selectedImage!,
-                    fit: BoxFit.cover,
-                    width: constraints.maxWidth * 0.9,
-                  ),
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      body: Chat(
+        builders: Builders(
+          chatAnimatedListBuilder: (context, itemBuilder) {
+            return ChatAnimatedList(
+              scrollController: _scrollController,
+              itemBuilder: itemBuilder,
+              shouldScrollToEndWhenAtBottom: false,
+            );
+          },
+          imageMessageBuilder: (context, message, index) =>
+              FlyerChatImageMessage(message: message, index: index),
+          inputBuilder: (context) => ChatInput(
+            topWidget: InputActionBar(
+              buttons: [
+                InputActionButton(
+                  icon: Icons.delete_sweep,
+                  title: 'Clear all',
+                  onPressed: () {
+                    _chatController.set([]);
+                    _chatSession = _model.startChat();
+                  },
+                  destructive: true,
                 ),
-              ),
-            if (loading) Lottie.asset('assets/lottie/loadingteal.json'),
-            ChatInputBox(
-              controller: controller,
-              onClickCamera: () => _showImagePickerDialog(context),
-              onSend: _sendMessage,
+              ],
             ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showImagePickerDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Image Selection'),
-          content: const Text('Choose an image source.'),
-          actions: [
-            TextButton(
-              onPressed: () => _pickImage(ImageSource.camera),
-              child: const Text('Camera'),
-            ),
-            TextButton(
-              onPressed: () => _pickImage(ImageSource.gallery),
-              child: const Text('Gallery'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _pickImage(ImageSource source) async {
-    Navigator.pop(context);
-    final XFile? photo = await picker.pickImage(source: source);
-    if (photo != null) {
-      selectedImage = await photo.readAsBytes();
-      setState(() {});
-    }
-  }
-
-  void _sendMessage() async {
-    if (controller.text.isNotEmpty) {
-      final text = controller.text;
-      controller.clear();
-      chats.add(Content(role: 'user', parts: [Part.text(text)]));
-      loading = true;
-
-      if (selectedImage == null) {
-        final response = await gemini.chat(chats);
-        chats.add(
-            Content(role: 'model', parts: [Part.text(response?.output ?? '')]));
-      } else {
-        final response = await gemini
-            .prompt(parts: [Part.text(text), Part.uint8List(selectedImage!)]);
-        chats.add(
-            Content(role: 'model', parts: [Part.text(response?.output ?? '')]));
-        selectedImage = null;
-      }
-      loading = false;
-    }
-  }
-
-  Widget chatItem(BuildContext context, int index) {
-    final content = chats[index];
-    final isUser = content.role == 'user';
-    String text = content.parts?.last is TextPart
-        ? (content.parts!.last as TextPart).text
-        : '';
-    List<String> parts = text.split('```');
-
-    return Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      decoration: BoxDecoration(
-        color: isUser ? Colors.blue.shade100 : Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment:
-            isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          if (!isUser)
-            Text(
-              'ReviZa AI',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: parts.length,
-            itemBuilder: (context, i) {
-              if (i % 2 == 0) {
-                return Markdown(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  data: parts[i],
-                );
-              } else {
-                final codeText = parts[i];
-                final newLineIndex = codeText.indexOf('\n');
-                final language = newLineIndex != -1
-                    ? codeText.substring(0, newLineIndex)
-                    : '';
-                final code = newLineIndex != -1
-                    ? codeText.substring(newLineIndex + 1)
-                    : codeText;
-                return HighlightView(
-                  code,
-                  language: language,
-                  theme: githubTheme,
-                  textStyle: const TextStyle(fontSize: 16.0),
-                );
-              }
-            },
           ),
-        ],
+          textMessageBuilder: (context, message, index) =>
+              FlyerChatTextMessage(message: message, index: index),
+        ),
+        chatController: _chatController,
+        crossCache: _crossCache,
+        currentUserId: _currentUser.id,
+        onAttachmentTap: _handleAttachmentTap,
+        onMessageSend: _handleMessageSend,
+        resolveUser: (id) => Future.value(
+          switch (id) {
+            'me' => _currentUser,
+            'agent' => _agent,
+            _ => null,
+          },
+        ),
+        theme: ChatTheme.fromThemeData(theme),
       ),
     );
+  }
+
+  void _handleMessageSend(String text) async {
+    await _chatController.insert(
+      TextMessage(
+        id: _uuid.v4(),
+        authorId: _currentUser.id,
+        createdAt: DateTime.now().toUtc(),
+        text: text,
+        isOnlyEmoji: isOnlyEmoji(text),
+      ),
+    );
+
+    final content = Content.text(text);
+    _sendContent(content);
+  }
+
+  void _handleAttachmentTap() async {
+    final picker = ImagePicker();
+
+    final image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) return;
+
+    await _crossCache.downloadAndSave(image.path);
+
+    await _chatController.insert(
+      ImageMessage(
+        id: _uuid.v4(),
+        authorId: _currentUser.id,
+        createdAt: DateTime.now().toUtc(),
+        source: image.path,
+      ),
+    );
+
+    final bytes = await _crossCache.get(image.path);
+
+    final content = Content.data('image/jpeg', bytes);
+    _sendContent(content);
+  }
+
+  void _sendContent(Content content) async {
+    try {
+      final response = _chatSession.sendMessageStream(content);
+
+      var accumulatedText = '';
+      double? initialMaxScrollExtent;
+      var hasReachedTargetScroll = false;
+
+      await for (final chunk in response) {
+        if (chunk.text != null) {
+          initialMaxScrollExtent ??= _scrollController.position.maxScrollExtent;
+
+          accumulatedText += chunk.text!;
+
+          if (_currentGeminiResponse == null) {
+            _currentGeminiResponse = TextMessage(
+              id: _uuid.v4(),
+              authorId: _agent.id,
+              createdAt: DateTime.now().toUtc(),
+              text: accumulatedText,
+              isOnlyEmoji: isOnlyEmoji(accumulatedText),
+            );
+            await _chatController.insert(_currentGeminiResponse!);
+          } else {
+            final newUpdatedMessage = (_currentGeminiResponse as TextMessage)
+                .copyWith(text: accumulatedText);
+            await _chatController.update(
+              _currentGeminiResponse!,
+              newUpdatedMessage,
+            );
+            _currentGeminiResponse = newUpdatedMessage;
+
+            if (!hasReachedTargetScroll && initialMaxScrollExtent > 0) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!_scrollController.hasClients || !mounted) return;
+
+                final targetScroll = (initialMaxScrollExtent ?? 0) +
+                    _scrollController.position.viewportDimension -
+                    MediaQuery.of(context).padding.bottom -
+                    104 -
+                    20;
+
+                if (_scrollController.position.maxScrollExtent > targetScroll) {
+                  _scrollController.animateTo(
+                    targetScroll,
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.linearToEaseOut,
+                  );
+                  hasReachedTargetScroll = true;
+                } else {
+                  _scrollController.animateTo(
+                    _scrollController.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.linearToEaseOut,
+                  );
+                }
+              });
+            }
+          }
+        }
+      }
+
+      _currentGeminiResponse = null;
+    } on GenerativeAIException catch (error) {
+      debugPrint('Generation error $error');
+    }
   }
 }

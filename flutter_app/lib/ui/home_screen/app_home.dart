@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' if (dart.library.io) 'dart:io' show Platform;
 import 'package:flutter/material.dart';
-import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
+import 'package:reviza/features/ai_chat_screen/sections/chat.dart';
 import 'package:reviza/features/edit_courses/view/home_tab_page.dart';
 import 'package:reviza/features/view_subjects/view_subjects.dart';
 import 'package:reviza/ui/home_screen/tabs/upload/upload_screen.dart';
@@ -29,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _listPages
       ..add(HomeTabPage(userId: widget.uid))
       ..add(UploadTypeScreen(uid: widget.uid))
-      ..add(const AiScreen())
+      ..add(AIChatScreen())
       ..add(ViewMaterialPage(isDownloadedView: true, uid: widget.uid))
       ..add(UserScreen());
     _currentPage = HomeTabPage(userId: widget.uid);

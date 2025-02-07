@@ -114,9 +114,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                   _buildSearchableDropdown('Course', _myCourses, (selected) {
                     _courseName = selected;
                   }),
-                  const Spacer(
-                    flex: 1,
-                  ),
+                  SizedBox(height: 10),
                   _platformFile == null && widget.type != Types.links
                       ? UploadBox(
                           onTap: getfile,
@@ -206,48 +204,46 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                         ],
                       ),
                     ),
-                  const Spacer(
-                    flex: 2,
-                  ),
-                  SizedBox(
-                      height: (29.7),
-                      width: (170.7),
-                      child: (_uploading)
-                          ? const Center(
-                              child: Text(
-                              'Uploading....',
-                              style: TextStyle(fontWeight: FontWeight.w700),
-                            ))
-                          : OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: Theme.of(context).hoverColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular((20.86)),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        height: (29.7),
+                        width: (170.7),
+                        child: (_uploading)
+                            ? const Center(
+                                child: Text(
+                                'Uploading....',
+                                style: TextStyle(fontWeight: FontWeight.w700),
+                              ))
+                            : OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: Theme.of(context).hoverColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular((20.86)),
+                                  ),
                                 ),
-                              ),
-                              onPressed: () async {
-                                setState(() {
-                                  _uploading = true;
-                                });
-                                await uploadFile();
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const SizedBox(
-                                    width: (9.86),
-                                  ),
-                                  Text(
-                                    "Upload Material",
-                                    style: GoogleFonts.poppins(
-                                      // color: Colors.white,
-                                      fontSize: (12.51),
-                                      fontWeight: FontWeight.w500,
+                                onPressed: () async {
+                                  await uploadFile();
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(
+                                      width: (9.86),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )),
+                                    Text(
+                                      "Upload Material",
+                                      style: GoogleFonts.poppins(
+                                        // color: Colors.white,
+                                        fontSize: (12.51),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                  ),
                   const SizedBox(
                     height: 12,
                   )
@@ -294,9 +290,8 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
             ));
 
             // add duration
-            Future.delayed(const Duration(seconds: 3), () {
-              Navigator.pop(context);
-            });
+            Future.delayed(const Duration(seconds: 3), () {});
+            Navigator.pop(context);
           } else if (state is ErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

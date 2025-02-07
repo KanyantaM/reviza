@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:reviza/features/ai_chat_screen/sections/chat.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
-import 'package:reviza/features/ai_chat_screen/bard_chat_screen.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 // import 'package:reviza/utilities/dialogues/error_dialog.dart';
 import 'package:study_material_api/study_material_api.dart';
@@ -76,8 +76,8 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                 context: context,
                 builder: (context) {
                   return const AlertDialog(
-                    content: AiScreen(),
-                  );
+                      // content: AIChatScreen(),
+                      );
                 },
               );
             },

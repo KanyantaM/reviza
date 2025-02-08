@@ -10,31 +10,41 @@ class ChatRepository {
   })  : _localChat = localChat,
         _onlineChat = onlineChat;
 
+  String _uuid = '';
+
   /// Cache-first fetching of messages
   Future<List<Message>> fetchChatRoom(String chatRoomId) async {
+    if (chatRoomId.isEmpty) {
+      _uuid = await _localChat.createChatRoom();
+
+      await _onlineChat.fetchChatRoom(chatRoomId: _uuid);
+
+      return [];
+    }
     List<Message> cachedMessages =
         await _localChat.fetchChatRoom(chatRoomId: chatRoomId);
 
     if (cachedMessages.isNotEmpty) {
       return cachedMessages;
-    }
+    } else {
+      List<Message> onlineMessages =
+          await _onlineChat.fetchChatRoom(chatRoomId: chatRoomId);
 
-    List<Message> onlineMessages =
-        await _onlineChat.fetchChatRoom(chatRoomId: chatRoomId);
-
-    if (onlineMessages.isNotEmpty) {
-      await _localChat.updateChatRoom(
-        chatRoomId: chatRoomId,
-        chats: onlineMessages,
-      );
+      if (onlineMessages.isNotEmpty) {
+        await _localChat.updateChatRoom(
+          chatRoomId: chatRoomId,
+          chats: onlineMessages,
+        );
+      }
+      return onlineMessages;
     }
-    return onlineMessages;
   }
 
   /// Sends a message, caching it first, then syncing online
   Stream<MessageState> sendMessage(Message message, String chatRoomId) {
-    Stream<MessageState> state =
-        _localChat.addMessage(message: message, chatRoomId: chatRoomId);
+    Stream<MessageState> state = _localChat.addMessage(
+        message: message,
+        chatRoomId: (chatRoomId.isEmpty) ? _uuid : chatRoomId);
     // _onlineChat
     //     .addMessage(message: message, chatRoomId: chatRoomId)
     //     .listen((state) {
@@ -77,37 +87,24 @@ class ChatRepository {
 
   /// Cache-first fetching of messages
   Future<void> leaveChatRoom(String chatRoomId) async {
+    String chatId = (chatRoomId.isEmpty) ? _uuid : chatRoomId;
     List<Message> cachedMessages =
-        await _localChat.fetchChatRoom(chatRoomId: chatRoomId);
+        await _localChat.fetchChatRoom(chatRoomId: chatId);
 
     if (cachedMessages.isNotEmpty) {
-      _localChat.leaveRoom(chatRoomId: chatRoomId);
+      _localChat.leaveRoom(chatRoomId: chatId);
     }
 
     List<Message> onlineMessages =
-        await _onlineChat.fetchChatRoom(chatRoomId: chatRoomId);
+        await _onlineChat.fetchChatRoom(chatRoomId: chatId);
 
     if (onlineMessages.isNotEmpty) {
       _onlineChat.leaveRoom(chatRoomId: chatRoomId);
     }
   }
 
-  Stream<ChatOperation> fetchChatRoomOperations(String chatRoomId) async* {
-    Stream<ChatOperation> cachedStream =
-        _localChat.operationsStream(chatRoomId: chatRoomId);
-    bool hasCache = await cachedStream.isEmpty.then((isEmpty) => !isEmpty);
-
-    if (hasCache) {
-      yield* cachedStream;
-    } else {
-      Stream<ChatOperation> onlineStream =
-          _onlineChat.operationsStream(chatRoomId: chatRoomId);
-
-      await for (var operation in onlineStream) {
-        //todo: Store data in cache (assuming _localChat has a method to save operations)
-        yield operation;
-      }
-    }
+  Stream<ChatOperation> fetchChatRoomOperations(String chatRoomId) {
+    return _localChat.operationsStream(chatRoomId: chatRoomId);
   }
 
   //getting all chatrooms with a cached first approach

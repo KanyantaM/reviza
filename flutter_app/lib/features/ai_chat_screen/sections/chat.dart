@@ -1,6 +1,6 @@
+import 'package:chat_repository/chat_repository.dart';
 import 'package:cross_cache/cross_cache.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flyer_chat_image_message/flyer_chat_image_message.dart';
@@ -13,8 +13,10 @@ import 'package:uuid/uuid.dart';
 import 'widgets/input_action_bar.dart';
 
 class AIChatScreen extends StatefulWidget {
+  final String userId;
   const AIChatScreen({
     super.key,
+    required this.userId,
   });
 
   @override
@@ -29,7 +31,7 @@ class AIChatScreenState extends State<AIChatScreen> {
   final _currentUser = const User(id: 'me');
   final _agent = const User(id: 'agent');
 
-  late final ChatController _chatController;
+  ChatController? _chatController;
   late final GenerativeModel _model;
   late ChatSession _chatSession;
   Message? _currentGeminiResponse;
@@ -38,8 +40,8 @@ class AIChatScreenState extends State<AIChatScreen> {
   void initState() {
     super.initState();
     final String apiKey = dotenv.env['GEMINI_API_KEY']!;
-    _chatController =
-        ReviZaChatRoomController(chatRoomId: ChatRoomVariable.chatRoomId);
+    // _chatController = ReviZaChatRoomController(chatRoomId: _uuid.v4());
+    _chatController = HiveChatController(chatRoom: 'AI_CHAT');
     _model = GenerativeModel(
       model: 'gemini-1.5-flash-latest',
       apiKey: apiKey,
@@ -49,7 +51,7 @@ class AIChatScreenState extends State<AIChatScreen> {
     );
 
     _chatSession = _model.startChat(
-      history: _chatController.messages
+      history: _chatController!.messages
           .whereType<TextMessage>()
           .map((message) => Content.text(message.text))
           .toList(),
@@ -58,7 +60,7 @@ class AIChatScreenState extends State<AIChatScreen> {
 
   @override
   void dispose() {
-    _chatController.dispose();
+    _chatController!.dispose();
     _scrollController.dispose();
     _crossCache.dispose();
     super.dispose();
@@ -68,55 +70,140 @@ class AIChatScreenState extends State<AIChatScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    return FutureBuilder<Object>(
+      future: ChatRepository(
+        localChat: HiveImplementation(),
+        onlineChat: FirestoreImplementation(),
+      ).fetchAllChatRooms(widget.userId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (!snapshot.hasData) {
+            return const Center(child: Text("No chat rooms available"));
+          } else {
+            return _bodyWhenFullyLoaded(
+                context, theme, (snapshot.data as List<ChatRoom>));
+          }
+        } else {
+          return const Center(child: Text("Unexpected state"));
+        }
+      },
+    );
+  }
+
+  Scaffold _bodyWhenFullyLoaded(
+    BuildContext context,
+    ThemeData theme,
+    List<ChatRoom> rooms,
+  ) {
     return Scaffold(
-      body: Chat(
-        builders: Builders(
-          chatAnimatedListBuilder: (context, itemBuilder) {
-            return ChatAnimatedList(
-              scrollController: _scrollController,
-              itemBuilder: itemBuilder,
-              shouldScrollToEndWhenAtBottom: false,
-            );
-          },
-          imageMessageBuilder: (context, message, index) =>
-              FlyerChatImageMessage(message: message, index: index),
-          inputBuilder: (context) => ChatInput(
-            topWidget: InputActionBar(
-              buttons: [
-                InputActionButton(
-                  icon: Icons.delete_sweep,
-                  title: 'Clear all',
-                  onPressed: () {
-                    _chatController.set([]);
-                    _chatSession = _model.startChat();
-                  },
-                  destructive: true,
-                ),
-              ],
+      // appBar: AppBar(
+      //   title: Text("Chat"),
+      //   leading: IconButton(
+      //     icon: Icon(Icons.access_time), // Clock-like icon
+      //     onPressed: () {
+      //       Scaffold.of(context).openDrawer(); // Open drawer
+      //     },
+      //   ),
+      // ),
+      // drawer: Drawer(
+      //   child: Column(
+      //     children: [
+      //       DrawerHeader(
+      //         child: Text(
+      //           "Chat Rooms",
+      //           style: Theme.of(context).textTheme.titleLarge,
+      //         ),
+      //       ),
+      //       Expanded(
+      //         child: ListView.builder(
+      //           itemCount: rooms.length,
+      //           itemBuilder: (context, index) {
+      //             final room = rooms[index];
+      //             return ListTile(
+      //               title: Text(room.name),
+      //               onTap: () {
+      //                 setState(() {
+      //                   ChatRoomVariable.updateChatRoomId = room.id;
+      //                   _chatController = ReviZaChatRoomController(
+      //                       chatRoomId: ChatRoomVariable.chatRoomId);
+      //                   _chatSession = _model.startChat(
+      //                     history: _chatController!.messages
+      //                         .whereType<TextMessage>()
+      //                         .map((message) => Content.text(message.text))
+      //                         .toList(),
+      //                   );
+      //                 });
+
+      //                 Navigator.pop(context); // Close drawer
+      //               },
+      //             );
+      //           },
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      //
+      body: GestureDetector(
+        onTap: () {
+          if (Scaffold.of(context).isDrawerOpen) {
+            Navigator.pop(context); // Close drawer when tapping outside
+          }
+        },
+        child: Chat(
+          builders: Builders(
+            chatAnimatedListBuilder: (context, itemBuilder) {
+              return ChatAnimatedList(
+                scrollController: _scrollController,
+                itemBuilder: itemBuilder,
+                shouldScrollToEndWhenAtBottom: false,
+              );
+            },
+            imageMessageBuilder: (context, message, index) =>
+                FlyerChatImageMessage(message: message, index: index),
+            inputBuilder: (context) => ChatInput(
+              topWidget: InputActionBar(
+                buttons: [
+                  InputActionButton(
+                    icon: Icons.delete_sweep,
+                    title: 'Clear all',
+                    onPressed: () {
+                      _chatController!.set([]);
+                      _chatSession = _model.startChat();
+                    },
+                    destructive: true,
+                  ),
+                ],
+              ),
             ),
+            textMessageBuilder: (context, message, index) =>
+                FlyerChatTextMessage(message: message, index: index),
           ),
-          textMessageBuilder: (context, message, index) =>
-              FlyerChatTextMessage(message: message, index: index),
+          chatController: _chatController ??
+              ReviZaChatRoomController(chatRoomId: _uuid.v4()),
+          crossCache: _crossCache,
+          currentUserId: _currentUser.id,
+          onAttachmentTap: _handleAttachmentTap,
+          onMessageSend: _handleMessageSend,
+          resolveUser: (id) => Future.value(
+            switch (id) {
+              'me' => _currentUser,
+              'agent' => _agent,
+              _ => null,
+            },
+          ),
+          theme: ChatTheme.fromThemeData(theme),
         ),
-        chatController: _chatController,
-        crossCache: _crossCache,
-        currentUserId: _currentUser.id,
-        onAttachmentTap: _handleAttachmentTap,
-        onMessageSend: _handleMessageSend,
-        resolveUser: (id) => Future.value(
-          switch (id) {
-            'me' => _currentUser,
-            'agent' => _agent,
-            _ => null,
-          },
-        ),
-        theme: ChatTheme.fromThemeData(theme),
       ),
     );
   }
 
   void _handleMessageSend(String text) async {
-    await _chatController.insert(
+    await _chatController!.insert(
       TextMessage(
         id: _uuid.v4(),
         authorId: _currentUser.id,
@@ -139,7 +226,7 @@ class AIChatScreenState extends State<AIChatScreen> {
 
     await _crossCache.downloadAndSave(image.path);
 
-    await _chatController.insert(
+    await _chatController!.insert(
       ImageMessage(
         id: _uuid.v4(),
         authorId: _currentUser.id,
@@ -176,11 +263,11 @@ class AIChatScreenState extends State<AIChatScreen> {
               text: accumulatedText,
               isOnlyEmoji: isOnlyEmoji(accumulatedText),
             );
-            await _chatController.insert(_currentGeminiResponse!);
+            await _chatController!.insert(_currentGeminiResponse!);
           } else {
             final newUpdatedMessage = (_currentGeminiResponse as TextMessage)
                 .copyWith(text: accumulatedText);
-            await _chatController.update(
+            await _chatController!.update(
               _currentGeminiResponse!,
               newUpdatedMessage,
             );
@@ -218,7 +305,7 @@ class AIChatScreenState extends State<AIChatScreen> {
 
       _currentGeminiResponse = null;
     } on GenerativeAIException catch (error) {
-      debugPrint('Generation error $error');
+      throw Exception('Generation error $error');
     }
   }
 }

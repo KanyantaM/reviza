@@ -51,7 +51,18 @@ class FirestoreChatController implements ChatController {
 
   @override
   List<Message> get messages {
-    throw UnimplementedError('Use messagesStream to get real-time messages.');
+    return _chatss;
+  }
+
+  List<Message> _chatss = [];
+
+  void getMessages() async {
+    final snapshot =
+        await _chatCollection.orderBy('createdAt', descending: true).get();
+
+    _chatss = snapshot.docs
+        .map((doc) => Message.fromJson(doc.data() as Map<String, dynamic>))
+        .toList();
   }
 
   @override

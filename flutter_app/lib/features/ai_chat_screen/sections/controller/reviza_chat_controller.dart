@@ -21,7 +21,7 @@ class ReviZaChatRoomController implements ChatController {
 
   List<Message> _chats = [];
 
-  void _loadChats() async {
+  Future<void> _loadChats() async {
     _chats = await _chatRepository.fetchChatRoom(chatRoomId);
   }
 
@@ -50,5 +50,12 @@ class ReviZaChatRoomController implements ChatController {
   Future<void> update(Message oldMessage, Message newMessage) async {
     //todo:
     UnimplementedError('Not implemented');
+  }
+
+  Future<List<ChatRoom>> fetchChatRooms() async {
+    return ChatRepository(
+            localChat: HiveImplementation(),
+            onlineChat: FirestoreImplementation())
+        .fetchAllChatRooms(chatRoomId);
   }
 }

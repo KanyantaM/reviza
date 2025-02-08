@@ -2,22 +2,19 @@ import 'package:cross_cache/cross_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flyer_chat_image_message/flyer_chat_image_message.dart';
 import 'package:flyer_chat_text_message/flyer_chat_text_message.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reviza/features/ai_chat_screen/sections/controller/reviza_chat_controller.dart';
-import 'package:sembast/sembast.dart';
 import 'package:uuid/uuid.dart';
 
 import 'widgets/input_action_bar.dart';
 
 class AIChatScreen extends StatefulWidget {
-  final String geminiApiKey;
-
   const AIChatScreen({
     super.key,
-    required this.geminiApiKey,
   });
 
   @override
@@ -35,16 +32,17 @@ class AIChatScreenState extends State<AIChatScreen> {
   late final ChatController _chatController;
   late final GenerativeModel _model;
   late ChatSession _chatSession;
-
   Message? _currentGeminiResponse;
 
   @override
   void initState() {
     super.initState();
-    _chatController = ReviZaChatRoomController(chatRoomId: chatRoomId);
+    final String apiKey = dotenv.env['GEMINI_API_KEY']!;
+    _chatController =
+        ReviZaChatRoomController(chatRoomId: ChatRoomVariable.chatRoomId);
     _model = GenerativeModel(
       model: 'gemini-1.5-flash-latest',
-      apiKey: widget.geminiApiKey,
+      apiKey: apiKey,
       safetySettings: [
         SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.none),
       ],
@@ -223,4 +221,12 @@ class AIChatScreenState extends State<AIChatScreen> {
       debugPrint('Generation error $error');
     }
   }
+}
+
+class ChatRoomVariable {
+  static String _chatRoomId = '';
+
+  static set updateChatRoomId(String id) => _chatRoomId = id;
+
+  static String get chatRoomId => _chatRoomId;
 }

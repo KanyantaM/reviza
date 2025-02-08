@@ -1,4 +1,5 @@
 import 'package:chat_api/src/chat_abstract.dart';
+import 'package:chat_api/src/models/chat_room.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
 
 abstract class OnlineChat implements ChatApi {
@@ -30,4 +31,10 @@ abstract class OnlineChat implements ChatApi {
 
   @override
   Future<void> leaveRoom({required String chatRoomId});
+
+  @override
+  Future<List<ChatRoom>> fetchAllAIChatRooms({required String uid});
+
+  @override
+  Stream<ChatOperation> operationsStream({required String chatRoomId});
 }

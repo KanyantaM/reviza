@@ -42,12 +42,13 @@ class ReviZaChatRoomController implements ChatController {
 
   @override
   Future<void> set(List<Message> messages) async {
-   await _chatRepository
+    await _chatRepository.updateChatRoom(
+        chatRoomId: chatRoomId, chats: messages);
   }
 
   @override
-  Future<void> update(Message oldMessage, Message newMessage) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<void> update(Message oldMessage, Message newMessage) async {
+    //todo:
+    UnimplementedError('Not implemented');
   }
 }

@@ -65,7 +65,7 @@ class ChatRepository {
         .asyncExpand((cachedMessages) async* {
       yield cachedMessages;
 
-      var onlineMessages =
+      List<Message> onlineMessages =
           await _onlineChat.fetchChatRoom(chatRoomId: chatRoomId);
       if (onlineMessages.isNotEmpty) {
         await _localChat.updateChatRoom(
@@ -107,6 +107,40 @@ class ChatRepository {
         //todo: Store data in cache (assuming _localChat has a method to save operations)
         yield operation;
       }
+    }
+  }
+
+  //getting all chatrooms with a cached first approach
+  Future<List<ChatRoom>> fetchAllChatRooms(String chatRoomId,
+      {String? uid}) async {
+    List<ChatRoom> cachedRooms =
+        await _localChat.fetchAllAIChatRooms(uid: uid ?? '');
+
+    if (cachedRooms.isNotEmpty) {
+      return cachedRooms;
+    }
+
+    List<ChatRoom> onlineRooms =
+        await _onlineChat.fetchAllAIChatRooms(uid: uid ?? '');
+
+    if (onlineRooms.isNotEmpty) {
+      return onlineRooms;
+    }
+
+    return [];
+  }
+
+  Future<void> updateChatRoom(
+      {required String chatRoomId, required List<Message> chats}) async {
+    try {
+      _localChat.updateChatRoom(chatRoomId: chatRoomId, chats: chats);
+    } catch (e) {
+      throw Exception(e);
+    }
+    try {
+      _onlineChat.updateChatRoom(chatRoomId: chatRoomId, chats: chats);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

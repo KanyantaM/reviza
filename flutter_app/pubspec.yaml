@@ -16,7 +16,7 @@ dependencies:
     sdk: flutter
       
   cupertino_icons: ^1.0.2
-  flutter_gemini: ^3.0.0
+  # flutter_gemini: ^3.0.0
   lottie: ^3.2.0
   flutter_markdown: ^0.7.4+1
   image_picker: ^1.0.5
@@ -70,7 +70,6 @@ dependencies:
   flutter_chat_types: ^3.6.2
   flutter_chat_core: ^0.0.5
   google_generative_ai: ^0.4.6
-  sembast: ^3.8.3
   flyer_chat_image_message: ^0.0.5
   flyer_chat_text_message: ^0.0.5
   cross_cache: ^0.0.5

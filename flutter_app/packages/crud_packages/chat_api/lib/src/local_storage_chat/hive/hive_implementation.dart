@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chat_api/src/chat_abstract.dart';
 import 'package:chat_api/src/local_storage_chat/hive/hive_chat_controller.dart';
+import 'package:chat_api/src/local_storage_chat/hive/hive_chatroom_controller.dart';
 import 'package:chat_api/src/local_storage_chat/local_chat.dart';
 import 'package:chat_api/src/models/chat_room.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
@@ -106,5 +107,8 @@ class HiveImplementation implements LocalChat {
   }
 
   @override
-  Future<List<ChatRoom>> fetchAllAIChatRooms({required String uid}) {}
+  Future<List<ChatRoom>> fetchAllAIChatRooms({required String uid}) async {
+    HiveChatRoomController hiveChatRoomController = HiveChatRoomController();
+    return hiveChatRoomController.getAllChatRooms();
+  }
 }

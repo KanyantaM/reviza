@@ -1,16 +1,16 @@
 import 'dart:async';
-
 import 'package:chat_api/src/local_storage_chat/hive/message_streamer.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:hive/hive.dart';
 
 class HiveChatController implements ChatController {
+  static const String _boxName = 'ai_chats';
   final String chatRoom;
   late final Box _box;
   late final ListNotifier<Message> _notifier;
 
   HiveChatController({required this.chatRoom}) {
-    _box = Hive.box(chatRoom);
+    _box = Hive.box(_boxName);
     _notifier = ListNotifier<Message>(initialItems: messages);
   }
 
@@ -18,73 +18,54 @@ class HiveChatController implements ChatController {
 
   @override
   Future<void> insert(Message message, {int? index}) async {
-    if (_box.containsKey(message.id)) return;
+    final List<Map<String, dynamic>> chatMessages = _getChatMessages();
+    if (chatMessages.any((m) => m['id'] == message.id)) return;
 
     if (index == null) {
-      _box.put(message.id, message.toJson());
-      _operationsController.add(
-        ChatOperation.insert(message, _box.length - 1),
-      );
+      chatMessages.add(message.toJson());
+      _operationsController
+          .add(ChatOperation.insert(message, chatMessages.length - 1));
     } else {
-      _box.putAt(index, message.toJson());
+      chatMessages.insert(index, message.toJson());
       _operationsController.add(ChatOperation.insert(message, index));
     }
 
-    _notifier.addItems(messages);
+    _saveChatMessages(chatMessages);
   }
 
   @override
   Future<void> remove(Message message) async {
-    final index = _box.values
-        .map((json) => Message.fromJson(json))
-        .toList()
-        .indexOf(message);
+    final chatMessages = _getChatMessages();
+    final index = chatMessages.indexWhere((m) => m['id'] == message.id);
 
     if (index > -1) {
-      _box.deleteAt(index);
+      chatMessages.removeAt(index);
       _operationsController.add(ChatOperation.remove(message, index));
+      _saveChatMessages(chatMessages);
     }
-    _notifier.addItems(messages);
   }
 
   @override
   Future<void> update(Message oldMessage, Message newMessage) async {
-    if (oldMessage == newMessage) return;
-
-    final index = _box.values
-        .map((json) => Message.fromJson(json))
-        .toList()
-        .indexOf(oldMessage);
+    final chatMessages = _getChatMessages();
+    final index = chatMessages.indexWhere((m) => m['id'] == oldMessage.id);
 
     if (index > -1) {
-      _box.putAt(index, newMessage.toJson());
+      chatMessages[index] = newMessage.toJson();
       _operationsController.add(ChatOperation.update(oldMessage, newMessage));
+      _saveChatMessages(chatMessages);
     }
-
-    _notifier.addItems(messages);
   }
 
   @override
   Future<void> set(List<Message> messages) async {
-    _box.clear();
-    if (messages.isEmpty) {
-      _operationsController.add(ChatOperation.set());
-      return;
-    } else {
-      _box.putAll(
-        messages
-            .map((message) => {message.id: message.toJson()})
-            .toList()
-            .reduce((acc, map) => {...acc, ...map}),
-      );
-      _operationsController.add(ChatOperation.set());
-    }
-    _notifier.addItems(messages);
+    _saveChatMessages(messages.map((m) => m.toJson()).toList());
+    _operationsController.add(ChatOperation.set());
   }
 
   @override
   List<Message> get messages {
-    return _box.values.map((json) => Message.fromJson(json)).toList();
+    return _getChatMessages().map((json) => Message.fromJson(json)).toList();
   }
 
   @override
@@ -93,7 +74,7 @@ class HiveChatController implements ChatController {
   Stream<List<Message>> get messagesStream => _notifier.stream;
 
   Future<void> deleteChats() async {
-    _box.clear();
+    _box.delete(chatRoom);
     _notifier.dispose();
   }
 
@@ -101,5 +82,17 @@ class HiveChatController implements ChatController {
   void dispose() {
     _operationsController.close();
     _notifier.dispose();
+  }
+
+  /// Fetch messages for the given chat room from the 'ai_chats' box
+  List<Map<String, dynamic>> _getChatMessages() {
+    return (_box.get(chatRoom, defaultValue: []) as List)
+        .cast<Map<String, dynamic>>();
+  }
+
+  /// Save messages for the given chat room in the 'ai_chats' box
+  void _saveChatMessages(List<Map<String, dynamic>> messages) {
+    _box.put(chatRoom, messages);
+    _notifier.addItems(messages.map((json) => Message.fromJson(json)).toList());
   }
 }

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:reviza/features/forgot_password/forgot_password.dart';
 import 'package:reviza/features/login/cubit/login_cubit.dart';
 import 'package:reviza/features/sign_up/view/sign_up_page.dart';
 import 'package:sign_in_button/sign_in_button.dart' show SignInButton, Buttons;
@@ -52,8 +55,12 @@ class LoginForm extends StatelessWidget {
                         _PasswordInput(),
                         const SizedBox(height: 20),
                         _LoginButton(),
+                        _ForgotPasswordButton(),
                         const SizedBox(height: 12),
-                        _GoogleLoginButton(),
+                        if (Platform.isAndroid ||
+                            Platform.isIOS ||
+                            Platform.isFuchsia)
+                          _GoogleLoginButton(),
                         const SizedBox(height: 16),
                         _SignUpButton(),
                       ],
@@ -161,36 +168,7 @@ class _GoogleLoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SignInButton(
       Buttons.google,
-      // width: double.infinity,
-      // child: ElevatedButton.icon(
-      //   icon: Container(
-      //     padding: const EdgeInsets.all(6), // Adds spacing around the icon
-      //     decoration: const BoxDecoration(
-      //       color: Colors.white, // White background for the Google logo
-      //       shape:
-      //           BoxShape.circle, // Circular shape for better Google-like design
-      //     ),
-      //     child: Icon(
-      //       FontAwesomeIcons.google,
-      //       color: Colors.redAccent, // Google's primary blue
-      //       size: 20,
-      //     ),
-      //   ),
-      //   label: const Text(
-      //     'Sign in with Google',
-      //     style: TextStyle(
-      //       fontWeight: FontWeight.bold,
-      //       fontSize: 16,
-      //       color: Colors.white,
-      //     ),
-      //   ),
-      //   style: ElevatedButton.styleFrom(
-      //     backgroundColor: Colors.orangeAccent, // Google blue
-      //     padding: const EdgeInsets.symmetric(vertical: 12),
-      //     shape: RoundedRectangleBorder(
-      //       borderRadius: BorderRadius.circular(8),
-      //     ),
-      //   ),
+
       onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
       // ),
     );
@@ -205,6 +183,25 @@ class _SignUpButton extends StatelessWidget {
       child: const Text(
         'CREATE ACCOUNT',
         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent),
+      ),
+    );
+  }
+}
+
+class _ForgotPasswordButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ForgotPasswordPage()));
+        },
+        child: const Text(
+          'Forgot Password?',
+          style: TextStyle(color: Colors.blueAccent),
+        ),
       ),
     );
   }

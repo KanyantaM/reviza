@@ -50,6 +50,66 @@
       },
       "oauth_client": [
         {
+          "client_id": "585015455552-4r0jokeg99jsp38m394rq2f73br7k8hd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reviza",
+            "certificate_hash": "02e1d2ef003af0bcc731af5ba5ac3a1c75d650c4"
+          }
+        },
+        {
+          "client_id": "585015455552-akifibel3h3upqacpfh7qtol9e8ute6o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reviza",
+            "certificate_hash": "97a918541f2e08239303a0adca35156005e40ad7"
+          }
+        },
+        {
+          "client_id": "585015455552-reutp0k9hmnqpc5hv8q42dgfv1acjrg7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reviza",
+            "certificate_hash": "5336326bd472e66cd7655d46c5bcdb0da3dff29b"
+          }
+        },
+        {
+          "client_id": "585015455552-gak7ohl7j9mq9i3jtvab5i6f9qhis7gd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpyyXFbDWUQmj_6kO5Nc0NZ3ZwJePVNoE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585015455552-gak7ohl7j9mq9i3jtvab5i6f9qhis7gd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "585015455552-7bhtr5obailnaeciugr409674plrscah.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.reviza101.www.reviza"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585015455552:android:2ca8062856f4b0c5f2d4a5",
+        "android_client_info": {
+          "package_name": "i.r.a"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "585015455552-gak7ohl7j9mq9i3jtvab5i6f9qhis7gd.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -85,6 +145,30 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "585015455552-863g62a9dcu2binr874r0701vq361vhm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.reviza.app",
+            "certificate_hash": "97a918541f2e08239303a0adca35156005e40ad7"
+          }
+        },
+        {
+          "client_id": "585015455552-8fa9fbakt2m5bkc6rkgumsfb2boounj7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.reviza.app",
+            "certificate_hash": "5336326bd472e66cd7655d46c5bcdb0da3dff29b"
+          }
+        },
+        {
+          "client_id": "585015455552-f5dc7674sdu199r47lj3rq4ifuvukbej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.reviza.app",
+            "certificate_hash": "02e1d2ef003af0bcc731af5ba5ac3a1c75d650c4"
+          }
+        },
         {
           "client_id": "585015455552-gak7ohl7j9mq9i3jtvab5i6f9qhis7gd.apps.googleusercontent.com",
           "client_type": 3

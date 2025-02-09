@@ -1,4 +1,4 @@
-revisa:
+reviza:
   label: ReviZa
   permalink: /reviza
   description: Posts about ReviZa, the smart study app revolutionizing learning.
@@ -52,3 +52,24 @@ technology:
   label: Technology
   permalink: /technology
   description: Posts exploring advancements in technology and innovation.
+
+unza:
+  label: UNZA
+  permalink: /unza
+  description: Posts related to the University of Zambia and its academic environment.
+
+pastpapers:
+  label: Past Papers
+  permalink: /pastpapers
+  description: Posts discussing past examination papers for students.
+
+beng:
+  label: B.Eng
+  permalink: /beng
+  description: Posts related to Bachelor of Engineering studies and resources.
+
+notes:
+  label: Notes
+  permalink: /notes
+  description: Posts sharing lecture notes and academic materials for students.
+

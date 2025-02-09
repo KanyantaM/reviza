@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:reviza/features/ai_chat_screen/sections/chat.dart';
+// import 'package:reviza/features/ai_chat_screen/sections/chat.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 // import 'package:reviza/utilities/dialogues/error_dialog.dart';

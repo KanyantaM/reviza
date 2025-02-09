@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCpyyXFbDWUQmj_6kO5Nc0NZ3ZwJePVNoE',
-    appId: '1:585015455552:android:335ff823d219d65df2d4a5',
+    appId: '1:585015455552:android:2ca8062856f4b0c5f2d4a5',
     messagingSenderId: '585015455552',
     projectId: 'reviza-31466',
     storageBucket: 'reviza-31466.appspot.com',
@@ -64,6 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '585015455552',
     projectId: 'reviza-31466',
     storageBucket: 'reviza-31466.appspot.com',
+    androidClientId: '585015455552-4r0jokeg99jsp38m394rq2f73br7k8hd.apps.googleusercontent.com',
     iosClientId: '585015455552-smt38qt7qu7q2rccmo7170apo8at3qgc.apps.googleusercontent.com',
     iosBundleId: 'com.example.reviza',
   );
@@ -74,6 +75,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '585015455552',
     projectId: 'reviza-31466',
     storageBucket: 'reviza-31466.appspot.com',
+    androidClientId: '585015455552-4r0jokeg99jsp38m394rq2f73br7k8hd.apps.googleusercontent.com',
     iosClientId: '585015455552-smt38qt7qu7q2rccmo7170apo8at3qgc.apps.googleusercontent.com',
     iosBundleId: 'com.example.reviza',
   );

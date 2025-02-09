@@ -10,6 +10,8 @@ date: 2024-12-16
 
 Education is undergoing a massive transformation, and ReviZa is at the forefront of this change. At GDG DevFest 2024 in Lusaka, Zambia, we unveiled our vision to empower students through cutting-edge AI and advanced tools built on Google’s tech stack. ReviZa is more than just an app—it's a mission to redefine education.
 
+<!-- truncate -->
+
 ## The Challenges in Education Today
 
 In the current academic landscape, students face significant hurdles:

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chat_api/chat_api.dart';
 import 'package:chat_api/src/cloud_storage_chat/cloud_firestore/firestore_chat_controller.dart';
+import 'package:chat_api/src/cloud_storage_chat/cloud_firestore/firestore_chatroom_controller.dart';
 import 'package:uuid/uuid.dart';
 
 class FirestoreImplementation implements OnlineChat {
@@ -100,5 +101,12 @@ class FirestoreImplementation implements OnlineChat {
   @override
   Stream<ChatOperation> operationsStream({required String chatRoomId}) {
     return FirestoreChatController(chatRoom: chatRoomId).operationsStream;
+  }
+
+  @override
+  Future<List<ChatRoom>> fetchAllAIChatRooms({required String uid}) {
+    FirestoreChatroomController firestoreChatroomController =
+        FirestoreChatroomController();
+    return firestoreChatroomController.getAllChatRooms(userId: uid);
   }
 }

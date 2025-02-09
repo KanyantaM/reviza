@@ -29,7 +29,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _listPages
       ..add(HomeTabPage(userId: widget.uid))
       ..add(UploadTypeScreen(uid: widget.uid))
-      ..add(AIChatScreen())
+      ..add(AIChatScreen(
+        userId: widget.uid,
+      ))
       ..add(ViewMaterialPage(isDownloadedView: true, uid: widget.uid))
       ..add(UserScreen());
     _currentPage = HomeTabPage(userId: widget.uid);

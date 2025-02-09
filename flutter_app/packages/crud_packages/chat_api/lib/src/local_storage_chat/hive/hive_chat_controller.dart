@@ -1,90 +1,119 @@
 import 'dart:async';
-
 import 'package:chat_api/src/local_storage_chat/hive/message_streamer.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart';
 import 'package:hive/hive.dart';
 
 class HiveChatController implements ChatController {
+  static const String _boxName = 'ai_chats';
   final String chatRoom;
-  late final Box _box;
+  static Box? _box;
+  static bool _isInitialized = false;
+
   late final ListNotifier<Message> _notifier;
+  final _operationsController = StreamController<ChatOperation>.broadcast();
 
   HiveChatController({required this.chatRoom}) {
-    _box = Hive.box(chatRoom);
     _notifier = ListNotifier<Message>(initialItems: messages);
+    _ensureInitialized();
   }
 
-  final _operationsController = StreamController<ChatOperation>.broadcast();
+  /// Ensures Hive Box is Opened
+  static Future<void> initialize() async {
+    if (_isInitialized) return;
+    try {
+      if (!Hive.isBoxOpen(_boxName)) {
+        _box = await Hive.openBox(_boxName);
+      } else {
+        _box = Hive.box(_boxName);
+      }
+      _isInitialized = true;
+    } catch (e, stackTrace) {
+      throw Exception("Error initializing Hive: $e\n$stackTrace");
+    }
+  }
+
+  Future<void> _ensureInitialized() async {
+    if (!_isInitialized) {
+      await initialize();
+    }
+  }
 
   @override
   Future<void> insert(Message message, {int? index}) async {
-    if (_box.containsKey(message.id)) return;
+    await _ensureInitialized();
+    try {
+      final List<Map<String, dynamic>> chatMessages = _getChatMessages();
+      if (chatMessages.any((m) => m['id'] == message.id)) return;
 
-    if (index == null) {
-      _box.put(message.id, message.toJson());
-      _operationsController.add(
-        ChatOperation.insert(message, _box.length - 1),
-      );
-    } else {
-      _box.putAt(index, message.toJson());
-      _operationsController.add(ChatOperation.insert(message, index));
+      if (index == null) {
+        chatMessages.add(message.toJson());
+        _operationsController
+            .add(ChatOperation.insert(message, chatMessages.length - 1));
+      } else {
+        chatMessages.insert(index, message.toJson());
+        _operationsController.add(ChatOperation.insert(message, index));
+      }
+
+      _saveChatMessages(chatMessages);
+    } catch (e, stackTrace) {
+      throw Exception("Error inserting message: $e\n$stackTrace");
     }
-
-    _notifier.addItems(messages);
   }
 
   @override
   Future<void> remove(Message message) async {
-    final index = _box.values
-        .map((json) => Message.fromJson(json))
-        .toList()
-        .indexOf(message);
+    await _ensureInitialized();
+    try {
+      final chatMessages = _getChatMessages();
+      final index = chatMessages.indexWhere((m) => m['id'] == message.id);
 
-    if (index > -1) {
-      _box.deleteAt(index);
-      _operationsController.add(ChatOperation.remove(message, index));
+      if (index > -1) {
+        chatMessages.removeAt(index);
+        _operationsController.add(ChatOperation.remove(message, index));
+        _saveChatMessages(chatMessages);
+      }
+    } catch (e, stackTrace) {
+      throw Exception("Error removing message: $e\n$stackTrace");
     }
-    _notifier.addItems(messages);
   }
 
   @override
   Future<void> update(Message oldMessage, Message newMessage) async {
-    if (oldMessage == newMessage) return;
+    await _ensureInitialized();
+    try {
+      final chatMessages = _getChatMessages();
+      final index = chatMessages.indexWhere((m) => m['id'] == oldMessage.id);
 
-    final index = _box.values
-        .map((json) => Message.fromJson(json))
-        .toList()
-        .indexOf(oldMessage);
-
-    if (index > -1) {
-      _box.putAt(index, newMessage.toJson());
-      _operationsController.add(ChatOperation.update(oldMessage, newMessage));
+      if (index > -1) {
+        chatMessages[index] = newMessage.toJson();
+        _operationsController.add(ChatOperation.update(oldMessage, newMessage));
+        _saveChatMessages(chatMessages);
+      }
+    } catch (e, stackTrace) {
+      throw Exception("Error updating message: $e\n$stackTrace");
     }
-
-    _notifier.addItems(messages);
   }
 
   @override
   Future<void> set(List<Message> messages) async {
-    _box.clear();
-    if (messages.isEmpty) {
+    await _ensureInitialized();
+    try {
+      _saveChatMessages(messages.map((m) => m.toJson()).toList());
       _operationsController.add(ChatOperation.set());
-      return;
-    } else {
-      _box.putAll(
-        messages
-            .map((message) => {message.id: message.toJson()})
-            .toList()
-            .reduce((acc, map) => {...acc, ...map}),
-      );
-      _operationsController.add(ChatOperation.set());
+    } catch (e, stackTrace) {
+      throw Exception("Error setting messages: $e\n$stackTrace");
     }
-    _notifier.addItems(messages);
   }
 
   @override
   List<Message> get messages {
-    return _box.values.map((json) => Message.fromJson(json)).toList();
+    try {
+      final List<Message> messages =
+          _getChatMessages().map((json) => Message.fromJson(json)).toList();
+      return messages;
+    } catch (e, stackTrace) {
+      throw Exception("Error geting chat: $e\n$stackTrace");
+    }
   }
 
   @override
@@ -93,13 +122,41 @@ class HiveChatController implements ChatController {
   Stream<List<Message>> get messagesStream => _notifier.stream;
 
   Future<void> deleteChats() async {
-    _box.clear();
-    _notifier.dispose();
+    await _ensureInitialized();
+    try {
+      _box?.delete(chatRoom);
+      _notifier.dispose();
+    } catch (e, stackTrace) {
+      throw Exception("Error deleting chat: $e\n$stackTrace");
+    }
   }
 
   @override
   void dispose() {
     _operationsController.close();
     _notifier.dispose();
+  }
+
+  List<Map<String, dynamic>> _getChatMessages() {
+    try {
+      final data = _box?.get(chatRoom);
+      if (data is List) {
+        return data.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
+      return [];
+    } catch (e, stackTrace) {
+      throw Exception("Error getting chat messages: $e\n$stackTrace");
+    }
+  }
+
+  /// Save messages for the given chat room in the 'ai_chats' box
+  void _saveChatMessages(List<Map<String, dynamic>> messages) {
+    try {
+      _box?.put(chatRoom, messages);
+      _notifier
+          .addItems(messages.map((json) => Message.fromJson(json)).toList());
+    } catch (e, stackTrace) {
+      throw Exception("Error saving messages: $e\n$stackTrace");
+    }
   }
 }

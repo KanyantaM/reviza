@@ -1,6 +1,17 @@
-class ChatRoom {
-  final String id, name;
-  final List<String> memberIds;
+import 'package:hive/hive.dart';
+
+part 'chat_room.g.dart'; // This is for Hive's generated code
+
+@HiveType(typeId: 3)
+class ChatRoom extends HiveObject {
+  @HiveField(0)
+  final String id;
+
+  @HiveField(1)
+  String name;
+
+  @HiveField(2)
+  List<String> memberIds;
 
   ChatRoom({required this.id, required this.name, required this.memberIds});
 
@@ -9,10 +20,32 @@ class ChatRoom {
   }
 
   void joinRoom(String uid) {
-    memberIds.add(uid);
+    if (!memberIds.contains(uid)) {
+      memberIds.add(uid);
+      save(); // Saves changes in Hive
+    }
   }
 
-  void leaveGrouop(String uid) {
-    memberIds.remove(uid);
+  void leaveGroup(String uid) {
+    if (memberIds.contains(uid)) {
+      memberIds.remove(uid);
+      save(); // Saves changes in Hive
+    }
+  }
+
+  factory ChatRoom.fromJson(Map<String, dynamic> json) {
+    return ChatRoom(
+      id: json['id'],
+      name: json['name'],
+      memberIds: List<String>.from(json['memberIds']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'memberIds': memberIds,
+    };
   }
 }

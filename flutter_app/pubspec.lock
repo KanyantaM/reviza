@@ -525,14 +525,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.1"
-  flutter_gemini:
-    dependency: "direct main"
-    description:
-      name: flutter_gemini
-      sha256: b7264b1d19acc4b1a5628a0e26c0976aa1fb948f0d3243bc3510ff51e09476b7
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   flutter_highlighter:
     dependency: "direct main"
     description:
@@ -1188,14 +1180,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.25.1"
-  sembast:
-    dependency: "direct main"
-    description:
-      name: sembast
-      sha256: "9026ea34aa3a0f26a966529ef80b57b6fe40f810cadeadd1b208202d1bf153e7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.8.3"
   share_plus:
     dependency: "direct main"
     description:
@@ -1391,14 +1375,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "28.2.4"
-  synchronized:
-    dependency: transitive
-    description:
-      name: synchronized
-      sha256: "69fe30f3a8b04a0be0c15ae6490fc859a78ef4c43ae2dd5e8a623d45bfcf9225"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.0+3"
   term_glyph:
     dependency: transitive
     description:

@@ -33,17 +33,9 @@ dependencies:
   google_fonts: ^6.2.1
   study_material_api:
     path: packages/crud_packages/study_material_api
-  local_storage_study_material_api:
-    path: packages/crud_packages/local_storage_study_material_api
-  cloud_storage_study_material_api:
-    path: packages/crud_packages/cloud_storage_study_material_api
   firebase_core: ^3.10.1
-  student_api:
-    path: packages/crud_packages/student_api
-  local_student_api:
-    path: packages/crud_packages/local_student_api
-  cloud_student_api:
-    path: packages/crud_packages/cloud_student_api
+  student_repository:
+    path: packages/crud_packages/student_repository
   chat_repository:
     path: packages/crud_packages/chat_repository
   animate_do: ^3.1.2

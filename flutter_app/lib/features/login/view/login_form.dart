@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -57,10 +55,7 @@ class LoginForm extends StatelessWidget {
                         _LoginButton(),
                         _ForgotPasswordButton(),
                         const SizedBox(height: 12),
-                        if (Platform.isAndroid ||
-                            Platform.isIOS ||
-                            Platform.isFuchsia)
-                          _GoogleLoginButton(),
+                        _GoogleLoginButton(),
                         const SizedBox(height: 16),
                         _SignUpButton(),
                       ],

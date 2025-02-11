@@ -30,12 +30,12 @@ class _IntroductionViewState extends State<IntroductionView> {
         .read<IntroductionBloc>()
         .add(CheckIntroductionStatus(studentId: widget.studentId));
     // Force index to 3 if running on Windows
-    if (!(Platform.isAndroid || Platform.isIOS || Platform.isFuchsia)) {
-      setState(() {
-        currentIndex = 3;
-        _pageController.jumpToPage(3);
-      });
-    }
+    // if (!(Platform.isAndroid || Platform.isIOS || Platform.isFuchsia)) {
+    //   setState(() {
+    //     currentIndex = 3;
+    //     _pageController.jumpToPage(3);
+    //   });
+    // }
   }
 
   @override

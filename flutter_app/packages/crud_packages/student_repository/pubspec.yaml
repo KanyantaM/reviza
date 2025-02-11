@@ -1,28 +1,23 @@
-name: study_material_api
-description: A new Flutter package project.
+name: student_repository
+description: "A new Flutter package project."
 version: 0.0.1
 # homepage:
+publish_to: none
 
 environment:
-  sdk: '>=3.1.0 <4.0.0'
+  sdk: ^3.6.1
   flutter: ">=1.17.0"
 
 dependencies:
-  cloud_firestore: ^5.6.3
-  firebase_storage: ^12.4.1
   flutter:
     sdk: flutter
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
-  path: ^1.9.0
-  path_provider: ^2.1.5
+  student_api:
+    path: ../student_api
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.3
-  hive_generator: ^2.0.1
-  build_runner: ^2.4.14
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -36,10 +31,10 @@ dev_dependencies:
   #   - images/a_dot_ham.jpeg
   #
   # For details regarding assets in packages, see
-  # https://flutter.dev/assets-and-images/#from-packages
+  # https://flutter.dev/to/asset-from-package
   #
   # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
+  # https://flutter.dev/to/resolution-aware-images
 
   # To add custom fonts to your package, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
@@ -59,4 +54,4 @@ dev_dependencies:
   #         weight: 700
   #
   # For details regarding fonts in packages, see
-  # https://flutter.dev/custom-fonts/#from-packages
+  # https://flutter.dev/to/font-from-package

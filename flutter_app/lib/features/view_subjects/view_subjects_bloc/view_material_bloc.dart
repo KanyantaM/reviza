@@ -1,11 +1,8 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_storage_study_material_api/cloud_storage_study_material_api.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:local_storage_study_material_api/local_storage_study_material_api.dart';
-import 'package:local_student_api/local_student_api.dart';
 import 'package:reviza/misc/course_info.dart';
 import 'package:study_material_api/study_material_api.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,12 +29,10 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           map = await _materialOnlineDataRepository.getStudyMaterials(myCourse);
         } else {
           List<String> myCourses = [];
-          await HiveUserRepository()
-              .getUserById(event.uid)
-              .then((value) {
-                return myCourses = value?.myCourses ?? [];
-              });
-                
+          await HiveUserRepository().getUserById(event.uid).then((value) {
+            return myCourses = value?.myCourses ?? [];
+          });
+
           map = await _hiveStudyMaterialRepository.getStudyMaterials(myCourses);
         }
         if (event.course != null) {
@@ -61,6 +56,7 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
           final dir = await getApplicationDocumentsDirectory();
           return "${dir.path}/$subjectName/$filename";
         }
+
         String urlOG = event.course.filePath ?? '';
         String url = event.course.filePath!;
         String fileName = event.course.title;
@@ -97,7 +93,17 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
             _hiveStudyMaterialRepository.addStudyMaterial(oldMaterial);
             emit(DownloadedCourse());
             downLoadProgressCubit.close;
-            StudyMaterial  originalStudyMaterial = StudyMaterial(subjectName: event.course.subjectName, type: event.course.type, id: event.course.id, title: event.course.title, description: event.course.description, filePath: urlOG, fans: event.course.fans, haters: event.course.haters, reports: event.course.reports, size: event.course.size);
+            StudyMaterial originalStudyMaterial = StudyMaterial(
+                subjectName: event.course.subjectName,
+                type: event.course.type,
+                id: event.course.id,
+                title: event.course.title,
+                description: event.course.description,
+                filePath: urlOG,
+                fans: event.course.fans,
+                haters: event.course.haters,
+                reports: event.course.reports,
+                size: event.course.size);
             oldMaterial.filePath = path;
             emit(
               StudyMaterialOpened(
@@ -107,7 +113,6 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
               ),
             );
           });
-          
         }
       } catch (e) {
         emit(ErrorState(message: 'Failed to download material\n $e'));

@@ -2,8 +2,6 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:local_storage_study_material_api/local_storage_study_material_api.dart';
-import 'package:local_student_api/local_student_api.dart';
 import 'package:reviza/app/bloc_observer.dart';
 import 'package:reviza/app/view/app.dart';
 import 'package:reviza/firebase_options.dart';
@@ -18,8 +16,6 @@ Future<void> main() async {
   );
   await dotenv.load(fileName: ".env");
 
-  HiveUserRepository();
-  HiveStudyMaterialRepository();
   final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
 

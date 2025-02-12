@@ -61,7 +61,7 @@ dependencies:
   banner_carousel: ^1.2.1
   rename_app: ^1.6.1
   flutter_dotenv: ^5.2.1
-  package_info_plus: ^8.1.4
+  package_info_plus: ^8.2.1
   path: ^1.9.0
   syncfusion_flutter_pdfviewer: ^28.2.4
   sign_in_button: ^3.2.0

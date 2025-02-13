@@ -1,0 +1,26 @@
+name: study_material_repository
+description: "A new Flutter package project."
+version: 0.0.1
+# homepage:
+publish_to: none
+
+environment:
+  sdk: ^3.6.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  dio: ^5.8.0+1
+  flutter:
+    sdk: flutter
+  study_material_api:
+    path: ../study_material_api
+  student_repository:
+    path: ../student_repository
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+

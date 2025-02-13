@@ -1,9 +1,8 @@
-import 'package:cloud_storage_study_material_api/cloud_storage_study_material_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:local_storage_study_material_api/local_storage_study_material_api.dart';
 import 'package:reviza/features/view_subjects/view/view_material_view.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 class ViewMaterialPage extends StatelessWidget {
   const ViewMaterialPage(
@@ -18,9 +17,8 @@ class ViewMaterialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ViewMaterialBloc(
-          onlineMaterial: FirestoreStudyMaterialRepository(),
-          offlineMaterial: HiveStudyMaterialRepository()),
+      create: (_) =>
+          ViewMaterialBloc(studyMaterial: StudyMaterialRepo(uid: uid)),
       child: ViewMaterialsView(
         isDownloadedView: isDownloadedView,
         uid: uid,

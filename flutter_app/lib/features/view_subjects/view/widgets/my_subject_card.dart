@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reviza/features/view_subjects/utils/important_functions.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
-import 'package:study_material_api/study_material_api.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 class StudyMaterialCard extends StatelessWidget {
   final StudyMaterial studyMaterial;
@@ -160,9 +160,9 @@ class StudyMaterialCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            studyMaterial.size! <= 1000
+                            studyMaterial.size <= 1000
                                 ? ' ${studyMaterial.size} KB'
-                                : ' ${(studyMaterial.size! / 1000).toStringAsFixed(2)} MB',
+                                : ' ${(studyMaterial.size / 1000).toStringAsFixed(2)} MB',
                             style: const TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,

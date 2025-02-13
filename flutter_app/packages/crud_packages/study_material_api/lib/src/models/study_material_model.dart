@@ -122,4 +122,32 @@ class StudyMaterial extends HiveObject {
     if (localPath == null) return false;
     return File(localPath!).existsSync();
   }
+
+  StudyMaterial copyWith({
+    String? type,
+    String? id,
+    String? subjectName,
+    String? title,
+    List<String>? fans,
+    List<String>? haters,
+    List<String>? reports,
+    String? description,
+    String? onlinePath,
+    int? size,
+    String? localPath,
+  }) {
+    return StudyMaterial(
+      type: type ?? this.type,
+      id: id ?? this.id,
+      subjectName: subjectName ?? this.subjectName,
+      title: title ?? this.title,
+      fans: fans ?? List.from(this.fans),
+      haters: haters ?? List.from(this.haters),
+      reports: reports ?? List.from(this.reports),
+      description: description ?? this.description,
+      onlinePath: onlinePath ?? this.onlinePath,
+      size: size ?? this.size,
+      localPath: localPath ?? this.localPath,
+    );
+  }
 }

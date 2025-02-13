@@ -1,36 +1,24 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_student_api/cloud_student_api.dart';
 import 'package:equatable/equatable.dart';
-import 'package:local_storage_study_material_api/local_storage_study_material_api.dart';
-import 'package:local_student_api/local_student_api.dart';
-// import 'package:path_provider/path_provider.dart';
-import 'package:student_api/student_api.dart';
-import 'package:study_material_api/study_material_api.dart';
+import 'package:student_repository/student_repository.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 part 'edit_my_courses_event.dart';
 part 'edit_my_courses_state.dart';
 
 class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
-  EditMyCoursesBloc(
-      {required HiveUserRepository studentOffline,
-      required FirestoreUserRepository studentOnline})
-      : _studentOfflineDataRepository = studentOffline,
-        _studentOnlineDataRepository = studentOnline,
+  EditMyCoursesBloc({
+    required StudentRepository repo,
+  })  : _studentRepository = repo,
         super(EditMyCoursesInitial()) {
     on<FetchMyCourses>((event, emit) async {
       emit(FetchingCoursesState());
 
       try {
         Student currentStudent =
-            await _studentOfflineDataRepository.getUserById(event.studentId) ??
+            await _studentRepository.getUserById(event.studentId) ??
                 Student(userId: event.studentId, myCourses: <String>[]);
-        if (currentStudent.myCourses.isEmpty) {
-          currentStudent =
-              await _studentOnlineDataRepository.getUserById(event.studentId) ??
-                  Student(userId: event.studentId, myCourses: <String>[]);
-          //updating the user in local storage
-          await _studentOfflineDataRepository.addUser(currentStudent);
-        }
+
         emit(CoursesFetchedState(student: currentStudent));
       } catch (e) {
         emit(ErrorState(message: 'Failed to fetch user messages\n $e'));
@@ -41,19 +29,12 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
       (event, emit) async {
         emit(DeletingCourses());
         try {
-          HiveStudyMaterialRepository hiveStudyMaterialRepository =
-              HiveStudyMaterialRepository();
-          Map<String, List<StudyMaterial>> myMaterials =
-              await hiveStudyMaterialRepository
-                  .getStudyMaterials(event.coursesToDelete);
-          for (String courses in myMaterials.keys) {
-            event.student.myCourses.remove(courses);
-            for (StudyMaterial material in myMaterials[courses]!) {
-              hiveStudyMaterialRepository.deleteStudyMaterial(material);
-            }
+          for (String course in event.coursesToDelete) {
+            event.student.myCourses.remove(course);
+            StudyMaterialRepo(uid: event.student.userId)
+                .deleteLocalCourseMaterial(courseId: course);
           }
-          await _studentOfflineDataRepository.updateUser(event.student);
-          await _studentOnlineDataRepository.updateUser(event.student);
+          await _studentRepository.updateUser(event.student);
           emit(CoursesEditedSuccesfully());
           emit(CoursesFetchedState(student: event.student));
         } catch (e) {
@@ -70,8 +51,7 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
               event.student.myCourses.add(course);
             }
           }
-          await _studentOfflineDataRepository.updateUser(event.student);
-          await _studentOnlineDataRepository.updateUser(event.student);
+          await _studentRepository.updateUser(event.student);
           emit(EditMyCoursesInitial());
         } catch (e) {
           emit(ErrorState(message: 'Failed to add ${event.courses}\n $e'));
@@ -80,6 +60,5 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
     );
   }
 
-  final HiveUserRepository _studentOfflineDataRepository;
-  final FirestoreUserRepository _studentOnlineDataRepository;
+  final StudentRepository _studentRepository;
 }

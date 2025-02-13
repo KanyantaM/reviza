@@ -10,42 +10,47 @@ sealed class ViewMaterialEvent extends Equatable {
 class FetchCourseMaterials extends ViewMaterialEvent {
   final String? course;
   final bool online;
-  final String uid;
+  final String? type;
 
-  const FetchCourseMaterials({required this.course, required this.online, required this.uid});
+  const FetchCourseMaterials({
+    this.type,
+    required this.course,
+    required this.online,
+  });
 }
 
-class DownLoadMaterial extends ViewMaterialEvent{
+class DownLoadMaterial extends ViewMaterialEvent {
   final StudyMaterial course;
-  final String uid;
-  const DownLoadMaterial({required this.uid, required this.course});
+  const DownLoadMaterial({required this.course});
 }
 
-class VoteMaterial extends ViewMaterialEvent{
+class VoteMaterial extends ViewMaterialEvent {
   final StudyMaterial material;
-  final String uid;
   final bool? vote;
 
-  const VoteMaterial({required this.material, required this.uid, required this.vote});
+  const VoteMaterial({required this.material, required this.vote});
 }
 
-class ReportMaterial extends ViewMaterialEvent{
+class ReportMaterial extends ViewMaterialEvent {
   final StudyMaterial material;
-  final String uid;
 
-  const ReportMaterial({required this.material, required this.uid});
+  const ReportMaterial({
+    required this.material,
+  });
 }
 
-class DownLoadAndView extends ViewMaterialEvent{
+class DownLoadAndView extends ViewMaterialEvent {
   final String studyMaterialId;
 
   const DownLoadAndView({required this.studyMaterialId});
 }
 
-class ReadStudyMaterial extends ViewMaterialEvent{
+class ReadStudyMaterial extends ViewMaterialEvent {
   final StudyMaterial offline;
   final StudyMaterial online;
-  final String uid;
 
-  const ReadStudyMaterial({required this.offline, required this.online, required this.uid});
+  const ReadStudyMaterial({
+    required this.offline,
+    required this.online,
+  });
 }

@@ -13,4 +13,9 @@ final class _AppUserChanged extends AppEvent {
 
   final User user;
 }
-class ChangeTheme extends AppEvent {}
+
+class ChangeTheme extends AppEvent {
+  final ThemeData theme;
+
+  ChangeTheme({required this.theme});
+}

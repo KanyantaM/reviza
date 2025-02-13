@@ -1,27 +1,22 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_student_api/cloud_student_api.dart';
 import 'package:equatable/equatable.dart';
-import 'package:local_student_api/local_student_api.dart';
-import 'package:student_api/student_api.dart';
+import 'package:student_repository/student_repository.dart';
 
 part 'introduction_bloc_event.dart';
 part 'introduction_bloc_state.dart';
 
 class IntroductionBloc extends Bloc<IntroductionEvent, IntroductionState> {
-  IntroductionBloc(
-      {required HiveUserRepository studentOffline,
-      required FirestoreUserRepository studentOnline})
-      : _studentOfflineDataRepository = studentOffline,
-        _studentOnlineDataRepostitory = studentOnline,
+  IntroductionBloc({
+    required StudentRepository studentRepository,
+  })  : _studentRepository = studentRepository,
         super(IntroductionInitial()) {
     on<CheckIntroductionStatus>((event, emit) async {
       try {
         emit(IntroductionCheckingStatus());
-        bool registeredOnline = await _studentOfflineDataRepository
-            .isStudentRegistered(event.studentId);
-        bool registeredOffline = await _studentOnlineDataRepostitory
-            .isStudentRegistered(event.studentId);
-        if (registeredOffline || registeredOnline) {
+        bool registered =
+            await _studentRepository.isStudentRegistered(event.studentId);
+
+        if (registered) {
           emit(IntroductionIntroduced());
         } else {
           emit(IntroductionNotIntroduced());
@@ -31,19 +26,21 @@ class IntroductionBloc extends Bloc<IntroductionEvent, IntroductionState> {
       }
     });
 
-    on<RegisterStudent>((event, emit) async{
-      emit(IntroductionRegisteringCourses());
-      try {
-        Student user = Student(userId: event.studentId, myCourses: event.courses);
-        await _studentOfflineDataRepository.addUser(user);
-        await _studentOnlineDataRepostitory.addUser(user);
-        emit(IntroductionIntroduced());
-      } catch (e) {
-        emit(IntroductionErrorState(message: 'Failed to save your courses.\n $e'));
-      }
-    },);
+    on<RegisterStudent>(
+      (event, emit) async {
+        emit(IntroductionRegisteringCourses());
+        try {
+          Student user =
+              Student(userId: event.studentId, myCourses: event.courses);
+          await _studentRepository.addUser(user);
+          emit(IntroductionIntroduced());
+        } catch (e) {
+          emit(IntroductionErrorState(
+              message: 'Failed to save your courses.\n $e'));
+        }
+      },
+    );
   }
 
-  final HiveUserRepository _studentOfflineDataRepository;
-  final FirestoreUserRepository _studentOnlineDataRepostitory;
+  final StudentRepository _studentRepository;
 }

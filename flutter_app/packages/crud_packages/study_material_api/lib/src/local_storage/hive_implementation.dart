@@ -114,4 +114,25 @@ class HiveStudyMaterialApiImplementation implements StudyMaterialApi {
     }
     return null;
   }
+
+  @override
+  Future<void> deleteStudyMaterialsByCourse(
+    String subjectName,
+  ) async {
+    String courseFolderKey = 'folder_\$subjectName';
+    List<StudyMaterial> materialsList = List<StudyMaterial>.from(
+        _box?.get(courseFolderKey, defaultValue: <StudyMaterial>[]) ?? []);
+
+    for (var material in materialsList) {
+      if (material.localPath != null &&
+          File(material.localPath!).existsSync()) {
+        try {
+          File(material.localPath!).deleteSync();
+        } catch (e) {
+          throw Exception('Error deleting file: \$e');
+        }
+      }
+    }
+    await _box?.delete(courseFolderKey);
+  }
 }

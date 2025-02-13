@@ -2,12 +2,8 @@ import 'package:student_api/student_api.dart';
 
 /// Cached-first repository pattern for fetching and updating student data.
 class StudentRepository {
-  final StudentApi _onlineImplementation;
-  final StudentApi _cachedImplementation;
-
-  StudentRepository({required StudentApi online, required StudentApi offline})
-      : _onlineImplementation = online,
-        _cachedImplementation = offline;
+  final StudentApi _onlineImplementation = FiresbaseOnlineStudent();
+  final StudentApi _cachedImplementation = HiveCachedStudentApi();
 
   /// Check if a student is registered using local cache first, then online.
   Future<bool> isStudentRegistered(String studentId) async {

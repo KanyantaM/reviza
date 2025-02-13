@@ -73,4 +73,9 @@ class FiresbaseStudyMaterialImplementation implements StudyMaterialApi {
       return null;
     }
   }
+
+  @override
+  Future<void> deleteStudyMaterialsByCourse(String course) {
+    throw UnimplementedError();
+  }
 }

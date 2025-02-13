@@ -4,6 +4,7 @@ abstract class StudyMaterialApi {
   Future<void> addStudyMaterial(StudyMaterial material);
   Future<void> updateStudyMaterial(StudyMaterial material);
   Future<void> deleteStudyMaterial(StudyMaterial materialId);
+  Future<void> deleteStudyMaterialsByCourse(String course);
   Future<Map<String, List<StudyMaterial>>> getStudyMaterials(
       List<String> course);
   Future<StudyMaterial?> getStudyMaterialById(StudyMaterial materialId);

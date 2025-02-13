@@ -4,9 +4,8 @@ import 'package:lottie/lottie.dart';
 import 'package:reviza/features/view_subjects/view/widgets/list_generator.dart';
 import 'package:reviza/features/view_subjects/view/widgets/custom_view.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
-import 'package:reviza/misc/course_info.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
-import 'package:study_material_api/study_material_api.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 class ViewMaterialsView extends StatefulWidget {
   const ViewMaterialsView({
@@ -28,20 +27,21 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
-  String selectedCourse = '';
-  Types? selectedFilter;
+  String _selectedCourse = '';
+  Types? _selectedFilter;
   bool _deleteMode = false;
   List<StudyMaterial> _pathsToDelete = [];
 
   @override
   void initState() {
     super.initState();
+
+    ///when the screen just loads fetched the data
     if (widget.isDownloadedView) {
       context.read<ViewMaterialBloc>().add(
             FetchCourseMaterials(
               course: null,
               online: false,
-              uid: widget.uid,
             ),
           );
     } else {
@@ -49,7 +49,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
             FetchCourseMaterials(
               course: widget.courseName,
               online: true,
-              uid: widget.uid,
             ),
           );
     }
@@ -114,7 +113,8 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                     _deleteMode = false;
                     _pathsToDelete = [];
                   });
-                });
+                },
+                state.courseToMaterialsMap);
           }
 
           if (!widget.isDownloadedView) {
@@ -151,20 +151,21 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                         Wrap(
                           spacing: 8.0,
                           children: [
-                            for (String course in state.courses)
+                            for (String course
+                                in state.courseToMaterialsMap.keys.toList())
                               FilterChip(
                                 label: Text(course.split('-').first),
-                                selected: selectedCourse == course,
+                                selected: _selectedCourse == course,
                                 onSelected: (bool selected) {
                                   setState(() {
-                                    selectedCourse = selected ? course : '';
-                                    selectedFilter = null;
+                                    _selectedCourse = selected ? course : '';
+                                    _selectedFilter = null;
                                   });
                                 },
                               ),
                           ],
                         ),
-                        (selectedCourse.isNotEmpty)
+                        (_selectedCourse.isNotEmpty)
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -183,10 +184,10 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                                       for (Types filter in Types.values)
                                         FilterChip(
                                           label: Text(filter.name),
-                                          selected: selectedFilter == filter,
+                                          selected: _selectedFilter == filter,
                                           onSelected: (bool selected) {
                                             setState(() {
-                                              selectedFilter =
+                                              _selectedFilter =
                                                   selected ? filter : null;
                                             });
                                           },
@@ -201,8 +202,8 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                   ),
                   Expanded(
                     child: generateCardByTypeSelector(
-                      selectedFilter,
-                      course: selectedCourse,
+                      _selectedFilter,
+                      course: _selectedCourse,
                     ),
                   ),
                 ],
@@ -286,7 +287,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                       FetchCourseMaterials(
                         course: null,
                         online: false,
-                        uid: widget.uid,
                       ),
                     );
               } else {
@@ -294,7 +294,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                       FetchCourseMaterials(
                         course: widget.courseName,
                         online: true,
-                        uid: widget.uid,
                       ),
                     );
               }
@@ -307,7 +306,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                 context.read<ViewMaterialBloc>().add(
                       VoteMaterial(
                         material: state.originalStudyMaterial,
-                        uid: state.uid,
                         vote: true,
                       ),
                     );
@@ -316,7 +314,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                 context.read<ViewMaterialBloc>().add(
                       VoteMaterial(
                         material: state.originalStudyMaterial,
-                        uid: state.uid,
                         vote: false,
                       ),
                     );
@@ -325,10 +322,10 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                 context.read<ViewMaterialBloc>().add(
                       ReportMaterial(
                         material: state.originalStudyMaterial,
-                        uid: state.uid,
                       ),
                     );
               },
+              uid: widget.uid,
             ),
           );
         }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reviza/features/upload_pdf/upload_pdf.dart';
-import 'package:reviza/misc/course_info.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 class UploadTypeScreen extends StatelessWidget {
   const UploadTypeScreen({super.key, required this.uid});

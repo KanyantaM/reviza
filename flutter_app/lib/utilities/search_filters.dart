@@ -1,8 +1,11 @@
-  import 'package:reviza/misc/course_info.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 Future<List<String>> filterBy(
-  String university, String school, String department, String year,
-)async{
+  String university,
+  String school,
+  String department,
+  String year,
+) async {
   List<String> filteredList = [];
 
   for (var entry in data.entries) {
@@ -12,7 +15,9 @@ Future<List<String>> filterBy(
       if (school.isNotEmpty && schoolEntry.key != school) continue;
 
       for (var departmentEntry in schoolEntry.value.entries) {
-        if (department.isNotEmpty && departmentEntry.key != department) continue;
+        if (department.isNotEmpty && departmentEntry.key != department) {
+          continue;
+        }
 
         for (var yearEntry in departmentEntry.value.entries) {
           if (year.isNotEmpty && yearEntry.key != year) continue;

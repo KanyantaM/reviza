@@ -1,6 +1,6 @@
 import 'package:student_api/src/models/student_model.dart';
 
-abstract class UserRepository {
+abstract class StudentApi {
   ///This method is used to check whether an authenticated user is already in the database/local or cloud
   Future<bool> isStudentRegistered(String studentId);
 

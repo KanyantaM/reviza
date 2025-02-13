@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reviza/misc/course_info.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 Future<dynamic> showFilterDialog(
   BuildContext context,

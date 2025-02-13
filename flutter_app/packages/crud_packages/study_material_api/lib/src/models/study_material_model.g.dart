@@ -22,18 +22,19 @@ class StudyMaterialAdapter extends TypeAdapter<StudyMaterial> {
       id: fields[1] as String,
       title: fields[3] as String,
       description: fields[7] as String,
-      filePath: fields[8] as String?,
-      fans: (fields[4] as List).cast<dynamic>(),
-      haters: (fields[5] as List).cast<dynamic>(),
-      reports: (fields[6] as List).cast<dynamic>(),
-      size: fields[9] as int?,
+      onlinePath: fields[8] as String?,
+      fans: (fields[4] as List).cast<String>(),
+      haters: (fields[5] as List).cast<String>(),
+      reports: (fields[6] as List).cast<String>(),
+      size: fields[9] as int,
+      localPath: fields[10] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudyMaterial obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
@@ -51,9 +52,11 @@ class StudyMaterialAdapter extends TypeAdapter<StudyMaterial> {
       ..writeByte(7)
       ..write(obj.description)
       ..writeByte(8)
-      ..write(obj.filePath)
+      ..write(obj.onlinePath)
       ..writeByte(9)
-      ..write(obj.size);
+      ..write(obj.size)
+      ..writeByte(10)
+      ..write(obj.localPath);
   }
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
-import 'package:study_material_api/study_material_api.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LinksCard extends StatelessWidget {
@@ -22,7 +22,7 @@ class LinksCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   launchUrl(Uri(path: studyMaterial.description));
                 },
                 child: Row(
@@ -62,31 +62,6 @@ class LinksCard extends StatelessWidget {
                 ),
               ),
             ),
-
-            // const Divider(),
-
-            // // Bottom section with thumbs up and download size
-            // Container(
-            //   padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: [
-            //       Row(
-            //         children: [
-            //           (studyMaterial.fans.length >= studyMaterial.haters.length)? const Icon(Icons.thumb_up,color: Colors.green,):const Icon(Icons.thumb_down,color: Colors.red,),
-            //           Text(
-            //             "${(studyMaterial.fans.length/(studyMaterial.fans.length+studyMaterial.haters.length)).toStringAsFixed(1)}% (${(studyMaterial.fans.length+studyMaterial.haters.length).toString()})",
-            //             style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color:(studyMaterial.fans.length >= studyMaterial.haters.length)? Colors.green: Colors.red),
-            //           ),
-            //         ],
-            //       ),
-            //       Text(
-            //         studyMaterial.size.toString(),
-            //         style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
-            //       ),
-            //     ],
-            //   ),
-            // ),
           ],
         ),
       ),

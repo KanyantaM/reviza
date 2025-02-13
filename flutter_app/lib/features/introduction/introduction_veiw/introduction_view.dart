@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/ui/home_screen/app_home.dart';
@@ -8,7 +6,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:reviza/features/introduction/introduction_veiw/helpers/const_strings.dart';
 import 'package:reviza/features/introduction/introduction_veiw/widgets/register_student.dart';
 import 'package:reviza/widgets/no_data.dart';
-import 'package:reviza/misc/course_info.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 class IntroductionView extends StatefulWidget {
   const IntroductionView({super.key, required this.studentId});
@@ -30,12 +28,12 @@ class _IntroductionViewState extends State<IntroductionView> {
         .read<IntroductionBloc>()
         .add(CheckIntroductionStatus(studentId: widget.studentId));
     // Force index to 3 if running on Windows
-    if (!(Platform.isAndroid || Platform.isIOS || Platform.isFuchsia)) {
-      setState(() {
-        currentIndex = 3;
-        _pageController.jumpToPage(3);
-      });
-    }
+    // if (!(Platform.isAndroid || Platform.isIOS || Platform.isFuchsia)) {
+    //   setState(() {
+    //     currentIndex = 3;
+    //     _pageController.jumpToPage(3);
+    //   });
+    // }
   }
 
   @override

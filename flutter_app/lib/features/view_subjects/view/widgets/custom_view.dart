@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-// import 'package:reviza/features/ai_chat_screen/sections/chat.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
-// import 'package:reviza/utilities/dialogues/error_dialog.dart';
-import 'package:study_material_api/study_material_api.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class CustomPDFViewer extends StatefulWidget {
@@ -14,6 +12,7 @@ class CustomPDFViewer extends StatefulWidget {
   final Function onUpVote;
   final Function onDownVote;
   final Function onReport;
+  final String uid;
 
   const CustomPDFViewer({
     super.key,
@@ -22,6 +21,7 @@ class CustomPDFViewer extends StatefulWidget {
     required this.onUpVote,
     required this.onDownVote,
     required this.onReport,
+    required this.uid,
   });
 
   @override
@@ -30,13 +30,13 @@ class CustomPDFViewer extends StatefulWidget {
 
 class _CustomPDFViewerState extends State<CustomPDFViewer> {
   StudyMaterial? _studyMaterial;
-  String? _uid;
+
   bool? _hasVotedUp;
   int currentPage = 1;
   int? totalPage;
   final PdfViewerController _pdfViewerController = PdfViewerController();
 
-  void _checkVoteStatus(StudyMaterial? studyMaterial, String? uid) {
+  void _checkVoteStatus(StudyMaterial? studyMaterial, String? uid) async {
     setState(() {
       if ((studyMaterial?.fans.contains(uid) ?? false)) {
         _hasVotedUp = true;
@@ -51,8 +51,8 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
   @override
   void initState() {
     _studyMaterial = widget.state.studyMaterial;
-    _uid = widget.state.uid;
-    _checkVoteStatus(_studyMaterial, _uid);
+
+    _checkVoteStatus(_studyMaterial, widget.uid);
     super.initState();
   }
 
@@ -87,7 +87,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
       body: Stack(
         children: [
           SfPdfViewer.file(
-            File(_studyMaterial?.filePath ?? ''),
+            File(_studyMaterial?.localPath ?? ''),
             controller: _pdfViewerController,
             onDocumentLoaded: (PdfDocumentLoadedDetails details) {
               setState(() {

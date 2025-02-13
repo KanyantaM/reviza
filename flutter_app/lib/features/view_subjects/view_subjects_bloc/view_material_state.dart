@@ -12,62 +12,16 @@ final class ViewMaterialInitial extends ViewMaterialState {}
 final class FetchingMaterialsState extends ViewMaterialState {}
 
 final class MaterialsFetchedState extends ViewMaterialState {
-  final List<StudyMaterial> studyMaterials;
-  final List<String> courses;
-
-  List<StudyMaterial> filterByType(String? course, Types? type) {
-    List<StudyMaterial> filteredResults = [];
-    if (course?.isNotEmpty ?? false) {
-      for (StudyMaterial material in studyMaterials) {
-        if (material.subjectName == course) {
-          if (type != null) {
-            switch (type) {
-              case Types.papers:
-                if (material.type == 'PAST_PAPERS') {
-                  filteredResults.add(material);
-                }
-                break;
-              case Types.notes:
-                if (material.type == 'NOTES') {
-                  filteredResults.add(material);
-                }
-                break;
-              case Types.links:
-                if (material.type == 'LINKS') {
-                  filteredResults.add(material);
-                }
-                break;
-              case Types.lab:
-                if (material.type == 'LAB') {
-                  filteredResults.add(material);
-                }
-                break;
-              case Types.books:
-                if (material.type == 'BOOKS') {
-                  filteredResults.add(material);
-                }
-                break;
-              case Types.assignment:
-                if (material.type == 'ASSIGNMENT') {
-                  filteredResults.add(material);
-                }
-                break;
-            }
-          } else {
-            filteredResults.add(material);
-          }
-        }
-      }
-    } else {
-      for (StudyMaterial material in studyMaterials) {
-        filteredResults.add(material);
-      }
-    }
-    return filteredResults;
-  }
+  final Map<String, List<StudyMaterial>> courseToMaterialsMap;
+  final String? courseFilter;
+  final String? typeFilter;
+  final List<StudyMaterial> filteredMaterials;
 
   const MaterialsFetchedState(
-      {required this.courses, required this.studyMaterials});
+      {this.courseFilter,
+      this.typeFilter,
+      this.filteredMaterials = const <StudyMaterial>[],
+      required this.courseToMaterialsMap});
 }
 
 final class MaterialDownloadedSuccesfully extends ViewMaterialState {}
@@ -80,13 +34,12 @@ final class DownloadingCourses extends ViewMaterialState {
 
 final class StudyMaterialOpened extends ViewMaterialState {
   final StudyMaterial studyMaterial;
-  final String uid;
   final StudyMaterial originalStudyMaterial;
 
-  const StudyMaterialOpened(
-      {required this.originalStudyMaterial,
-      required this.studyMaterial,
-      required this.uid});
+  const StudyMaterialOpened({
+    required this.originalStudyMaterial,
+    required this.studyMaterial,
+  });
 }
 
 final class DownloadedCourse extends ViewMaterialState {}

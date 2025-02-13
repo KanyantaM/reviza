@@ -10,11 +10,11 @@ import 'package:reviza/features/upload_pdf/view/components/upload_box.dart';
 import 'package:reviza/features/upload_pdf/view/components/upload_snack_bar.dart';
 import 'package:reviza/utilities/generator.dart';
 import 'package:reviza/widgets/range_slider.dart';
-import 'package:reviza/misc/course_info.dart';
 import 'package:reviza/utilities/cloud.dart';
 import 'package:reviza/utilities/dialogues/cannot_share_empty_not_dialog.dart';
-import 'package:student_api/student_api.dart';
 import 'package:path/path.dart' as p;
+import 'package:student_repository/student_repository.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 class UploadPdfView extends StatefulWidget {
   final String id;

@@ -1,9 +1,11 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/app/bloc/app_bloc.dart';
 import 'package:reviza/features/login/login.dart';
 import 'package:reviza/ui/theme.dart';
-import 'package:reviza/utilities/dialogues/error_dialog.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -11,16 +13,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 class UserScreen extends StatelessWidget {
   const UserScreen({super.key});
 
-  Future<void> _launchUrl(BuildContext context, String url) async {
-    try {
-      final Uri uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      } else {
-        showErrorDialog(context, 'Could not open the link.');
-      }
-    } catch (e) {
-      showErrorDialog(context, 'An error occurred: $e');
+  void _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $url';
     }
   }
 
@@ -29,9 +25,11 @@ class UserScreen extends StatelessWidget {
 
     final String androidUrl = 'market://details?id=$packageName';
     final String iOSUrl = 'itms-apps://itunes.apple.com/app/id$packageName';
-
-    await _launchUrl(context, androidUrl);
-    await _launchUrl(context, iOSUrl);
+    if (Platform.isIOS) {
+      _launchURL(iOSUrl);
+    } else {
+      _launchURL(androidUrl);
+    }
   }
 
   void showAboutUsDialog(BuildContext context) {
@@ -57,24 +55,9 @@ class UserScreen extends StatelessWidget {
             ],
           ),
           actions: [
-            TextButton(
-              onPressed: () => _launchUrl(context, 'https://reviza.info'),
-              child: const Text('Visit Us 🌐'),
-            ),
-            TextButton(
-              onPressed: () =>
-                  _launchUrl(context, 'mailto:support@reviza.info'),
-              child: const Text('Email Us 📧'),
-            ),
-            TextButton(
-              onPressed: () =>
-                  _launchUrl(context, 'https://wa.me/+260762878107/'),
-              child: const Text('WhatsApp Us 📞'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close'),
-            ),
+            TextButton.icon(
+                onPressed: () => _launchURL('https://reviza.info'),
+                label: Icon(CupertinoIcons.compass))
           ],
         );
       },
@@ -102,7 +85,8 @@ class UserScreen extends StatelessWidget {
                   trailing: Switch(
                     value: state.theme == ReviZaTheme.light,
                     onChanged: (bool value) {
-                      context.read<AppBloc>().add(ChangeTheme());
+                      context.read<AppBloc>().add(ChangeTheme(
+                          theme: value ? ReviZaTheme.light : ReviZaTheme.dark));
                     },
                   ),
                 );
@@ -112,7 +96,7 @@ class UserScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.feedback),
               title: const Text('Feedback'),
-              onTap: () => _launchUrl(context, 'https://wa.me/+260762878107/'),
+              onTap: () => _showContactOptions(context),
             ),
             const Divider(),
             ListTile(
@@ -132,7 +116,7 @@ class UserScreen extends StatelessWidget {
               title: const Text('Tell a Friend'),
               onTap: () {
                 const String shareText =
-                    'Download ReviZa:\nhttps://reviza.info';
+                    'Download ReviZa:\nhttps://reviza.info/download';
                 Share.share(shareText);
               },
             ),
@@ -162,6 +146,45 @@ class UserScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showContactOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.feedback),
+                title: const Text('Feedback'),
+                onTap: () => _launchURL('https://wa.me/+260761951544/'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.email),
+                title: const Text('Email Us 📧'),
+                onTap: () => _launchURL('mailto:support@reviza.info'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.chat),
+                title: const Text('WhatsApp Us 📞'),
+                onTap: () => _launchURL('https://wa.me/+260761951544/'),
+              ),
+              const Divider(),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -5,9 +5,15 @@ import 'package:reviza/features/upload_pdf/view/upload_pdf_view.dart';
 import 'package:study_material_repository/study_material_repository.dart';
 
 class UploadPdfPage extends StatelessWidget {
-  const UploadPdfPage({super.key, required this.uploadType, required this.uid});
+  const UploadPdfPage({
+    super.key,
+    required this.uploadType,
+    required this.uid,
+    required this.course,
+  });
   final Types uploadType;
   final String uid;
+  final String course;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +24,7 @@ class UploadPdfPage extends StatelessWidget {
       child: UploadPdfView(
         type: uploadType,
         id: uid,
+        courseName: course,
       ),
     );
   }

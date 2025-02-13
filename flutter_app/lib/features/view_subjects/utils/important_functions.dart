@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:path_provider/path_provider.dart';
-import 'package:study_material_api/study_material_api.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 Future<bool> isFileDownloaded(String filename, String subjectName) async {
   final dir = await getApplicationDocumentsDirectory();

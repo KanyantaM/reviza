@@ -31,7 +31,7 @@ class LinksCard extends StatelessWidget {
                   children: [
                     const Text(
                       '️🌐',
-                      textScaleFactor: 4,
+                      textScaler: TextScaler.linear(7),
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.5,

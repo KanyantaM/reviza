@@ -4,7 +4,7 @@ import 'package:reviza/features/edit_courses/view/home_button/views/components/a
 import 'package:reviza/features/edit_courses/view/home_button/views/components/filter_dialogue.dart';
 import 'package:reviza/widgets/search_widget.dart';
 import 'package:reviza/utilities/search_filters.dart';
-import 'package:student_api/student_api.dart';
+import 'package:student_repository/student_repository.dart';
 
 class HomeBottomSheetView extends StatefulWidget {
   final Function(List<String> selectedSubjects) onSave;

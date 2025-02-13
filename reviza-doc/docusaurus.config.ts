@@ -11,7 +11,7 @@ const config: Config = {
   favicon: "img/logo.jpeg",
 
   // Set the production url of your site here
-  url: "https://your-docusaurus-site.example.com",
+  url: "https://reviza.info",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
@@ -135,11 +135,11 @@ const config: Config = {
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "ReviZa",
-          url: "https://reviza-31466.web.app/",
+          url: "https://reviza.info/",
           potentialAction: {
             "@type": "SearchAction",
             target:
-              "https://reviza-31466.web.app//search?q={search_term_string}",
+              "https://reviza.info//search?q={search_term_string}",
             "query-input": "required name=search_term_string",
           },
           image: "",
@@ -219,7 +219,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Luso-Software, built by Kanyanta M. Makasa`,
+      copyright: `Copyright © ${new Date().getFullYear()} ReviZa, built by Kanyanta M. Makasa`,
     },
     prism: {
       theme: prismThemes.github,

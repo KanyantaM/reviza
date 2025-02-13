@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/features/edit_courses/bloc/edit_my_courses_bloc.dart';
 import 'package:reviza/widgets/subject_listile.dart';
-import 'package:student_api/student_api.dart';
+import 'package:student_repository/student_repository.dart';
 
 class MySubjectsView extends StatefulWidget {
   final Student student;

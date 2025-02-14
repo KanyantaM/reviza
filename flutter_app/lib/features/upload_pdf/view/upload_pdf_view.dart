@@ -59,7 +59,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
               child: widgetSelector(
                 widget.type,
                 pp: PaperUploadForm(
-                  coursName: widget.courseName,
+                  courseName: widget.courseName,
                 ),
                 notes: DocumentUploadForm(
                   courseName: widget.courseName,

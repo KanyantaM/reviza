@@ -100,54 +100,6 @@ class AIChatScreenState extends State<AIChatScreen> {
     List<ChatRoom> rooms,
   ) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("Chat"),
-      //   leading: IconButton(
-      //     icon: Icon(Icons.access_time), // Clock-like icon
-      //     onPressed: () {
-      //       Scaffold.of(context).openDrawer(); // Open drawer
-      //     },
-      //   ),
-      // ),
-      // drawer: Drawer(
-      //   child: Column(
-      //     children: [
-      //       DrawerHeader(
-      //         child: Text(
-      //           "Chat Rooms",
-      //           style: Theme.of(context).textTheme.titleLarge,
-      //         ),
-      //       ),
-      //       Expanded(
-      //         child: ListView.builder(
-      //           itemCount: rooms.length,
-      //           itemBuilder: (context, index) {
-      //             final room = rooms[index];
-      //             return ListTile(
-      //               title: Text(room.name),
-      //               onTap: () {
-      //                 setState(() {
-      //                   ChatRoomVariable.updateChatRoomId = room.id;
-      //                   _chatController = ReviZaChatRoomController(
-      //                       chatRoomId: ChatRoomVariable.chatRoomId);
-      //                   _chatSession = _model.startChat(
-      //                     history: _chatController!.messages
-      //                         .whereType<TextMessage>()
-      //                         .map((message) => Content.text(message.text))
-      //                         .toList(),
-      //                   );
-      //                 });
-
-      //                 Navigator.pop(context); // Close drawer
-      //               },
-      //             );
-      //           },
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
-      //
       body: GestureDetector(
         onTap: () {
           if (Scaffold.of(context).isDrawerOpen) {
@@ -165,21 +117,23 @@ class AIChatScreenState extends State<AIChatScreen> {
             },
             imageMessageBuilder: (context, message, index) =>
                 FlyerChatImageMessage(message: message, index: index),
-            inputBuilder: (context) => ChatInput(
-              topWidget: InputActionBar(
-                buttons: [
-                  InputActionButton(
-                    icon: Icons.delete_sweep,
-                    title: 'Clear all',
-                    onPressed: () {
-                      _chatController!.set([]);
-                      _chatSession = _model.startChat();
-                    },
-                    destructive: true,
-                  ),
-                ],
-              ),
-            ),
+            inputBuilder: (context) {
+              return ChatInput(
+                topWidget: InputActionBar(
+                  buttons: [
+                    InputActionButton(
+                      icon: Icons.delete_sweep,
+                      title: 'Clear all',
+                      onPressed: () {
+                        _chatController!.set([]);
+                        _chatSession = _model.startChat();
+                      },
+                      destructive: true,
+                    ),
+                  ],
+                ),
+              );
+            },
             textMessageBuilder: (context, message, index) =>
                 FlyerChatTextMessage(message: message, index: index),
           ),

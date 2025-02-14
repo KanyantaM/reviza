@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 Widget buildSearchableDropdown(
-    String label, List<String> options, Function(String selected) onChanged) {
+  String label,
+  List<String> options,
+  Function(String selected) onChanged,
+) {
   return Autocomplete<String>(
     optionsBuilder: (TextEditingValue textEditingValue) {
       if (textEditingValue.text.isEmpty) {

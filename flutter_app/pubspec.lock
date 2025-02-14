@@ -1120,6 +1120,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  polar_tab_bar:
+    dependency: "direct main"
+    description:
+      name: polar_tab_bar
+      sha256: "36415bc36601b9e847f03a84f04f0c74012a81a14c071951ae50c8625f8ff081"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   pool:
     dependency: transitive
     description:

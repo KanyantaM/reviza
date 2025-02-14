@@ -24,15 +24,12 @@ class UploadBox extends StatelessWidget {
           child: Container(
             width: double.infinity,
             height: 150,
-            decoration: BoxDecoration(
-                // color: Colors.blue.shade50.withOpacity(.3),
-                borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(
                   CupertinoIcons.folder,
-                  // color: Colors.blue,
                   size: 40,
                 ),
                 const SizedBox(
@@ -42,7 +39,6 @@ class UploadBox extends StatelessWidget {
                   'Select your file',
                   style: TextStyle(
                     fontSize: 15,
-                    // color: Colors.grey.shade400,
                   ),
                 ),
               ],

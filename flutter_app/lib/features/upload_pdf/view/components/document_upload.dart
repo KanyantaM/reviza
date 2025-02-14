@@ -18,18 +18,14 @@ class CustomFormField extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         TextFormField(
           controller: textEditingController,
           decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
           ),
           maxLines: 1,
         ),
@@ -39,29 +35,30 @@ class CustomFormField extends StatelessWidget {
 }
 
 class PaperUploadForm extends StatefulWidget {
-  const PaperUploadForm({super.key, required this.coursName});
-  final String coursName;
+  const PaperUploadForm({super.key, required this.courseName});
+  final String courseName;
 
   @override
   State<PaperUploadForm> createState() => _PaperUploadFormState();
 }
 
 class _PaperUploadFormState extends State<PaperUploadForm> {
-  String _category = 'TEST';
-  // bool _agreeToTerms = false;
   bool _isRangeSelected = false;
   int _startingYear = DateTime.now().year - 1;
   int _endingYear = DateTime.now().year - 1;
+  String _category = 'TEST';
+
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildRadioButtons(),
-        if (_isRangeSelected) _buildYearRangeDropdowns(),
-        if (!_isRangeSelected) _buildSingleYearDropdown(),
+        _isRangeSelected
+            ? _buildYearRangeDropdowns()
+            : _buildSingleYearDropdown(),
         const SizedBox(height: 16),
         _buildCategoryChips(),
-        const SizedBox(height: 16),
       ],
     );
   }
@@ -70,39 +67,29 @@ class _PaperUploadFormState extends State<PaperUploadForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Select Year Range:',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        const Text('Select Year Range:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         Row(
           children: [
-            Radio(
-              value: false,
-              groupValue: _isRangeSelected,
-              onChanged: (value) {
-                setState(() {
-                  _isRangeSelected = false;
-                });
-              },
-            ),
-            const Text('Single Year'),
+            _buildRadioOption('Single Year', false),
             const SizedBox(width: 16),
-            Radio(
-              value: true,
-              groupValue: _isRangeSelected,
-              onChanged: (value) {
-                setState(() {
-                  _isRangeSelected = true;
-                });
-              },
-            ),
-            const Text('Year Range'),
+            _buildRadioOption('Year Range', true),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildRadioOption(String label, bool value) {
+    return Row(
+      children: [
+        Radio(
+          value: value,
+          groupValue: _isRangeSelected,
+          onChanged: (val) => setState(() => _isRangeSelected = value),
+        ),
+        Text(label),
       ],
     );
   }
@@ -110,68 +97,39 @@ class _PaperUploadFormState extends State<PaperUploadForm> {
   Widget _buildYearRangeDropdowns() {
     return Row(
       children: [
-        _buildYearDropdown(
-          label: 'Starting Year',
-          value: _startingYear,
-          onChanged: (value) {
-            setState(() {
-              _startingYear = value ?? 2023;
-            });
-          },
-        ),
+        _buildYearDropdown('Starting Year', _startingYear,
+            (value) => setState(() => _startingYear = value!)),
         const SizedBox(width: 16),
-        _buildYearDropdown(
-          label: 'Ending Year',
-          value: _endingYear,
-          onChanged: (value) {
-            setState(() {
-              _endingYear = value ?? 2023;
-            });
-          },
-        ),
+        _buildYearDropdown('Ending Year', _endingYear,
+            (value) => setState(() => _endingYear = value!)),
       ],
     );
   }
 
   Widget _buildSingleYearDropdown() {
-    return _buildYearDropdown(
-      label: 'Year',
-      value: _startingYear,
-      onChanged: (value) {
-        setState(() {
-          _startingYear = value ?? 2023;
-        });
-      },
-    );
+    return _buildYearDropdown('Year', _startingYear,
+        (value) => setState(() => _startingYear = value!));
   }
 
   Widget _buildYearDropdown(
-      {required String label,
-      required int value,
-      required ValueChanged<int?> onChanged}) {
+      String label, int value, ValueChanged<int?> onChanged) {
     return SizedBox(
-      width: 150, // Set a fixed width for the dropdown container
+      width: 150,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text(label,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           DropdownButton<int>(
             value: value,
             onChanged: onChanged,
-            items: List.generate(
-              10,
-              (index) => DropdownMenuItem<int>(
-                value: DateTime.now().year - index,
-                child: Text((DateTime.now().year - index).toString()),
-              ),
-            ),
+            items: List.generate(10, (index) {
+              int year = DateTime.now().year - index;
+              return DropdownMenuItem(
+                  value: year, child: Text(year.toString()));
+            }),
           ),
         ],
       ),
@@ -179,160 +137,70 @@ class _PaperUploadFormState extends State<PaperUploadForm> {
   }
 
   Widget _buildCategoryChips() {
+    const categories = ['TEST', 'EXAM', 'SUP', 'MAKE-UP', 'OTHER'];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Select Category:',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        const Text('Select Category:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Expanded(
-            child: Wrap(
-              // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-              children: [
-                for (String categoryOption in [
-                  'TEST',
-                  'EXAM',
-                  'SUP',
-                  'MAKE-UP',
-                  'OTHER'
-                ])
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: FilterChip(
-                      label: Text(categoryOption),
-                      selected: _category == categoryOption,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          _category = selected ? categoryOption : '';
-                        });
-                      },
-                    ),
-                  ),
-              ],
-            ),
-          ),
+        Wrap(
+          spacing: 8.0,
+          children: categories.map((category) {
+            return FilterChip(
+              label: Text(category),
+              selected: _category == category,
+              onSelected: (selected) => setState(() => _category = category),
+            );
+          }).toList(),
         ),
       ],
     );
   }
 }
 
-class DocumentUploadForm extends StatefulWidget {
+class DocumentUploadForm extends StatelessWidget {
   const DocumentUploadForm({super.key, required this.courseName});
   final String courseName;
 
   @override
-  State<DocumentUploadForm> createState() => _DocumentUploadState();
-}
-
-class _DocumentUploadState extends State<DocumentUploadForm> {
-  final TextEditingController _titleEditingController = TextEditingController();
-  final TextEditingController _authorNameEditingController =
-      TextEditingController();
-  double _startingUnit = 0;
-  double _endingUnit = 0;
-  double _singleUnitValue = 0;
-  @override
   Widget build(BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      const SizedBox(height: 16),
-      CustomFormField(
-        title: 'Title',
-        textEditingController: _titleEditingController,
-      ),
-      const SizedBox(height: 16),
-      CustomFormField(
-        title: 'Author Name',
-        textEditingController: _authorNameEditingController,
-      ),
-      const SizedBox(height: 16),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Enter Lecture Range',
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          RangeSliderWidget(
-            onRangeChanged: (values) {
-              if (values.start != values.end) {
-                _startingUnit = values.start;
-                _endingUnit = values.end;
-              } else {
-                _singleUnitValue = values.start;
-              }
-            },
-          ),
-        ],
-      ),
-      const SizedBox(height: 16),
-    ]);
+    final titleController = TextEditingController();
+    final authorController = TextEditingController();
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CustomFormField(title: 'Title', textEditingController: titleController),
+        const SizedBox(height: 16),
+        CustomFormField(
+            title: 'Author Name', textEditingController: authorController),
+        const SizedBox(height: 16),
+        const Text('Enter Lecture Range',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        RangeSliderWidget(onRangeChanged: (values) {}),
+      ],
+    );
   }
 }
 
-class LinkUploadForm extends StatefulWidget {
+class LinkUploadForm extends StatelessWidget {
   const LinkUploadForm({super.key, required this.courseName});
   final String courseName;
 
   @override
-  State<LinkUploadForm> createState() => _LinkUploadFormState();
-}
-
-class _LinkUploadFormState extends State<LinkUploadForm> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _urlController = TextEditingController();
-  @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const SizedBox(height: 16),
-      CustomFormField(
-        title: 'Description',
-        textEditingController: _titleController,
-      ),
-      const SizedBox(height: 16),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'URL',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            validator: (value) {
-              if (value?.isEmpty ?? true) {
-                return 'enter url';
-              } else if (value?.startsWith('https://') ?? false) {
-                return null;
-              } else {
-                return 'enter a valid url';
-              }
-            },
-            controller: _urlController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-            ),
-            maxLines: 1,
-          ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    ]);
+    final titleController = TextEditingController();
+    final urlController = TextEditingController();
+
+    return Column(
+      children: [
+        CustomFormField(
+            title: 'Description', textEditingController: titleController),
+        const SizedBox(height: 16),
+        CustomFormField(title: 'URL', textEditingController: urlController),
+      ],
+    );
   }
 }

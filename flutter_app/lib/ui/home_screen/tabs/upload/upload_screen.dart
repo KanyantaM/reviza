@@ -2,7 +2,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:reviza/features/upload_pdf/upload_pdf.dart';
 import 'package:reviza/features/upload_pdf/view/components/course_search.dart';
-import 'package:reviza/features/upload_pdf/view/components/platform_file_upload.dart';
 import 'package:reviza/features/upload_pdf/view/components/upload_box.dart';
 import 'package:reviza/utilities/cloud.dart';
 import 'package:study_material_repository/study_material_repository.dart';
@@ -18,159 +17,199 @@ class UploadTypeScreen extends StatefulWidget {
 class _UploadTypeScreenState extends State<UploadTypeScreen> {
   PlatformFile? _platformFile;
   Types? _type;
-
-  int _currentStep = 0;
-
   String _selectedCourse = '';
+  List<Map<String, dynamic>> uploads = [];
+
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-    final crossAxisCount = isMobile ? 2 : 4;
-    final padding = isMobile ? 20.0 : 40.0;
-    // final fontSize = isMobile ? 24.0 : 32.0;
-
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(padding),
-        child: Stepper(
-            physics: ClampingScrollPhysics(),
-            currentStep: _currentStep,
-            onStepTapped: (value) => _currentStep = value,
-            steps: [
-              //step one, select course
-              Step(
-                title: Text('Select Course'),
-                content: FutureBuilder(
-                    future: fetchCurrentStudentOnline(widget.uid),
-                    builder: (context, snapshot) {
-                      return buildSearchableDropdown(
-                          'Course', snapshot.data?.myCourses ?? [], (selected) {
-                        _selectedCourse = selected;
-                      });
-                    }),
-              ),
-              Step(
-                title: Text('Select Type'),
-                content: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: crossAxisCount,
-                  childAspectRatio: 1.0,
-                  mainAxisSpacing: 20.0,
-                  crossAxisSpacing: 20.0,
+      resizeToAvoidBottomInset: true,
+      body: Column(
+        children: [
+          _buildCourseSelector(),
+          _buildTypeSelector(),
+          _buildFileUploader(),
+          _platformFile != null
+              ? Column(
                   children: [
-                    _buildUploadTypeCard('NOTES', Icons.note, () {
-                      setState(() {
-                        _type = Types.notes;
-                      });
-                    }),
-                    _buildUploadTypeCard('PAPERS', Icons.note, () {
-                      setState(() {
-                        _type = Types.papers;
-                      });
-                    }),
-                    _buildUploadTypeCard('BOOKS', Icons.book, () {
-                      setState(() {
-                        _type = Types.books;
-                      });
-                    }),
-                    _buildUploadTypeCard('LINKS', Icons.link, () {
-                      setState(() {
-                        _type = Types.links;
-                      });
-                    }),
-                    _buildUploadTypeCard('ASS..', Icons.assessment, () {
-                      setState(() {
-                        _type = Types.assignment;
-                      });
-                    }),
-                    _buildUploadTypeCard('LABS', Icons.troubleshoot, () {
-                      setState(() {
-                        _type = Types.lab;
-                      });
-                    }),
-                  ],
-                ),
-              ),
-              Step(
-                title: Text('Select File'),
-                content: _platformFile == null && _type != Types.links
-                    ? UploadBox(
-                        onTap: _getfile,
-                      )
-                    : Container(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Selected File:',
-                              style: TextStyle(
-                                fontSize: 15,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            SharingFileWidget(
-                              onCancelShare: () {
-                                setState(() {
-                                  _platformFile = null;
-                                });
-                              },
-                              platformFile: _platformFile!,
-                            ),
-                          ],
-                        ),
+                    Text('Platform: '),
+                    ListTile(
+                      leading: Icon(Icons.picture_as_pdf, color: Colors.red),
+                      title: Text(_platformFile!.name),
+                      subtitle: Text("Ready to upload"),
+                      trailing: IconButton(
+                        icon: Icon(Icons.upload),
+                        onPressed: () => _showAnnotationModal(_platformFile!),
                       ),
+                    ),
+                  ],
+                )
+              : SizedBox(),
+          Text('Recent Uploads:'),
+          _buildUploadList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCourseSelector() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: FutureBuilder(
+        future: fetchCurrentStudentOnline(widget.uid),
+        builder: (context, snapshot) {
+          return buildSearchableDropdown(
+              'Course', snapshot.data?.myCourses ?? [], (selected) {
+            setState(() => _selectedCourse = selected);
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildTypeSelector() {
+    List<Map<String, dynamic>> types = [
+      {'title': 'Notes', 'icon': Icons.note, 'type': Types.notes},
+      {'title': 'Papers', 'icon': Icons.description, 'type': Types.papers},
+      {'title': 'Books', 'icon': Icons.book, 'type': Types.books},
+      {'title': 'Links', 'icon': Icons.link, 'type': Types.links},
+      {
+        'title': 'Assignments',
+        'icon': Icons.assignment,
+        'type': Types.assignment
+      },
+      {'title': 'Labs', 'icon': Icons.science, 'type': Types.lab},
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: types.map((item) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () => setState(() => _type = item['type']),
+              child: Column(
+                children: [
+                  Icon(item['icon'],
+                      size: 40,
+                      color: _type == item['type']
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).chipTheme.disabledColor),
+                  Text(item['title']),
+                ],
               ),
-              Step(
-                  title: Text('Annotate'),
-                  content: UploadPdfPage(
-                    uploadType: _type ?? Types.notes,
-                    uid: widget.uid,
-                    course: _selectedCourse,
-                  ))
-            ]),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
 
-  _getfile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: [
-        'pdf',
-      ],
-    );
+  Widget _buildFileUploader() {
+    return _type != Types.links ? UploadBox(onTap: _getFile) : SizedBox();
+  }
 
+  Widget _buildUploadList() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: uploads.length,
+        itemBuilder: (context, index) {
+          final upload = uploads[index];
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            child: ListTile(
+              title: Text(upload['name']),
+              subtitle: Text(
+                  "Status: ${upload['status']} | Annotated: ${upload['annotated'] ? 'Yes' : 'No'}"),
+              trailing: upload['status'] == 'Uploading'
+                  ? CircularProgressIndicator()
+                  : Icon(
+                      upload['status'] == 'Success'
+                          ? Icons.check_circle
+                          : Icons.error,
+                      color: upload['status'] == 'Success'
+                          ? Colors.green
+                          : Colors.red),
+              onTap: () => _showAnnotationModal(upload),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  _getFile() async {
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
     if (result != null) {
-      _platformFile = result.files.first;
+      setState(() => _platformFile = result.files.first);
     }
-
-    setState(() {});
   }
 
-  Widget _buildUploadTypeCard(
-      String title, IconData icon, void Function() onTap) {
-    return Card(
-      child: InkWell(
-        splashColor: Colors.purple.shade50,
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 40),
-              const SizedBox(height: 10),
-              Text(title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
-            ],
+  _uploadFile(bool annotated) {
+    setState(() {
+      uploads.add({
+        'name': _platformFile!.name,
+        'status': 'Uploading',
+        'annotated': annotated
+      });
+    });
+
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        uploads.last['status'] = 'Success';
+        _platformFile = null;
+        _type = null;
+      });
+    });
+  }
+
+  void _showAnnotationModal(dynamic file) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Annotate Document",
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 10),
+                SizedBox(
+                  height: 350,
+                  child: UploadPdfPage(
+                      uploadType: _type ?? Types.notes,
+                      uid: widget.uid,
+                      course: _selectedCourse),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _uploadFile(false);
+                        },
+                        child: Text("Later")),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _uploadFile(true);
+                        },
+                        child: Text("Save")),
+                  ],
+                )
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

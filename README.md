@@ -55,7 +55,5 @@ Reviza is distributed under a license that protects the app from unauthorized co
 ## Contact
 
 For inquiries, feel free to reach out at:
-- **Email**: kanyanta@example.com
-- **GitHub**: [KanyantaM](https://github.com/KanyantaM)
 - **Twitter**: [@Its_Kanyanta](https://twitter.com/Its_Kanyanta)
 ```

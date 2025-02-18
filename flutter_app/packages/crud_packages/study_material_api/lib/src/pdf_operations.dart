@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,23 +9,18 @@ class PdfOps {
   /// Upload PDF to Firebase Storage
   /// - `subjectName` and `title` are required fields.
   /// - `uploadProgress` is a callback function to track progress.
-  Future<String?> uploadPdfToFirebase(File pdfFile, String subjectName,
-      String title, Function(double) uploadProgress) async {
+  Stream<TaskSnapshot> uploadPdfToFirebase(File pdfFile, String subjectName,
+      String title, Function(double) uploadProgress) {
     try {
       if (!pdfFile.existsSync()) {
         throw Exception("Upload failed: File does not exist.");
       }
 
-      double progress = 0;
-
       String normalizedPath = p.normalize(pdfFile.path);
-      String pdfFileName = (Platform.isWindows)
-          ? pdfFile.path.split('\\').last
-          : p.basename(normalizedPath);
+      String pdfFileName = p.basename(normalizedPath);
 
-      Reference storageReference = FirebaseStorage.instance
-          .ref()
-          .child('$subjectName/$title/$pdfFileName');
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child('$subjectName/$pdfFileName');
 
       SettableMetadata metadata = SettableMetadata(
         contentType: 'application/pdf',
@@ -31,18 +28,35 @@ class PdfOps {
       );
 
       UploadTask uploadTask = storageReference.putFile(pdfFile, metadata);
+      uploadTask.onError((e, stackTrace) {
+        throw Exception(e);
+      });
+      Stream<TaskSnapshot> taskSnapshots = uploadTask.snapshotEvents;
 
-      uploadTask.snapshotEvents.listen((TaskSnapshot event) {
-        progress = event.bytesTransferred / event.totalBytes;
-        uploadProgress(progress);
+      taskSnapshots.listen((data) {
+        switch (data.state) {
+          case TaskState.running:
+            final double progress =
+                100.0 * (data.bytesTransferred / data.totalBytes);
+            break;
+          case TaskState.paused:
+            break;
+          case TaskState.canceled:
+            break;
+          case TaskState.error:
+            break;
+          case TaskState.success:
+            break;
+        }
       }, onError: (error) {
-        uploadProgress(-1);
+        throw Exception(error);
       });
 
-      await uploadTask;
-      return await storageReference.getDownloadURL();
+      storageReference.getDownloadURL().then((url) {});
+
+      return taskSnapshots;
     } catch (e) {
-      return null;
+      throw Exception(e);
     }
   }
 

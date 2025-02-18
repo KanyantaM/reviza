@@ -24,16 +24,6 @@ class _IntroductionViewState extends State<IntroductionView> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<IntroductionBloc>()
-        .add(CheckIntroductionStatus(studentId: widget.studentId));
-    // Force index to 3 if running on Windows
-    // if (!(Platform.isAndroid || Platform.isIOS || Platform.isFuchsia)) {
-    //   setState(() {
-    //     currentIndex = 3;
-    //     _pageController.jumpToPage(3);
-    //   });
-    // }
   }
 
   @override
@@ -44,16 +34,19 @@ class _IntroductionViewState extends State<IntroductionView> {
 
   @override
   Widget build(BuildContext context) {
+    context
+        .read<IntroductionBloc>()
+        .add(CheckIntroductionStatus(studentId: widget.studentId));
     return BlocBuilder<IntroductionBloc, IntroductionState>(
       builder: (context, state) {
         if (state is IntroductionCheckingStatus) {
-          return _buildLoadingState();
+          return _buildLoadingState(context);
         } else if (state is IntroductionIntroduced) {
           return MyHomePage(uid: widget.studentId);
         } else if (state is IntroductionErrorState) {
           return NoDataCuate(issue: state.message);
         } else if (state is IntroductionNotIntroduced) {
-          return _introductionView();
+          return _introductionView(context);
         }
         return Scaffold(
           body: const Center(
@@ -64,7 +57,7 @@ class _IntroductionViewState extends State<IntroductionView> {
     );
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(BuildContext context) {
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       alignment: Alignment.center,
@@ -75,7 +68,7 @@ class _IntroductionViewState extends State<IntroductionView> {
     );
   }
 
-  Scaffold _introductionView() {
+  Scaffold _introductionView(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -90,17 +83,20 @@ class _IntroductionViewState extends State<IntroductionView> {
             onPageChanged: (page) => setState(() => currentIndex = page),
             children: [
               _buildIntroPage(
+                context,
                 image: 'assets/images/intro/fatimah.jpg',
                 title: Strings.stepOneTitle,
                 content: Strings.stepOneContent,
               ),
               _buildIntroPage(
+                context,
                 image: 'assets/images/intro/sharing ideas.jpg',
                 title: Strings.stepTwoTitle,
                 content: Strings.stepTwoContent,
                 reverse: true,
               ),
               _buildIntroPage(
+                context,
                 image: 'assets/images/intro/graduate.jpg',
                 title: Strings.stepThreeTitle,
                 content: Strings.stepThreeContent,
@@ -111,7 +107,7 @@ class _IntroductionViewState extends State<IntroductionView> {
               ),
             ],
           ),
-          if (currentIndex != 3) _buildPageIndicator(),
+          if (currentIndex != 3) _buildPageIndicator(context),
         ],
       ),
     );
@@ -134,7 +130,8 @@ class _IntroductionViewState extends State<IntroductionView> {
     );
   }
 
-  Widget _buildIntroPage({
+  Widget _buildIntroPage(
+    BuildContext context, {
     required String image,
     required String title,
     required String content,
@@ -146,7 +143,7 @@ class _IntroductionViewState extends State<IntroductionView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (!reverse) _buildImage(image),
-          _buildTitleText(title),
+          _buildTitleText(title, context),
           const SizedBox(height: 20),
           _buildContentText(content),
           if (reverse) _buildImage(image),
@@ -162,7 +159,7 @@ class _IntroductionViewState extends State<IntroductionView> {
     );
   }
 
-  Widget _buildTitleText(String title) {
+  Widget _buildTitleText(String title, BuildContext context) {
     return FadeInUp(
       duration: const Duration(milliseconds: 900),
       child: Text(
@@ -187,20 +184,23 @@ class _IntroductionViewState extends State<IntroductionView> {
     );
   }
 
-  Widget _buildPageIndicator() {
+  Widget _buildPageIndicator(BuildContext context) {
     return Positioned(
       bottom: 60,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(
           3,
-          (index) => _buildIndicator(isActive: currentIndex == index),
+          (index) => _buildIndicator(context, isActive: currentIndex == index),
         ),
       ),
     );
   }
 
-  Widget _buildIndicator({required bool isActive}) {
+  Widget _buildIndicator(
+    BuildContext context, {
+    required bool isActive,
+  }) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       height: 6,

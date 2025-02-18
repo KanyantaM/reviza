@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:reviza/features/upload_pdf/view/components/annotatio_button.dart';
 import 'package:reviza/widgets/range_slider.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 class CustomFormField extends StatelessWidget {
   const CustomFormField({
@@ -35,8 +37,10 @@ class CustomFormField extends StatelessWidget {
 }
 
 class PaperUploadForm extends StatefulWidget {
-  const PaperUploadForm({super.key, required this.courseName});
+  const PaperUploadForm(
+      {super.key, required this.courseName, required this.materialId});
   final String courseName;
+  final String materialId;
 
   @override
   State<PaperUploadForm> createState() => _PaperUploadFormState();
@@ -59,6 +63,15 @@ class _PaperUploadFormState extends State<PaperUploadForm> {
             : _buildSingleYearDropdown(),
         const SizedBox(height: 16),
         _buildCategoryChips(),
+        AnnotatioButton(
+          selectedCourse: widget.courseName,
+          type: Types.papers,
+          materialId: widget.materialId,
+          isRangeSelected: _isRangeSelected,
+          startingYear: _startingYear,
+          endingYear: _endingYear,
+          category: _category,
+        )
       ],
     );
   }
@@ -160,27 +173,45 @@ class _PaperUploadFormState extends State<PaperUploadForm> {
 }
 
 class DocumentUploadForm extends StatelessWidget {
-  const DocumentUploadForm({super.key, required this.courseName});
+  const DocumentUploadForm({
+    super.key,
+    required this.courseName,
+    required this.materialId,
+    required this.type,
+  });
+
   final String courseName;
+  final String materialId;
+  final Types type;
 
   @override
   Widget build(BuildContext context) {
     final titleController = TextEditingController();
     final authorController = TextEditingController();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CustomFormField(title: 'Title', textEditingController: titleController),
-        const SizedBox(height: 16),
-        CustomFormField(
-            title: 'Author Name', textEditingController: authorController),
-        const SizedBox(height: 16),
-        const Text('Enter Lecture Range',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        RangeSliderWidget(onRangeChanged: (values) {}),
-      ],
+    return Scaffold(
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomFormField(
+              title: 'Title', textEditingController: titleController),
+          const SizedBox(height: 16),
+          CustomFormField(
+              title: 'Author Name', textEditingController: authorController),
+          const SizedBox(height: 16),
+          const Text('Enter Lecture Range',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          RangeSliderWidget(onRangeChanged: (values) {}),
+          AnnotatioButton(
+            selectedCourse: courseName,
+            type: type,
+            materialId: materialId,
+            title: titleController.text,
+            authorName: authorController.text,
+          )
+        ],
+      ),
     );
   }
 }

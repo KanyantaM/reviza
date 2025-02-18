@@ -7,27 +7,55 @@ sealed class UploadPdfEvent extends Equatable {
   List<Object> get props => [];
 }
 
-/// should be used with the pdf operations package
 class UploadPdf extends UploadPdfEvent {
-  final File pdfFile;
+  final List<Uploads> uploads;
 
-  final String subjectName;
+  /// Constructor now correctly references `pdfFiles`
+  const UploadPdf({
+    required this.uploads,
+  });
+}
 
-  final String type;
+class Annotate extends UploadPdfEvent {
+  final Types type;
 
-  final String id;
+  final bool isRangeSelected;
 
-  final String title;
+  final int? startingYear;
 
-  final String description;
+  final int? endingYear;
 
-  const UploadPdf(
-      {required this.subjectName,
-      required this.type,
-      required this.id,
+  final String? category;
+
+  final double? startingUnit;
+
+  final double? endingUnit;
+
+  final String? authorName;
+
+//   url: _linkUrl,
+
+  /// the id of the material to be updated
+  final String materialId;
+
+  /// the course
+  final String course;
+
+  /// the title
+  final String? title;
+
+  const Annotate(
+      {required this.type,
+      required this.isRangeSelected,
+      required this.startingYear,
+      required this.endingYear,
+      required this.category,
+      required this.startingUnit,
+      required this.endingUnit,
+      required this.authorName,
+      required this.materialId,
       required this.title,
-      required this.description,
-      required this.pdfFile});
+      required this.course});
 }
 
 ///To cancel an upload
@@ -36,3 +64,5 @@ class RemoveFile extends UploadPdfEvent {
 
   const RemoveFile({required this.material});
 }
+
+class FetchMyUploads extends UploadPdfEvent {}

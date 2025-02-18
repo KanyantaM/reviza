@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:reviza/app/services/notifications_service.dart';
+import 'package:reviza/cache/student_cache.dart';
+import 'package:reviza/features/upload_pdf/view/utils/type_description_generator.dart';
 import 'package:study_material_repository/study_material_repository.dart';
 
 part 'upload_pdf_event.dart';
@@ -11,45 +15,178 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
   UploadPdfBloc({required StudyMaterialRepo studyMaterialRepo})
       : _studyMaterialRepository = studyMaterialRepo,
         super(UploadPdfInitial()) {
-    on<UploadPdf>((event, emit) async {
-      emit(UploadingPdfState());
-      try {
-        _studyMaterialRepository.uploadMaterial(
-          pdfFile: event.pdfFile,
-          title: event.title,
-          subjectName: event.subjectName,
-          type: event.type,
-          description: event.description,
-        );
-      } catch (e) {
-        emit(ErrorState(message: '$e'));
-      }
-    });
-
-    on<RemoveFile>(
-      (event, emit) async {
-        emit(RemovingFileState());
-        try {
-          if (!(event.material.onlinePath?.isEmpty ?? false)) {
-            _studyMaterialRepository.cancelUpload(material: event.material);
-          } else {
-            emit(UploadPdfInitial());
-          }
-        } catch (e) {
-          emit(ErrorState(message: 'Error deleting subjects\n $e'));
-        }
-      },
-    );
+    on<UploadPdf>(_onUploadPdf);
+    on<Annotate>(_onAnnotate);
+    on<RemoveFile>(_onRemoveFile);
   }
+
   final StudyMaterialRepo _studyMaterialRepository;
-}
+  final List<Uploads> _currentUploads = StudentCache.unseenUploads;
+  final List<Uploads> _completedUploads = [];
+  final List<Future<void>> _notifications = [];
 
-class UploadProgressCubit extends Cubit<double> {
-  UploadProgressCubit() : super(0);
+  /// Handles multiple file uploads concurrently
+  Future<void> _onUploadPdf(
+      UploadPdf event, Emitter<UploadPdfState> emit) async {
+    // List<Future<void>> StudentCache.uploadTasks = [];
 
-  void updateProgress(double progress) {
-    emit(progress);
+    for (Uploads upload in StudentCache.unseenUploads) {
+      if (upload.status == null) {
+        StudentCache.uploadTasks.add(_uploadSingleFile(upload, event, emit));
+      }
+    }
+
+    await Future.wait(StudentCache.uploadTasks);
+
+    emit(FetchedUploadsPdf(
+      currentUploads: List.from(_currentUploads),
+      completedUploads: List.from(_completedUploads),
+    ));
+  }
+
+  /// Uploads a single file and listens for status updates
+  Future<void> _uploadSingleFile(
+    Uploads upload,
+    UploadPdf event,
+    Emitter<UploadPdfState> emit,
+  ) async {
+    if (upload.type == null) {
+      emit(ErrorState(message: 'Please give ${upload.name} a document type'));
+      return;
+    }
+    try {
+      Stream<String> uploadStatus = _studyMaterialRepository.uploadMaterial(
+        pdfFile: upload.file,
+        title: basename(normalize(upload.file.path)),
+        subjectName: upload.courseName,
+        type: upload.type?.name ?? '',
+        description: '',
+      );
+
+      // Show notification that upload has started
+      await NotificationService.showProgressNotification(
+          0, upload.name, upload.id ?? '');
+
+      await emit.forEach<String>(
+        uploadStatus,
+        onError: (error, stackTrace) {
+          final Uploads newUpload = upload.copywith(status: '❗ error');
+          _currentUploads.removeWhere((up) => upload.file == up.file);
+          _currentUploads.add(newUpload);
+          _updateCache();
+
+          _currentUploads.remove(upload);
+          _completedUploads.add(upload);
+          _updateCache();
+          // Show completion notification
+          NotificationService.showUploadErrorNotification(
+              upload.name, upload.id ?? '');
+
+          return UploadingPdfState(
+              currentUploads: StudentCache.unseenUploads,
+              completedUploads: StudentCache.seenUploads);
+        },
+        onData: (status) {
+          final Uploads newUpload = upload.copywith(status: status);
+          _currentUploads.removeWhere((up) => upload.file == up.file);
+          _currentUploads.add(newUpload);
+          _updateCache();
+          if (status.contains('%')) {
+            // Extract percentage and update the notification
+            final double progress =
+                double.tryParse(status.replaceAll('%', '')) ?? 0;
+            NotificationService.showProgressNotification(
+                progress, upload.name, upload.id ?? '');
+            return UploadingPdfState(
+                currentUploads: StudentCache.unseenUploads,
+                completedUploads: StudentCache.seenUploads);
+          }
+
+          if (status == '✅') {
+            _currentUploads.remove(upload);
+            _completedUploads.add(upload);
+            _updateCache();
+            // Show completion notification
+            NotificationService.showCompletionNotification(
+                upload.name, upload.id ?? '');
+            return UploadingPdfState(
+                currentUploads: StudentCache.unseenUploads,
+                completedUploads: StudentCache.seenUploads);
+          }
+
+          return UploadingPdfState(
+              currentUploads: StudentCache.unseenUploads,
+              completedUploads: StudentCache.seenUploads);
+        },
+      );
+    } catch (e) {
+      emit(ErrorState(
+          message:
+              'Upload failed for ${basename(upload.file.path)}: ${e.toString()}'));
+    }
+  }
+
+  /// Handles annotation events
+  void _onAnnotate(Annotate event, Emitter<UploadPdfState> emit) {
+    final desc = descriptionGenerator(
+      type: event.type,
+      isRangeSelected: event.isRangeSelected,
+      startingYear: event.startingYear,
+      endingYear: event.endingYear,
+      category: event.category,
+      startingUnit: event.startingUnit,
+      endingUnit: event.endingUnit,
+      authorName: event.authorName ?? '',
+      url: '',
+    );
+
+    try {
+      _studyMaterialRepository.annotateMaterial(
+        id: event.materialId,
+        course: event.course,
+        title: event.title,
+        description: desc,
+      );
+
+      emit(FetchedUploadsPdf(
+        currentUploads: List.from(_currentUploads),
+        completedUploads: List.from(_completedUploads),
+      ));
+    } catch (e) {
+      emit(ErrorState(message: 'Failed to annotate: ${e.toString()}'));
+    }
+  }
+
+  /// Handles file removal events
+  Future<void> _onRemoveFile(
+      RemoveFile event, Emitter<UploadPdfState> emit) async {
+    emit(RemovingFileState());
+
+    try {
+      if (event.material.onlinePath?.isNotEmpty ?? false) {
+        await _studyMaterialRepository.cancelUpload(material: event.material);
+      }
+
+      _currentUploads
+          .removeWhere((upload) => upload.name == event.material.title);
+      _completedUploads
+          .removeWhere((upload) => upload.name == event.material.title);
+
+      _updateCache();
+
+      emit(FetchedUploadsPdf(
+        currentUploads: List.from(_currentUploads),
+        completedUploads: List.from(_completedUploads),
+      ));
+    } catch (e) {
+      emit(ErrorState(message: 'Error deleting file: ${e.toString()}'));
+    }
+  }
+
+  /// Updates the StudentCache
+  void _updateCache() {
+    StudentCache.setUnseenUploads(List.from(_currentUploads));
+    StudentCache.setSeenUploads(
+        List<Uploads>.from(_completedUploads) + StudentCache.seenUploads);
   }
 }
-
-UploadProgressCubit uploadProgressCubit = UploadProgressCubit();

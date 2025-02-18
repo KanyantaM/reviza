@@ -109,51 +109,102 @@ class StudyMaterialRepo {
     yield* controller.stream; // Stream the updates
   }
 
-  Stream<Map<StudyMaterial, double>> uploadMaterial({
+  Future<void> annotateMaterial(
+      {required String id,
+      required String course,
+      String? title,
+      String? description}) async {
+    try {
+      _cloudStorage.annotateStudyMaterial(id: id, course: course);
+      _localStorage.annotateStudyMaterial(id: id, course: course);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Stream<String> uploadMaterial({
     required File? pdfFile,
     required String? title,
     required String? subjectName,
     required String type,
     required String? description,
-  }) async* {
-    String filePath = await _pdfOps.uploadPdfToFirebase(
-            pdfFile!, subjectName!, title!, (progress) {}) ??
-        '';
-
-    final StreamController<Map<StudyMaterial, double>> controller =
-        StreamController();
-
-    if (filePath.isEmpty && (type != 'LINKS')) {
-      throw Exception('Couldn\'t find path to storage');
-    } else {
-      int size = 0;
-      if (type != 'LINKS') {
-        size = await (File(pdfFile.path).length()) ~/ 1024;
-      }
-      StudyMaterial newStudyMaterial = StudyMaterial(
-        subjectName: subjectName,
-        type: type,
-        id: Uuid().v4(),
-        title: title,
-        description: description ?? '',
-        onlinePath: filePath,
-        fans: [],
-        haters: [],
-        reports: [],
-        size: size,
-      );
-
-      try {
-        await _localStorage.addStudyMaterial(newStudyMaterial);
-        await _cloudStorage.addStudyMaterial(newStudyMaterial);
-      } catch (e) {
-        controller.addError(Exception('Download failed: $e'));
-      } finally {
-        await controller.close();
-      }
+  }) {
+    if (subjectName == null || subjectName.isEmpty) {
+      throw Exception('Please select a course');
+    }
+    if (pdfFile == null || !pdfFile.existsSync()) {
+      throw Exception('File is empty or does not exist');
+    }
+    if (title == null || title.isEmpty) {
+      throw Exception('Couldn\'t assign title');
     }
 
-    yield* controller.stream; // Stream the updates
+    final stateController = StreamController<String>();
+    final normalizedPath = normalize(pdfFile.path);
+    final pdfFileName = basename(normalizedPath);
+    final storageReference =
+        FirebaseStorage.instance.ref().child('$subjectName/$pdfFileName');
+
+    final metadata = SettableMetadata(
+      contentType: 'application/pdf',
+      cacheControl: 'public,max-age=300',
+    );
+
+    final uploadTask = storageReference.putFile(pdfFile, metadata);
+
+    uploadTask.snapshotEvents.listen((snapshot) async {
+      try {
+        switch (snapshot.state) {
+          case TaskState.running:
+            final progress =
+                100.0 * (snapshot.bytesTransferred / snapshot.totalBytes);
+            stateController.add("${progress.toStringAsFixed(2)} %");
+            break;
+          case TaskState.paused:
+            stateController.add('⏸️');
+            break;
+          case TaskState.canceled:
+            stateController.add('❌');
+            break;
+          case TaskState.error:
+            stateController.addError('❗ Upload failed.');
+            break;
+          case TaskState.success:
+            final filePath = await storageReference.getDownloadURL();
+            if (filePath.isEmpty && type != 'LINKS') {
+              throw Exception('Couldn\'t find path to storage');
+            }
+
+            final studyMaterial = StudyMaterial(
+              subjectName: subjectName,
+              type: type,
+              id: Uuid().v4(),
+              title: title,
+              description: description ?? '',
+              onlinePath: filePath,
+              fans: [],
+              haters: [],
+              reports: [],
+              size: (type != 'LINKS') ? (await pdfFile.length()) ~/ 1024 : 0,
+            );
+
+            await _localStorage.addStudyMaterial(studyMaterial);
+            await _cloudStorage.addStudyMaterial(studyMaterial);
+
+            stateController.add('✅');
+            await stateController.close();
+            break;
+        }
+      } catch (e) {
+        stateController.addError(e.toString());
+        await stateController.close();
+      }
+    }, onError: (error) {
+      stateController.addError(error.toString());
+      stateController.close();
+    }, cancelOnError: true);
+
+    return stateController.stream;
   }
 
   Future<Map<String, List<StudyMaterial>>> fetchDownloads() async {
@@ -196,6 +247,4 @@ class StudyMaterialRepo {
       throw Exception(e);
     }
   }
-
-  final PdfOps _pdfOps = PdfOps();
 }

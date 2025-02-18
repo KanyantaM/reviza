@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study_material_api/study_material_api.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class FiresbaseStudyMaterialImplementation implements StudyMaterialApi {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,6 +10,29 @@ class FiresbaseStudyMaterialImplementation implements StudyMaterialApi {
         .collection(material.subjectName)
         .doc(material.id)
         .set(material.toOnline());
+  }
+
+  @override
+  Future<void> annotateStudyMaterial({
+    required String id,
+    required String course,
+    String? titile,
+    String? description,
+  }) async {
+    if (titile != null && description != null) {
+      await _firestore.collection(course).doc(id).update({
+        'title': titile,
+        'description': description,
+      });
+    } else if (description != null) {
+      await _firestore.collection(course).doc(id).update({
+        'description': description,
+      });
+    } else {
+      await _firestore.collection(course).doc(id).update({
+        'title': titile,
+      });
+    }
   }
 
   @override

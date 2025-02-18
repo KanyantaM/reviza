@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reviza/cache/student_cache.dart';
 import 'package:reviza/features/edit_courses/bloc/edit_my_courses_bloc.dart';
 import 'package:reviza/features/edit_courses/view/home_button/views/home_bottomsheet_view.dart';
 
@@ -15,11 +16,7 @@ class HomeTabView extends StatelessWidget {
     EditMyCoursesBloc widgetBloc = context.read<EditMyCoursesBloc>();
     return BlocConsumer<EditMyCoursesBloc, EditMyCoursesState>(
       listener: (context, state) {
-        if (state is EditMyCoursesInitial) {
-          context
-              .read<EditMyCoursesBloc>()
-              .add(FetchMyCourses(studentId: studentId));
-        } else if (state is CoursesEditedSuccesfully) {
+        if (state is CoursesEditedSuccesfully) {
           _showSuccessSnackbar(context, 'Courses edited successfully');
         } else if (state is ErrorState) {
           _showErrorDialog(context, state.message);
@@ -63,26 +60,17 @@ class HomeTabView extends StatelessWidget {
   }
 
   Widget _buildBody(EditMyCoursesState state, BuildContext context) {
-    if (state is FetchingCoursesState) {
-      return const Center(child: CircularProgressIndicator.adaptive());
-    } else if (state is CoursesFetchedState) {
-      return ListView(
-        shrinkWrap: true,
-        children: <Widget>[
-          const SizedBox(
-            height: 30,
-          ),
-          MySubjectsPage(
-            userId: state.student,
-          ),
-        ],
-      );
-    } else {
-      context
-          .read<EditMyCoursesBloc>()
-          .add(FetchMyCourses(studentId: studentId));
-      return const Center(child: CircularProgressIndicator.adaptive());
-    }
+    return ListView(
+      shrinkWrap: true,
+      children: <Widget>[
+        const SizedBox(
+          height: 30,
+        ),
+        MySubjectsPage(
+          userId: StudentCache.tempStudent,
+        ),
+      ],
+    );
   }
 
   void _showSuccessSnackbar(BuildContext context, String message) {

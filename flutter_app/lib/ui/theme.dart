@@ -80,11 +80,12 @@ class ReviZaTheme {
         centerTitle: true,
       ),
       cardTheme: CardTheme(
-        color: Color(0xFF1E1E1E),
-        shadowColor: Colors.black54,
+        color: const Color.fromARGB(255, 13, 8, 10),
+        shadowColor: Colors.white12,
         elevation: 2,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.white70, width: 1), // Soft border
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -119,7 +120,7 @@ class ReviZaTheme {
     );
   }
 
-  static ThemeData toggleTheme(ThemeData currentTheme) {
-    return currentTheme == light ? dark : light;
+  static ThemeData toggleTheme(bool isLight) {
+    return isLight ? dark : light;
   }
 }

@@ -7,6 +7,7 @@ import 'package:flyer_chat_image_message/flyer_chat_image_message.dart';
 import 'package:flyer_chat_text_message/flyer_chat_text_message.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:reviza/cache/student_cache.dart';
 import 'package:reviza/features/ai_chat_screen/sections/controller/reviza_chat_controller.dart';
 import 'package:uuid/uuid.dart';
 
@@ -70,28 +71,32 @@ class AIChatScreenState extends State<AIChatScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return FutureBuilder<Object>(
-      future: ChatRepository(
-        localChat: HiveImplementation(),
-        onlineChat: FirestoreImplementation(),
-      ).fetchAllChatRooms(widget.userId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text("No chat rooms available"));
-          } else {
-            return _bodyWhenFullyLoaded(
-                context, theme, (snapshot.data as List<ChatRoom>));
-          }
-        } else {
-          return const Center(child: Text("Unexpected state"));
-        }
-      },
-    );
+    return
+        // StudentCache.chatRooms.isEmpty
+        //     ? FutureBuilder<Object>(
+        //         future: ChatRepository(
+        //           localChat: HiveImplementation(),
+        //           onlineChat: FirestoreImplementation(),
+        //         ).fetchAllChatRooms(widget.userId),
+        //         builder: (context, snapshot) {
+        //           if (snapshot.connectionState == ConnectionState.waiting) {
+        //             return const Center(child: CircularProgressIndicator());
+        //           } else if (snapshot.connectionState == ConnectionState.done) {
+        //             if (snapshot.hasError) {
+        //               return Center(child: Text("Error: ${snapshot.error}"));
+        //             } else if (!snapshot.hasData) {
+        //               return const Center(child: Text("No chat rooms available"));
+        //             } else {
+        //               return _bodyWhenFullyLoaded(
+        //                   context, theme, (snapshot.data as List<ChatRoom>));
+        //             }
+        //           } else {
+        //             return const Center(child: Text("Unexpected state"));
+        //           }
+        //         },
+        //       )
+        //     :
+        _bodyWhenFullyLoaded(context, theme, (StudentCache.chatRooms));
   }
 
   Scaffold _bodyWhenFullyLoaded(

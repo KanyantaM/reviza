@@ -14,8 +14,14 @@ final class _AppUserChanged extends AppEvent {
   final User user;
 }
 
+final class _AppThemeChanged extends AppEvent {
+  const _AppThemeChanged(this.isLight);
+
+  final bool isLight;
+}
+
 class ChangeTheme extends AppEvent {
-  final ThemeData theme;
+  final bool theme;
 
   ChangeTheme({required this.theme});
 }

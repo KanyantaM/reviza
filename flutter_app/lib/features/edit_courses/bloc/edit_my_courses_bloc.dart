@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:reviza/cache/student_cache.dart';
 import 'package:student_repository/student_repository.dart';
 import 'package:study_material_repository/study_material_repository.dart';
 
@@ -12,16 +13,20 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
   })  : _studentRepository = repo,
         super(EditMyCoursesInitial()) {
     on<FetchMyCourses>((event, emit) async {
-      emit(FetchingCoursesState());
+      if (StudentCache.courses.isEmpty) {
+        emit(FetchingCoursesState());
 
-      try {
-        Student currentStudent =
-            await _studentRepository.getUserById(event.studentId) ??
-                Student(userId: event.studentId, myCourses: <String>[]);
+        try {
+          Student currentStudent =
+              await _studentRepository.getUserById(event.studentId) ??
+                  Student(userId: event.studentId, myCourses: <String>[]);
 
-        emit(CoursesFetchedState(student: currentStudent));
-      } catch (e) {
-        emit(ErrorState(message: 'Failed to fetch user messages\n $e'));
+          emit(CoursesFetchedState(student: currentStudent));
+        } catch (e) {
+          emit(ErrorState(message: 'Failed to fetch user messages\n $e'));
+        }
+      } else {
+        emit(CoursesFetchedState(student: StudentCache.tempStudent));
       }
     });
 
@@ -34,6 +39,7 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
             StudyMaterialRepo(uid: event.student.userId)
                 .deleteLocalCourseMaterial(courseId: course);
           }
+          StudentCache.setCourses(event.student.myCourses);
           await _studentRepository.updateUser(event.student);
           emit(CoursesEditedSuccesfully());
           emit(CoursesFetchedState(student: event.student));
@@ -49,6 +55,7 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
           for (var course in event.courses) {
             if (!event.student.myCourses.contains(course)) {
               event.student.myCourses.add(course);
+              StudentCache.courses.add(course);
             }
           }
           await _studentRepository.updateUser(event.student);

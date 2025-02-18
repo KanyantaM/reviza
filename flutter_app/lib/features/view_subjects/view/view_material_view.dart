@@ -36,22 +36,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
   void initState() {
     super.initState();
 
-    ///when the screen just loads fetched the data
-    if (widget.isDownloadedView) {
-      context.read<ViewMaterialBloc>().add(
-            FetchCourseMaterials(
-              course: null,
-              online: false,
-            ),
-          );
-    } else {
-      context.read<ViewMaterialBloc>().add(
-            FetchCourseMaterials(
-              course: widget.courseName,
-              online: true,
-            ),
-          );
-    }
     _tabController = TabController(length: 4, vsync: this);
     _deleteMode = false;
     _tabController.addListener(() {
@@ -76,6 +60,22 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
 
   @override
   Widget build(BuildContext context) {
+    ///when the screen just loads fetched the data
+    if (widget.isDownloadedView) {
+      context.read<ViewMaterialBloc>().add(
+            FetchCourseMaterials(
+              course: null,
+              online: false,
+            ),
+          );
+    } else {
+      context.read<ViewMaterialBloc>().add(
+            FetchCourseMaterials(
+              course: widget.courseName,
+              online: true,
+            ),
+          );
+    }
     return BlocConsumer<ViewMaterialBloc, ViewMaterialState>(
       listener: (context, state) {},
       builder: (context, state) {

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/app/bloc/app_bloc.dart';
 import 'package:reviza/features/login/login.dart';
-import 'package:reviza/ui/theme.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -83,10 +82,9 @@ class UserScreen extends StatelessWidget {
                   leading: const Icon(Icons.brightness_6),
                   title: const Text('Switch Theme'),
                   trailing: Switch(
-                    value: state.theme == ReviZaTheme.light,
+                    value: state.theme,
                     onChanged: (bool value) {
-                      context.read<AppBloc>().add(ChangeTheme(
-                          theme: value ? ReviZaTheme.light : ReviZaTheme.dark));
+                      context.read<AppBloc>().add(ChangeTheme(theme: value));
                     },
                   ),
                 );

@@ -40,7 +40,7 @@ class NotificationService {
         NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await _notificationsPlugin.show(
-      0,
+      uploadId.hashCode,
       'Uploading: $fileName',
       'Upload Progress: $progress%',
       platformChannelSpecifics,
@@ -64,7 +64,7 @@ class NotificationService {
         NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await _notificationsPlugin.show(
-      0,
+      uploadId.hashCode,
       'Upload Complete ✅',
       '$fileName uploaded successfully!',
       platformChannelSpecifics,
@@ -87,7 +87,7 @@ class NotificationService {
         NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await _notificationsPlugin.show(
-      0,
+      uploadId.hashCode,
       'Upload Failed❗',
       '$fileName failed to upload',
       platformChannelSpecifics,

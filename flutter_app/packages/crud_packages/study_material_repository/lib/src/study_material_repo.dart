@@ -128,6 +128,7 @@ class StudyMaterialRepo {
     required String? subjectName,
     required String type,
     required String? description,
+    required String? materialId,
   }) {
     if (subjectName == null || subjectName.isEmpty) {
       throw Exception('Please select a course');
@@ -178,7 +179,7 @@ class StudyMaterialRepo {
             final studyMaterial = StudyMaterial(
               subjectName: subjectName,
               type: type,
-              id: Uuid().v4(),
+              id: materialId ?? Uuid().v4(),
               title: title,
               description: description ?? '',
               onlinePath: filePath,

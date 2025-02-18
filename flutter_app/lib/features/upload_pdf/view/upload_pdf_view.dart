@@ -271,9 +271,9 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
   Widget _buildUploadList() {
     return (StudentCache.seenUploads.isNotEmpty)
         ? ListView.builder(
-            itemCount: StudentCache.unseenUploads.length,
+            itemCount: StudentCache.seenUploads.length,
             itemBuilder: (context, index) {
-              final upload = StudentCache.unseenUploads[index];
+              final upload = StudentCache.seenUploads[index];
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 child: ListTile(
@@ -375,6 +375,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
         _materialId = Uuid().v4();
         _platformFile = result.files.first;
         _updateCache(Uploads(
+            id: Uuid().v4(),
             courseName: _selectedCourse,
             type: _type,
             name: basename(normalize(_platformFile!.path!)),

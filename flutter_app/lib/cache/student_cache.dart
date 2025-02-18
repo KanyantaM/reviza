@@ -13,6 +13,7 @@ class StudentCache {
   static List<Uploads> _unseenUploads = [];
   static List<Uploads> _seenUploads = [];
   static List<ChatRoom> _chatRooms = [];
+  static final List<Future<void>> _notifications = [];
 
   static Future<void> initCache({required String uid}) async {
     _studentId = uid;
@@ -52,5 +53,10 @@ class StudentCache {
     _seenUploads = completedUploads;
   }
 
+  static void addNotifications(Future<void> localNotification) =>
+      _notifications.add(localNotification);
+
   static List<ChatRoom> get chatRooms => _chatRooms;
+
+  static List<Future<void>> get notifications => _notifications;
 }

@@ -22,8 +22,7 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
 
   final StudyMaterialRepo _studyMaterialRepository;
   final List<Uploads> _currentUploads = StudentCache.unseenUploads;
-  final List<Uploads> _completedUploads = [];
-  final List<Future<void>> _notifications = [];
+  final List<Uploads> _completedUploads = StudentCache.seenUploads;
 
   /// Handles multiple file uploads concurrently
   Future<void> _onUploadPdf(
@@ -54,6 +53,7 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
       emit(ErrorState(message: 'Please give ${upload.name} a document type'));
       return;
     }
+
     try {
       Stream<String> uploadStatus = _studyMaterialRepository.uploadMaterial(
         pdfFile: upload.file,
@@ -61,11 +61,13 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
         subjectName: upload.courseName,
         type: upload.type?.name ?? '',
         description: '',
+        materialId: upload.id,
       );
 
       // Show notification that upload has started
-      await NotificationService.showProgressNotification(
+      final notificationTask = NotificationService.showProgressNotification(
           0, upload.name, upload.id ?? '');
+      StudentCache.addNotifications(notificationTask);
 
       await emit.forEach<String>(
         uploadStatus,
@@ -75,54 +77,62 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
           _currentUploads.add(newUpload);
           _updateCache();
 
-          _currentUploads.remove(upload);
-          _completedUploads.add(upload);
-          _updateCache();
-          // Show completion notification
           NotificationService.showUploadErrorNotification(
               upload.name, upload.id ?? '');
 
           return UploadingPdfState(
-              currentUploads: StudentCache.unseenUploads,
-              completedUploads: StudentCache.seenUploads);
+            currentUploads: StudentCache.unseenUploads,
+            completedUploads: StudentCache.seenUploads,
+          );
         },
         onData: (status) {
           final Uploads newUpload = upload.copywith(status: status);
           _currentUploads.removeWhere((up) => upload.file == up.file);
           _currentUploads.add(newUpload);
           _updateCache();
+
           if (status.contains('%')) {
             // Extract percentage and update the notification
             final double progress =
                 double.tryParse(status.replaceAll('%', '')) ?? 0;
             NotificationService.showProgressNotification(
                 progress, upload.name, upload.id ?? '');
+
             return UploadingPdfState(
-                currentUploads: StudentCache.unseenUploads,
-                completedUploads: StudentCache.seenUploads);
+              currentUploads: StudentCache.unseenUploads,
+              completedUploads: StudentCache.seenUploads,
+            );
           }
 
           if (status == '✅') {
-            _currentUploads.remove(upload);
-            _completedUploads.add(upload);
+            _currentUploads.removeWhere((up) => upload.file == up.file);
+            _completedUploads.add(newUpload);
+
             _updateCache();
-            // Show completion notification
+
             NotificationService.showCompletionNotification(
                 upload.name, upload.id ?? '');
+
             return UploadingPdfState(
-                currentUploads: StudentCache.unseenUploads,
-                completedUploads: StudentCache.seenUploads);
+              currentUploads: StudentCache.unseenUploads,
+              completedUploads: StudentCache.seenUploads,
+            );
           }
 
           return UploadingPdfState(
-              currentUploads: StudentCache.unseenUploads,
-              completedUploads: StudentCache.seenUploads);
+            currentUploads: StudentCache.unseenUploads,
+            completedUploads: StudentCache.seenUploads,
+          );
         },
       );
     } catch (e) {
+      // Cancel notification on error
+      // NotificationService.cancelNotification(upload.id ?? '');
+
       emit(ErrorState(
-          message:
-              'Upload failed for ${basename(upload.file.path)}: ${e.toString()}'));
+        message:
+            'Upload failed for ${basename(upload.file.path)}: ${e.toString()}',
+      ));
     }
   }
 
@@ -185,8 +195,7 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
 
   /// Updates the StudentCache
   void _updateCache() {
-    StudentCache.setUnseenUploads(List.from(_currentUploads));
-    StudentCache.setSeenUploads(
-        List<Uploads>.from(_completedUploads) + StudentCache.seenUploads);
+    StudentCache.setUnseenUploads(List<Uploads>.from(_currentUploads));
+    StudentCache.setSeenUploads(List<Uploads>.from(_completedUploads));
   }
 }

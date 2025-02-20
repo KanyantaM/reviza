@@ -20,7 +20,7 @@ class NotificationService {
     await _notificationsPlugin.initialize(initializationSettings);
   }
 
-  static Future<void> showProgressNotification(
+  static Future<void> showUploadProgressNotification(
       double progress, String fileName, String uploadId) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -48,7 +48,7 @@ class NotificationService {
     );
   }
 
-  static Future<void> showCompletionNotification(
+  static Future<void> showUploadCompletionNotification(
       String fileName, String uploadId) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -92,6 +92,81 @@ class NotificationService {
       '$fileName failed to upload',
       platformChannelSpecifics,
       payload: 'upload_failed',
+    );
+  }
+
+  static Future<void> showDownloadProgressNotification(
+      double progress, String fileName, String fileId) async {
+    AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      fileId,
+      'Downloads',
+      channelDescription: 'Shows progress of downloads',
+      importance: Importance.high,
+      priority: Priority.high,
+      progress: progress.round(),
+      showProgress: true,
+      maxProgress: 100,
+      onlyAlertOnce: true,
+      color: Colors.teal[2],
+    );
+
+    final NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await _notificationsPlugin.show(
+      fileId.hashCode,
+      'Downloading: $fileName',
+      'Download Progress: $progress%',
+      platformChannelSpecifics,
+      payload: 'download_progress',
+    );
+  }
+
+  static Future<void> showDownloadCompletionNotification(
+      String fileName, String uploadId) async {
+    AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      uploadId,
+      'Downloads',
+      channelDescription: 'Shows progress of download completions',
+      importance: Importance.high,
+      priority: Priority.high,
+      color: Colors.teal[2],
+    );
+
+    final NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await _notificationsPlugin.show(
+      uploadId.hashCode,
+      'Download Complete 💯',
+      '$fileName saved successfully!',
+      platformChannelSpecifics,
+      payload: 'download_complete',
+    );
+  }
+
+  static Future<void> showDownloadErrorNotification(
+      String fileId, String fileName) async {
+    AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      fileId,
+      'Downloads',
+      channelDescription: 'Show failed downloads',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    final NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await _notificationsPlugin.show(
+      fileId.hashCode,
+      'Download Faile💔❗',
+      '$fileName failed to download',
+      platformChannelSpecifics,
+      payload: 'download_failed',
     );
   }
 }

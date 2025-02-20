@@ -1,14 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:study_material_repository/study_material_repository.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class CustomPDFViewer extends StatefulWidget {
   final bool viewOnline;
-  final StudyMaterialOpened state;
+  final StudyMaterial material;
   final Function onUpVote;
   final Function onDownVote;
   final Function onReport;
@@ -16,7 +15,7 @@ class CustomPDFViewer extends StatefulWidget {
 
   const CustomPDFViewer({
     super.key,
-    required this.state,
+    required this.material,
     required this.viewOnline,
     required this.onUpVote,
     required this.onDownVote,
@@ -50,7 +49,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
 
   @override
   void initState() {
-    _studyMaterial = widget.state.studyMaterial;
+    _studyMaterial = widget.material;
 
     _checkVoteStatus(_studyMaterial, widget.uid);
     super.initState();
@@ -69,37 +68,46 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
         centerTitle: true,
         title: Text(_studyMaterial?.title ?? ''),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.assistant),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return const AlertDialog(
-                      // content: AIChatScreen(),
-                      );
-                },
-              );
-            },
-          ),
+          if (widget.viewOnline)
+            IconButton(
+              icon: const Icon(Icons.download),
+              onPressed: () {
+                //todo: add download
+              },
+            ),
         ],
       ),
       body: Stack(
         children: [
-          SfPdfViewer.file(
-            File(_studyMaterial?.localPath ?? ''),
-            controller: _pdfViewerController,
-            onDocumentLoaded: (PdfDocumentLoadedDetails details) {
-              setState(() {
-                totalPage = details.document.pages.count;
-              });
-            },
-            onPageChanged: (PdfPageChangedDetails details) {
-              setState(() {
-                currentPage = details.newPageNumber;
-              });
-            },
-          ),
+          widget.viewOnline
+              ? SfPdfViewer.network(
+                  _studyMaterial?.onlinePath ?? '',
+                  controller: _pdfViewerController,
+                  onDocumentLoaded: (PdfDocumentLoadedDetails details) {
+                    setState(() {
+                      totalPage = details.document.pages.count;
+                    });
+                  },
+                  onPageChanged: (PdfPageChangedDetails details) {
+                    setState(() {
+                      currentPage = details.newPageNumber;
+                    });
+                  },
+                )
+              : SfPdfViewer.file(
+                  File(_studyMaterial?.localPath ?? ''),
+                  controller: _pdfViewerController,
+                  onDocumentLoaded: (PdfDocumentLoadedDetails details) {
+                    setState(() {
+                      totalPage = details.document.pages.count;
+                    });
+                  },
+                  onPageChanged: (PdfPageChangedDetails details) {
+                    setState(() {
+                      currentPage = details.newPageNumber;
+                    });
+                  },
+                ),
           Positioned(
             top: 0,
             right: 0,

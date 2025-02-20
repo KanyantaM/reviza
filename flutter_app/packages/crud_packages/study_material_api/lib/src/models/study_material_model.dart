@@ -38,6 +38,8 @@ class StudyMaterial extends HiveObject {
   @HiveField(10)
   String? localPath;
 
+  final double? downloadProgress;
+
   StudyMaterial({
     required this.subjectName,
     required this.type,
@@ -50,6 +52,7 @@ class StudyMaterial extends HiveObject {
     required this.reports,
     required this.size,
     this.localPath,
+    this.downloadProgress,
   });
 
   factory StudyMaterial.fromLocalJson(Map<String, dynamic> json) {
@@ -135,6 +138,7 @@ class StudyMaterial extends HiveObject {
     String? onlinePath,
     int? size,
     String? localPath,
+    double? downloadProgress,
   }) {
     return StudyMaterial(
       type: type ?? this.type,
@@ -148,6 +152,7 @@ class StudyMaterial extends HiveObject {
       onlinePath: onlinePath ?? this.onlinePath,
       size: size ?? this.size,
       localPath: localPath ?? this.localPath,
+      downloadProgress: downloadProgress ?? this.downloadProgress,
     );
   }
 }

@@ -65,8 +65,9 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
       );
 
       // Show notification that upload has started
-      final notificationTask = NotificationService.showProgressNotification(
-          0, upload.name, upload.id ?? '');
+      final notificationTask =
+          NotificationService.showUploadProgressNotification(
+              0, upload.name, upload.id ?? '');
       StudentCache.addNotifications(notificationTask);
 
       await emit.forEach<String>(
@@ -95,7 +96,7 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
             // Extract percentage and update the notification
             final double progress =
                 double.tryParse(status.replaceAll('%', '')) ?? 0;
-            NotificationService.showProgressNotification(
+            NotificationService.showUploadProgressNotification(
                 progress, upload.name, upload.id ?? '');
 
             return UploadingPdfState(
@@ -110,7 +111,7 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
 
             _updateCache();
 
-            NotificationService.showCompletionNotification(
+            NotificationService.showUploadCompletionNotification(
                 upload.name, upload.id ?? '');
 
             return UploadingPdfState(

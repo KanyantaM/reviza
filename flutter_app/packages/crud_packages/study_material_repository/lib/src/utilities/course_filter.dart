@@ -5,10 +5,12 @@ Future<List<StudyMaterial>> filter(
   String? courseName,
   Types? type,
 }) async {
-  return allMaterials.values.expand((x) => x).where((material) {
-    bool matchesCourse =
-        courseName == null || material.subjectName == courseName;
-    bool matchesType = type == null || material.type == type.name;
-    return matchesCourse && matchesType;
-  }).toList();
+  if ((courseName!.isNotEmpty)) {
+    return allMaterials.values.expand((x) => x).where((material) {
+      bool matchesCourse = material.subjectName == courseName;
+      bool matchesType = type == null || material.type == type.name;
+      return matchesCourse && matchesType;
+    }).toList();
+  }
+  return allMaterials.values.expand((x) => x).toList();
 }

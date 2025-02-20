@@ -12,6 +12,8 @@ class StudentCache {
   static Map<String, List<StudyMaterial>> _localMaterial = {};
   static List<Uploads> _unseenUploads = [];
   static List<Uploads> _seenUploads = [];
+  static List<StudyMaterial> currentDownload = [];
+  static List<Future<void>> currentDownloadTasks = [];
   static List<ChatRoom> _chatRooms = [];
   static final List<Future<void>> _notifications = [];
 
@@ -32,6 +34,16 @@ class StudentCache {
 
   static List<String> get courses => _courses;
 
+  static Student get tempStudent =>
+      Student(userId: _studentId, myCourses: _courses);
+
+  static List<ChatRoom> get chatRooms => _chatRooms;
+
+  static List<Future<void>> get notifications => _notifications;
+
+  static Map<String, List<StudyMaterial>> get localStudyMaterial =>
+      _localMaterial;
+
   static void setUnseenUploads(List<Uploads> uploads) =>
       _unseenUploads = uploads;
 
@@ -46,17 +58,10 @@ class StudentCache {
   static void updateCloudMaterial(Map<String, List<StudyMaterial>> update) =>
       _cloudMaterial = update;
 
-  static Student get tempStudent =>
-      Student(userId: _studentId, myCourses: _courses);
-
   static void setSeenUploads(List<Uploads> completedUploads) {
     _seenUploads = completedUploads;
   }
 
   static void addNotifications(Future<void> localNotification) =>
       _notifications.add(localNotification);
-
-  static List<ChatRoom> get chatRooms => _chatRooms;
-
-  static List<Future<void>> get notifications => _notifications;
 }

@@ -67,7 +67,7 @@ class StudyMaterialRepo {
     // Implement sharing logic here
   }
 
-  Stream<Map<StudyMaterial, double>> downloadMaterial(
+  Stream<double> downloadMaterial(
     StudyMaterial studyMaterial,
   ) async* {
     if (studyMaterial.onlinePath == null) {
@@ -79,12 +79,11 @@ class StudyMaterialRepo {
     final downloadedMaterial = studyMaterial.copyWith(localPath: filePath);
 
     if (studyMaterial.isInBox) {
-      yield {downloadedMaterial: 1.0};
+      yield 1.0;
       return;
     }
 
-    final StreamController<Map<StudyMaterial, double>> controller =
-        StreamController();
+    final StreamController<double> controller = StreamController();
 
     try {
       await Dio().download(
@@ -93,12 +92,12 @@ class StudyMaterialRepo {
         onReceiveProgress: (received, total) {
           final double progress = total > 0 ? received / total : 0.0;
           controller.add(
-            {downloadedMaterial: progress},
+            progress,
           );
         },
       );
 
-      controller.add({downloadedMaterial: 1.0});
+      controller.add(1.0);
       await _localStorage.addStudyMaterial(downloadedMaterial);
     } catch (e) {
       controller.addError(Exception('Download failed: $e'));
@@ -187,6 +186,7 @@ class StudyMaterialRepo {
               haters: [],
               reports: [],
               size: (type != 'LINKS') ? (await pdfFile.length()) ~/ 1024 : 0,
+              localPath: pdfFile.path,
             );
 
             await _localStorage.addStudyMaterial(studyMaterial);

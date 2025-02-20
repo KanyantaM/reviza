@@ -11,7 +11,6 @@ Widget generateCards(
   String uid,
   String? course,
   Types? type,
-  MaterialsFetchedState state,
   Function onLongPress,
   bool deleteMode,
   Function onCancel,

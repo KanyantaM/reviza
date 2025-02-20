@@ -278,8 +278,8 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 child: ListTile(
                   title: Text(upload.name),
-                  subtitle: Text(
-                      "Status: ${upload.status} | Annotated: ${upload.isAnnotated ? '✅' : '❌'}"),
+                  subtitle:
+                      Text(" Annotated: ${upload.isAnnotated ? '✅' : '❌'}"),
                   trailing: !upload.wentThrough
                       ? const CircularProgressIndicator()
                       : Icon(

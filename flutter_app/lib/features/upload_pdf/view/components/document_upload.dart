@@ -87,7 +87,7 @@ class _PaperUploadFormState extends State<PaperUploadForm> {
           children: [
             _buildRadioOption('Single Year', false),
             const SizedBox(width: 16),
-            _buildRadioOption('Year Range', true),
+            _buildRadioOption('Range', true),
           ],
         ),
       ],

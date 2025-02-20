@@ -29,9 +29,6 @@ final class FetchedUploadsPdf extends UploadPdfState {
     required this.currentUploads,
     required this.completedUploads,
   });
-
-  @override
-  List<Object> get props => [currentUploads, completedUploads];
 }
 
 /// State when a file is being removed.
@@ -42,9 +39,6 @@ final class ErrorState extends UploadPdfState {
   final String message;
 
   const ErrorState({required this.message});
-
-  @override
-  List<Object> get props => [message];
 }
 
 /// State when uploads are being fetched.
@@ -56,22 +50,23 @@ final class FetchingUploadedPdfErrorState extends UploadPdfState {}
 /// Upload model with status tracking
 class Uploads {
   final String name;
-  final bool isAnnotated;
+  bool get isAnnotated => description != null;
   final String courseName;
   final Types? type;
   final String? id;
   final String? status;
   bool get wentThrough => status == '✅';
   final File file;
+  final String? description;
 
   const Uploads({
     required this.file,
     required this.courseName,
-    this.id,
+    required this.id,
     required this.type,
     required this.name,
-    required this.isAnnotated,
     required this.status,
+    required this.description,
   });
 
   Uploads copywith({
@@ -80,16 +75,17 @@ class Uploads {
     String? id,
     Types? type,
     String? name,
-    bool? isAnnotated,
     String? status,
+    String? description,
   }) {
     return Uploads(
         file: file ?? this.file,
         courseName: courseName ?? this.courseName,
         type: type ?? this.type,
         name: name ?? this.name,
-        isAnnotated: isAnnotated ?? this.isAnnotated,
-        status: status ?? this.status);
+        status: status ?? this.status,
+        id: this.id,
+        description: description ?? this.description);
   }
 
   // @override

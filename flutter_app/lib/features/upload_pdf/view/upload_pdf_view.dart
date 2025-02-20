@@ -279,7 +279,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                 child: ListTile(
                   title: Text(upload.name),
                   subtitle: Text(
-                      "Status: ${upload.status} | Annotated: ${upload.isAnnotated ? 'Yes' : 'No'}"),
+                      "Status: ${upload.status} | Annotated: ${upload.isAnnotated ? '✅' : '❌'}"),
                   trailing: !upload.wentThrough
                       ? const CircularProgressIndicator()
                       : Icon(
@@ -287,7 +287,9 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                           color:
                               upload.wentThrough ? Colors.green : Colors.red),
                   onTap: () {
-                    _annotateBottomSheet(context, upload);
+                    if (!upload.isAnnotated) {
+                      _annotateBottomSheet(context, upload);
+                    }
                   },
                 ),
               );
@@ -309,6 +311,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
 
   Future<dynamic> _annotateBottomSheet(BuildContext context, Uploads? upload) {
     return showModalBottomSheet(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       constraints: BoxConstraints(minHeight: 700),
       showDragHandle: true,
       context: context,
@@ -323,39 +326,35 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               SizedBox(
-                height: 350,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: widgetSelector(
-                    _type!,
-                    pp: PaperUploadForm(
-                      courseName: _selectedCourse,
-                      materialId: upload?.id ?? _materialId,
-                    ),
-                    notes: DocumentUploadForm(
-                      courseName: _selectedCourse,
-                      materialId: upload?.id ?? _materialId,
-                      type: Types.notes,
-                    ),
-                    ass: DocumentUploadForm(
-                      courseName: _selectedCourse,
-                      materialId: upload?.id ?? _materialId,
-                      type: Types.assignment,
-                    ),
-                    book: DocumentUploadForm(
-                      courseName: _selectedCourse,
-                      materialId: upload?.id ?? _materialId,
-                      type: Types.books,
-                    ),
-                    lab: DocumentUploadForm(
-                      courseName: _selectedCourse,
-                      materialId: upload?.id ?? _materialId,
-                      type: Types.lab,
-                    ),
-                    link: LinkUploadForm(
-                      courseName: _selectedCourse,
-                    ),
+                height: 400,
+                child: widgetSelector(
+                  upload?.type ?? _type ?? Types.notes,
+                  pp: PaperUploadForm(
+                    courseName: _selectedCourse,
+                    materialId: upload?.id ?? _materialId,
+                  ),
+                  notes: DocumentUploadForm(
+                    courseName: _selectedCourse,
+                    materialId: upload?.id ?? _materialId,
+                    type: Types.notes,
+                  ),
+                  ass: DocumentUploadForm(
+                    courseName: _selectedCourse,
+                    materialId: upload?.id ?? _materialId,
+                    type: Types.assignment,
+                  ),
+                  book: DocumentUploadForm(
+                    courseName: _selectedCourse,
+                    materialId: upload?.id ?? _materialId,
+                    type: Types.books,
+                  ),
+                  lab: DocumentUploadForm(
+                    courseName: _selectedCourse,
+                    materialId: upload?.id ?? _materialId,
+                    type: Types.lab,
+                  ),
+                  link: LinkUploadForm(
+                    courseName: _selectedCourse,
                   ),
                 ),
               ),
@@ -375,13 +374,14 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
         _materialId = Uuid().v4();
         _platformFile = result.files.first;
         _updateCache(Uploads(
-            id: Uuid().v4(),
-            courseName: _selectedCourse,
-            type: _type,
-            name: basename(normalize(_platformFile!.path!)),
-            isAnnotated: false,
-            file: File(_platformFile?.path ?? ''),
-            status: null));
+          id: Uuid().v4(),
+          courseName: _selectedCourse,
+          type: _type,
+          name: basename(normalize(_platformFile!.path!)),
+          file: File(_platformFile?.path ?? ''),
+          status: null,
+          description: null,
+        ));
       });
     }
   }

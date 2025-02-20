@@ -8,24 +8,7 @@ Future<List<StudyMaterial>> filter(
   return allMaterials.values.expand((x) => x).where((material) {
     bool matchesCourse =
         courseName == null || material.subjectName == courseName;
-    bool matchesType = type == null || material.type == _getTypeString(type);
+    bool matchesType = type == null || material.type == type.name;
     return matchesCourse && matchesType;
   }).toList();
-}
-
-String _getTypeString(Types type) {
-  switch (type) {
-    case Types.papers:
-      return 'PAST_PAPERS';
-    case Types.notes:
-      return 'NOTES';
-    case Types.links:
-      return 'LINKS';
-    case Types.lab:
-      return 'LAB';
-    case Types.books:
-      return 'BOOKS';
-    case Types.assignment:
-      return 'ASSIGNMENT';
-  }
 }

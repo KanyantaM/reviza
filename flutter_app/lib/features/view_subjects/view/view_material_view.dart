@@ -121,10 +121,14 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
             return Scaffold(
               appBar: cloudAppBar(context),
               body: TabBarView(controller: _tabController, children: <Widget>[
-                generateCardByTypeSelector(Types.notes),
-                generateCardByTypeSelector(Types.papers),
-                generateCardByTypeSelector(Types.books),
-                generateCardByTypeSelector(Types.links),
+                generateCardByTypeSelector(Types.notes,
+                    course: widget.courseName),
+                generateCardByTypeSelector(Types.papers,
+                    course: widget.courseName),
+                generateCardByTypeSelector(Types.books,
+                    course: widget.courseName),
+                generateCardByTypeSelector(Types.links,
+                    course: widget.courseName),
               ]),
             );
           } else {

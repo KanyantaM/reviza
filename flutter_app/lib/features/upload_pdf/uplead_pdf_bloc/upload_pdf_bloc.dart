@@ -138,6 +138,8 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
 
   /// Handles annotation events
   void _onAnnotate(Annotate event, Emitter<UploadPdfState> emit) {
+    final Uploads upload =
+        _completedUploads.firstWhere((upload) => upload.id == event.materialId);
     final desc = descriptionGenerator(
       type: event.type,
       isRangeSelected: event.isRangeSelected,
@@ -149,14 +151,20 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
       authorName: event.authorName ?? '',
       url: '',
     );
+    final Uploads newUpload = upload.copywith(description: desc);
 
     try {
       _studyMaterialRepository.annotateMaterial(
         id: event.materialId,
         course: event.course,
-        title: event.title,
+        title: event.title ?? upload.name,
         description: desc,
       );
+
+      _currentUploads.removeWhere((up) => upload.file == up.file);
+      _completedUploads.add(newUpload);
+
+      _updateCache();
 
       emit(FetchedUploadsPdf(
         currentUploads: List.from(_currentUploads),

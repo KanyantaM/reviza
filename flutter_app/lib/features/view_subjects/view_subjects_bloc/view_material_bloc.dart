@@ -15,7 +15,8 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
       emit(LoadingState());
       try {
         if (event.online) {
-          map = await _materialRepository.fetchDownloads();
+          map = await _materialRepository.fetchUploadedMaterial(
+              course: event.course ?? '');
         } else {
           map = await _materialRepository.fetchDownloads();
         }

@@ -21,8 +21,7 @@ Widget generateCards(
   Map<String, List<StudyMaterial>> materials,
 ) {
   return FutureBuilder<List<StudyMaterial>>(
-    future:
-        filter(materials, courseName: course, type: type), // Await filtering
+    future: filter(materials, courseName: course, type: type),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const Center(child: CircularProgressIndicator());

@@ -50,60 +50,21 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<UploadPdfBloc, UploadPdfState>(listener: (context, state) {
-          if (state is UploadingPdfState) {
-            if (state.currentUploads.isNotEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: CustomSnackBar(
-                  type: SnackBarType.success,
-                  errorText: 'File Uploaded',
-                  headingText: 'Success',
-                  color: const Color.fromARGB(255, 29, 164, 31),
-                ),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-              ));
-            }
-
-            // add duration
-            Future.delayed(const Duration(seconds: 3), () {});
-            Navigator.pop(context);
-          } else if (state is ErrorState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: CustomSnackBar(
-                  errorText: state.message,
-                  headingText: 'Upload failed!',
-                  color: const Color(0xFFF75469),
-                  type: SnackBarType.error,
-                ),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-              ),
-            );
-          }
-        })
-      ],
-      child: BlocBuilder<AppBloc, AppState>(
-        builder: (context, state) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            // themeMode: ThemeMode.system,
-            // darkTheme: ReviZaTheme.dark,
-            theme: state.theme
-                ? ReviZaTheme.light
-                : ReviZaTheme.dark, // Access the theme from the AppState
-            home: FlowBuilder<AppState>(
-              state: state,
-              onGeneratePages: onGenerateAppViewPages,
-            ),
-          );
-        },
-      ),
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, state) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          // themeMode: ThemeMode.system,
+          // darkTheme: ReviZaTheme.dark,
+          theme: state.theme
+              ? ReviZaTheme.light
+              : ReviZaTheme.dark, // Access the theme from the AppState
+          home: FlowBuilder<AppState>(
+            state: state,
+            onGeneratePages: onGenerateAppViewPages,
+          ),
+        );
+      },
     );
   }
 }

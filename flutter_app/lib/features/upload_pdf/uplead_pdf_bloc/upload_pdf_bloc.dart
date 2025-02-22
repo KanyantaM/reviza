@@ -62,6 +62,7 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
         type: upload.type?.name ?? '',
         description: '',
         materialId: upload.id,
+        uploader: StudentCache.tempStudent,
       );
 
       // Show notification that upload has started
@@ -109,7 +110,6 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
             _currentUploads.removeWhere((up) => upload.file == up.file);
             _completedUploads.add(newUpload);
             _updateCache();
-            //todo: store uploads in local storage increment users upload count
 
             NotificationService.showUploadCompletionNotification(
                 upload.name, upload.id ?? '');

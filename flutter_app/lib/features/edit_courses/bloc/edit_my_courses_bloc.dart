@@ -19,7 +19,13 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
         try {
           Student currentStudent =
               await _studentRepository.getUserById(event.studentId) ??
-                  Student(userId: event.studentId, myCourses: <String>[]);
+                  Student(
+                    userId: event.studentId,
+                    myCourses: <String>[],
+                    uploadCount: 0,
+                    downloadCount: 0,
+                    badUploadCount: 0,
+                  );
 
           emit(CoursesFetchedState(student: currentStudent));
         } catch (e) {

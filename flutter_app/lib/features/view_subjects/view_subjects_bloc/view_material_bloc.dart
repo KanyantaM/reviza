@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -112,10 +111,10 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
     }
 
     try {
-      log(pathToSaveDownload);
       Stream<String> downloadStatus = _materialRepository.downloadMaterial(
         studyMaterial: material,
         pathToDownload: pathToSaveDownload,
+        downloader: StudentCache.tempStudent,
       );
 
       // Show notification that download has started

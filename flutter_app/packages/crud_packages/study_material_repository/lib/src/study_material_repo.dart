@@ -69,6 +69,7 @@ class StudyMaterialRepo {
   Stream<String> downloadMaterial({
     required StudyMaterial studyMaterial,
     required String pathToDownload,
+    required Student downloader,
   }) {
     if (studyMaterial.onlinePath == null) {
       throw Exception('No online path available for download.');
@@ -99,8 +100,14 @@ class StudyMaterialRepo {
             stateController.addError('❗ Download failed.');
             break;
           case TaskState.success:
-            final StudyMaterial downloadedMaterial =
-                studyMaterial.copyWith(localPath: pathToDownload);
+            final StudyMaterial downloadedMaterial = studyMaterial.copyWith(
+                localPath: pathToDownload,
+                downloaders: studyMaterial.downloads + 1);
+            final Student updatedStudent = downloader.copyWith(
+                uploadCount: (downloader.downloadCount) + 1);
+
+            await StudentRepository().updateUser(updatedStudent);
+            await _cloudStorage.addStudyMaterial(downloadedMaterial);
             await _localStorage.addStudyMaterial(downloadedMaterial);
             stateController.add('✅');
             await stateController.close();
@@ -138,6 +145,7 @@ class StudyMaterialRepo {
     required String type,
     required String? description,
     required String? materialId,
+    required Student? uploader,
   }) {
     if (subjectName == null || subjectName.isEmpty) {
       throw Exception('Please select a course');
@@ -197,7 +205,14 @@ class StudyMaterialRepo {
               reports: [],
               size: (type != 'LINKS') ? (await pdfFile.length()) ~/ 1024 : 0,
               localPath: pdfFile.path,
+              downloads: 0,
+              uploaderId: uploader?.userId ?? '',
             );
+
+            final Student updatedStudent =
+                uploader!.copyWith(uploadCount: (uploader.uploadCount) + 1);
+
+            await StudentRepository().updateUser(updatedStudent);
 
             await _localStorage.addStudyMaterial(studyMaterial);
             await _cloudStorage.addStudyMaterial(studyMaterial);
@@ -233,6 +248,9 @@ class StudyMaterialRepo {
         Student(
           userId: uid,
           myCourses: [],
+          uploadCount: 0,
+          downloadCount: 0,
+          badUploadCount: 0,
         );
   }
 

@@ -17,7 +17,7 @@ class StudyMaterialAdapter extends TypeAdapter<StudyMaterial> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return StudyMaterial(
-      downloaders: (fields[12] as List).cast<String>(),
+      downloads: fields[12] as int,
       uploaderId: fields[11] as String,
       subjectName: fields[2] as String,
       type: fields[0] as String,
@@ -62,7 +62,7 @@ class StudyMaterialAdapter extends TypeAdapter<StudyMaterial> {
       ..writeByte(11)
       ..write(obj.uploaderId)
       ..writeByte(12)
-      ..write(obj.downloaders);
+      ..write(obj.downloads);
   }
 
   @override

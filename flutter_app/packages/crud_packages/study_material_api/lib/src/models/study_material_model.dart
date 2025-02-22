@@ -43,7 +43,7 @@ class StudyMaterial extends HiveObject {
   final String uploaderId;
 
   @HiveField(12)
-  final List<String> downloaders;
+  final int downloads;
 
   final double? downloadProgress;
 
@@ -51,7 +51,7 @@ class StudyMaterial extends HiveObject {
       await _getFilePath(id, subjectName);
 
   StudyMaterial({
-    required this.downloaders,
+    required this.downloads,
     required this.uploaderId,
     required this.subjectName,
     required this.type,
@@ -81,7 +81,7 @@ class StudyMaterial extends HiveObject {
       size: json['size'] ?? 0,
       localPath: json['local_path'] ?? '',
       uploaderId: json['uploader_id'] ?? '',
-      downloaders: List<String>.from(json['downloaders'] ?? []),
+      downloads: json['downloads'] ?? 0,
     );
   }
 
@@ -99,7 +99,7 @@ class StudyMaterial extends HiveObject {
       size: json['size'] ?? 0,
       localPath: json['local_path'] ?? '',
       uploaderId: json['uploader_id'] ?? '',
-      downloaders: List<String>.from(json['downloaders'] ?? []),
+      downloads: json['downloads'] ?? 0,
     );
   }
 
@@ -117,7 +117,7 @@ class StudyMaterial extends HiveObject {
       'online_path': onlinePath,
       // 'local_path': localPath,
       'uploader_id': uploaderId,
-      'downloaders': downloaders,
+      'downloads': downloads,
     };
 
     return map;
@@ -137,7 +137,7 @@ class StudyMaterial extends HiveObject {
       'filePath': onlinePath,
       'local_path': localPath,
       'uploader_id': uploaderId,
-      'downloaders': downloaders,
+      'downloaders': downloads,
       'online_path': onlinePath,
     };
 
@@ -162,7 +162,7 @@ class StudyMaterial extends HiveObject {
     int? size,
     String? localPath,
     double? downloadProgress,
-    List<String>? downloaders,
+    int? downloaders,
   }) {
     return StudyMaterial(
       type: type ?? this.type,
@@ -177,7 +177,7 @@ class StudyMaterial extends HiveObject {
       size: size ?? this.size,
       localPath: localPath ?? this.localPath,
       downloadProgress: downloadProgress ?? this.downloadProgress,
-      downloaders: downloaders ?? this.downloaders,
+      downloads: downloaders ?? this.downloads,
       uploaderId: uploaderId,
     );
   }

@@ -17,11 +17,12 @@ class StudentCache {
   static List<Future<void>> currentDownloadTasks = [];
   static List<ChatRoom> _chatRooms = [];
   static final List<Future<void>> _notifications = [];
+  static Student? _student;
 
   static Future<void> initCache({required String uid}) async {
     _studentId = uid;
-    Student? student = await StudentRepository().getUserById(_studentId);
-    _courses = student?.myCourses ?? []; // Ensure _courses is never null
+    _student = await StudentRepository().getUserById(_studentId);
+    _courses = _student?.myCourses ?? []; // Ensure _courses is never null
     _localMaterial = await StudyMaterialRepo(uid: _studentId).fetchDownloads();
 
     _chatRooms = await ChatRepository(
@@ -36,7 +37,13 @@ class StudentCache {
   static UnmodifiableListView<String> get courses =>
       UnmodifiableListView(_courses);
   static Student get tempStudent =>
-      Student(userId: _studentId, myCourses: _courses);
+      _student ??
+      Student(
+          userId: _studentId,
+          myCourses: _courses,
+          uploadCount: 0,
+          downloadCount: 0,
+          badUploadCount: 0);
   static List<ChatRoom> get chatRooms => _chatRooms;
   static UnmodifiableListView<Future<void>> get notifications =>
       UnmodifiableListView(_notifications);

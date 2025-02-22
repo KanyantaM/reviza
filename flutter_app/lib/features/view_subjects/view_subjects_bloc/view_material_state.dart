@@ -1,10 +1,7 @@
 part of 'view_material_bloc.dart';
 
-sealed class ViewMaterialState extends Equatable {
+sealed class ViewMaterialState {
   const ViewMaterialState();
-
-  @override
-  List<Object> get props => [];
 }
 
 final class ViewMaterialInitial extends ViewMaterialState {}
@@ -26,11 +23,7 @@ final class MaterialsFetchedState extends ViewMaterialState {
 
 final class MaterialDownloadedSuccesfully extends ViewMaterialState {}
 
-final class DownloadingCourses extends ViewMaterialState {
-  final double progress;
-
-  const DownloadingCourses({required this.progress});
-}
+final class DownloadingCourses extends ViewMaterialState {}
 
 final class StudyMaterialOpened extends ViewMaterialState {
   final StudyMaterial studyMaterial;

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CustomSnackBar extends StatelessWidget {
   const CustomSnackBar({
@@ -8,12 +6,13 @@ class CustomSnackBar extends StatelessWidget {
     required this.errorText,
     required this.headingText,
     required this.color,
-    required this.image,
+    required this.type,
   });
 
   final String errorText, headingText;
   final Color? color;
-  final Image? image;
+
+  final SnackBarType type;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +22,9 @@ class CustomSnackBar extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: color,
+            color: color?.withAlpha(50),
             borderRadius: const BorderRadius.all(Radius.circular(20)),
           ),
-          height: 90,
           child: Row(
             children: [
               const SizedBox(
@@ -36,44 +34,14 @@ class CustomSnackBar extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      headingText,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      errorText,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 17,
-                      ),
-                    ),
+                    Text(headingText,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                    Text(errorText,
+                        style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
               ),
             ],
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-            ),
-            child: Stack(
-              children: [
-                SvgPicture.asset(
-                  'assets/icon/test.svg',
-                  height: 48,
-                  width: 40,
-                  // ignore: deprecated_member_use
-                  color: Colors.transparent,
-                ),
-              ],
-            ),
           ),
         ),
         Positioned(
@@ -82,17 +50,10 @@ class CustomSnackBar extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Image(
-                image: image!.image,
+              Image.asset(
+                'assets/icon/${type.name}.png',
                 height: 35,
                 width: 35,
-              ),
-              Positioned(
-                top: 10,
-                child: SvgPicture.asset(
-                  'assets/icon/vhat.svg',
-                  height: 16,
-                ),
               ),
             ],
           ),
@@ -101,3 +62,5 @@ class CustomSnackBar extends StatelessWidget {
     );
   }
 }
+
+enum SnackBarType { warning, success, error }

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reviza/cache/student_cache.dart';
 import 'package:reviza/features/view_subjects/utils/important_functions.dart';
+import 'package:reviza/features/view_subjects/view/widgets/custom_view.dart';
+import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:study_material_repository/study_material_repository.dart';
 
@@ -28,13 +32,13 @@ class StudyMaterialCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-      child: InkWell(
+      child: GestureDetector(
         onLongPress: () => onLongPress(),
         onTap: () {
           if (isDeleteMode) {
             onAddToDeleteList(studyMaterial);
           } else {
-            onTap(studyMaterial);
+            _showMaterialOptionsSheet(context);
           }
         },
         child: Card(
@@ -144,8 +148,7 @@ class StudyMaterialCard extends StatelessWidget {
                       Row(
                         children: [
                           FutureBuilder(
-                            future: isFileDownloaded(
-                                studyMaterial.title, studyMaterial.subjectName),
+                            future: studyMaterial.isOnDevice,
                             builder: (context, snapshot) {
                               return Icon(
                                 snapshot.data ?? false
@@ -178,6 +181,112 @@ class StudyMaterialCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _showMaterialOptionsSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                "What would you like to do?",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CustomPDFViewer(
+                              material: studyMaterial,
+                              viewOnline: true,
+                              onUpVote: () {
+                                context.read<ViewMaterialBloc>().add(
+                                      VoteMaterial(
+                                        material: studyMaterial,
+                                        vote: true,
+                                      ),
+                                    );
+                              },
+                              onDownVote: () {
+                                context.read<ViewMaterialBloc>().add(
+                                      VoteMaterial(
+                                        material: studyMaterial,
+                                        vote: false,
+                                      ),
+                                    );
+                              },
+                              onReport: () {
+                                context.read<ViewMaterialBloc>().add(
+                                      ReportMaterial(
+                                        material: studyMaterial,
+                                      ),
+                                    );
+                              },
+                              uid: StudentCache.tempStudent.userId)));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue.shade50,
+                  foregroundColor: Colors.blue.shade700,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                icon: const Icon(Icons.remove_red_eye),
+                label: const Text(
+                  "Read Online",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () {
+                  onTap(studyMaterial);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.shade50,
+                  foregroundColor: Colors.green.shade700,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                icon: const Icon(Icons.download),
+                label: const Text(
+                  "Download Material",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 24),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.red.shade700,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  textStyle: const TextStyle(fontSize: 16),
+                ),
+                child: const Text("Cancel"),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

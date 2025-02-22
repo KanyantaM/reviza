@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/app/bloc/app_bloc.dart';
 import 'package:reviza/app/routes/routes.dart';
+import 'package:reviza/features/upload_pdf/uplead_pdf_bloc/upload_pdf_bloc.dart';
+import 'package:reviza/features/upload_pdf/view/components/upload_snack_bar.dart';
+import 'package:reviza/ui/theme.dart';
+import 'package:study_material_repository/study_material_repository.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -17,10 +21,22 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: _authenticationRepository,
-      child: BlocProvider(
-        create: (_) => AppBloc(
-          authenticationRepository: _authenticationRepository,
-        ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => AppBloc(
+              authenticationRepository: _authenticationRepository,
+            ),
+          ),
+          BlocProvider(
+            create: (context) => UploadPdfBloc(
+                studyMaterialRepo: StudyMaterialRepo(
+                    uid: context
+                        .read<AuthenticationRepository>()
+                        .currentUser
+                        .id)),
+          ),
+        ],
         child: const AppView(),
       ),
     );
@@ -38,7 +54,11 @@ class AppView extends StatelessWidget {
       builder: (context, state) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: state.theme, // Access the theme from the AppState
+          // themeMode: ThemeMode.system,
+          // darkTheme: ReviZaTheme.dark,
+          theme: state.theme
+              ? ReviZaTheme.light
+              : ReviZaTheme.dark, // Access the theme from the AppState
           home: FlowBuilder<AppState>(
             state: state,
             onGeneratePages: onGenerateAppViewPages,

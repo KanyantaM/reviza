@@ -160,6 +160,13 @@ class AuthenticationRepository {
     return _cache.read<User>(key: userCacheKey) ?? User.empty;
   }
 
+  void updateTheme({required bool isLight}) {
+    final user =
+        _cache.read<User>(key: userCacheKey)?.updateTheme(isLight: isLight) ??
+            User.empty;
+    _cache.write(key: userCacheKey, value: user);
+  }
+
   /// Creates a new user with the provided [email] and [password].
   ///
   /// Throws a [SignUpWithEmailAndPasswordFailure] if an exception occurs.

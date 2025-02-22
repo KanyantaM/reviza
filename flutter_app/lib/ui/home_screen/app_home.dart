@@ -3,8 +3,8 @@ import 'dart:io' if (dart.library.io) 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:reviza/features/ai_chat_screen/sections/chat.dart';
 import 'package:reviza/features/edit_courses/view/home_tab_page.dart';
+import 'package:reviza/features/upload_pdf/upload_pdf.dart';
 import 'package:reviza/features/view_subjects/view_subjects.dart';
-import 'package:reviza/ui/home_screen/tabs/upload/upload_screen.dart';
 import 'package:reviza/features/user_screen.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _listPages
       ..add(HomeTabPage(userId: widget.uid))
-      ..add(UploadTypeScreen(uid: widget.uid))
+      ..add(UploadPdfPage(uid: widget.uid))
       ..add(AIChatScreen(
         userId: widget.uid,
       ))

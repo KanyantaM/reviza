@@ -4,7 +4,8 @@ class RangeSliderWidget extends StatefulWidget {
   final RangeValues initialRangeValues;
   final ValueChanged<RangeValues> onRangeChanged;
 
-  const RangeSliderWidget({super.key, 
+  const RangeSliderWidget({
+    super.key,
     this.initialRangeValues = const RangeValues(0, 0),
     required this.onRangeChanged,
   });
@@ -27,7 +28,6 @@ class _RangeSliderWidgetState extends State<RangeSliderWidget> {
     return RangeSlider(
       values: _currentRangeValues,
       onChanged: (values) {
-        // Enforce non-negative ranges
         if (values.start >= 0 && values.end >= 0) {
           setState(() {
             _currentRangeValues = values;
@@ -36,14 +36,12 @@ class _RangeSliderWidgetState extends State<RangeSliderWidget> {
         }
       },
       min: 0,
-      max: 15, // Adjust this based on your desired range
-      divisions: 15, // Optional for discrete steps
+      max: 15,
+      divisions: 15,
       labels: RangeLabels(
         _currentRangeValues.start.toString(),
         _currentRangeValues.end.toString(),
       ),
-      // activeColor: Colors.blue,
-      // inactiveColor: Colors.grey[300],
     );
   }
 }

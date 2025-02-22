@@ -2,9 +2,6 @@ import 'dart:async';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:reviza/ui/theme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
@@ -15,22 +12,32 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         super(
           authenticationRepository.currentUser.isNotEmpty
               ? AppState.authenticated(
-                  authenticationRepository.currentUser, ReviZaTheme.light)
+                  authenticationRepository.currentUser, true)
               : AppState.unauthenticated(),
         ) {
     on<_AppUserChanged>(_onUserChanged);
     on<AppLogoutRequested>(_onLogoutRequested);
     on<ChangeTheme>(_onChangeTheme);
+    on<_AppThemeChanged>(_onChangeThemezz);
 
-    _userSubscription = _authenticationRepository.user.listen(
-      (user) => add(_AppUserChanged(user)),
-    );
+    {
+      _userSubscription = _authenticationRepository.user.listen(
+        (user) {
+          add(_AppUserChanged(user));
+        },
+      );
 
-    _initializeTheme();
+      _userTheme = _authenticationRepository.user.listen(
+        (user) {
+          add(_AppThemeChanged(user.theme));
+        },
+      );
+    }
   }
 
   final AuthenticationRepository _authenticationRepository;
   late final StreamSubscription<User> _userSubscription;
+  late final StreamSubscription<User> _userTheme;
 
   void _onUserChanged(_AppUserChanged event, Emitter<AppState> emit) {
     emit(
@@ -45,30 +52,26 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   Future<void> _onChangeTheme(ChangeTheme event, Emitter<AppState> emit) async {
-    final newTheme = ReviZaTheme.toggleTheme(state.theme);
-    emit(state.copyWith(theme: newTheme));
+    bool newTheme = !state.theme;
     await _saveTheme(newTheme);
+    emit(state.copyWith(theme: newTheme));
   }
 
-  Future<void> _saveTheme(ThemeData theme) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isDarkTheme', theme == ReviZaTheme.dark);
+  Future<void> _onChangeThemezz(
+      _AppThemeChanged event, Emitter<AppState> emit) async {
+    bool newTheme = event.isLight;
+    await _saveTheme(newTheme);
+    emit(state.copyWith(theme: newTheme));
   }
 
-  Future<ThemeData> _loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    final isDark = prefs.getBool('isDarkTheme') ?? false;
-    return isDark ? ReviZaTheme.dark : ReviZaTheme.light;
-  }
-
-  Future<void> _initializeTheme() async {
-    final theme = await _loadTheme();
-    add(ChangeTheme(theme: theme));
+  Future<void> _saveTheme(bool isLightTheme) async {
+    _authenticationRepository.updateTheme(isLight: isLightTheme);
   }
 
   @override
   Future<void> close() async {
     await _userSubscription.cancel();
+    await _userTheme.cancel();
     await super.close();
   }
 }

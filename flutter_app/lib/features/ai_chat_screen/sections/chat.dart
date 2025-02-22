@@ -7,6 +7,7 @@ import 'package:flyer_chat_image_message/flyer_chat_image_message.dart';
 import 'package:flyer_chat_text_message/flyer_chat_text_message.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:reviza/cache/student_cache.dart';
 import 'package:reviza/features/ai_chat_screen/sections/controller/reviza_chat_controller.dart';
 import 'package:uuid/uuid.dart';
 
@@ -70,28 +71,32 @@ class AIChatScreenState extends State<AIChatScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return FutureBuilder<Object>(
-      future: ChatRepository(
-        localChat: HiveImplementation(),
-        onlineChat: FirestoreImplementation(),
-      ).fetchAllChatRooms(widget.userId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text("No chat rooms available"));
-          } else {
-            return _bodyWhenFullyLoaded(
-                context, theme, (snapshot.data as List<ChatRoom>));
-          }
-        } else {
-          return const Center(child: Text("Unexpected state"));
-        }
-      },
-    );
+    return
+        // StudentCache.chatRooms.isEmpty
+        //     ? FutureBuilder<Object>(
+        //         future: ChatRepository(
+        //           localChat: HiveImplementation(),
+        //           onlineChat: FirestoreImplementation(),
+        //         ).fetchAllChatRooms(widget.userId),
+        //         builder: (context, snapshot) {
+        //           if (snapshot.connectionState == ConnectionState.waiting) {
+        //             return const Center(child: CircularProgressIndicator());
+        //           } else if (snapshot.connectionState == ConnectionState.done) {
+        //             if (snapshot.hasError) {
+        //               return Center(child: Text("Error: ${snapshot.error}"));
+        //             } else if (!snapshot.hasData) {
+        //               return const Center(child: Text("No chat rooms available"));
+        //             } else {
+        //               return _bodyWhenFullyLoaded(
+        //                   context, theme, (snapshot.data as List<ChatRoom>));
+        //             }
+        //           } else {
+        //             return const Center(child: Text("Unexpected state"));
+        //           }
+        //         },
+        //       )
+        //     :
+        _bodyWhenFullyLoaded(context, theme, (StudentCache.chatRooms));
   }
 
   Scaffold _bodyWhenFullyLoaded(
@@ -100,54 +105,6 @@ class AIChatScreenState extends State<AIChatScreen> {
     List<ChatRoom> rooms,
   ) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("Chat"),
-      //   leading: IconButton(
-      //     icon: Icon(Icons.access_time), // Clock-like icon
-      //     onPressed: () {
-      //       Scaffold.of(context).openDrawer(); // Open drawer
-      //     },
-      //   ),
-      // ),
-      // drawer: Drawer(
-      //   child: Column(
-      //     children: [
-      //       DrawerHeader(
-      //         child: Text(
-      //           "Chat Rooms",
-      //           style: Theme.of(context).textTheme.titleLarge,
-      //         ),
-      //       ),
-      //       Expanded(
-      //         child: ListView.builder(
-      //           itemCount: rooms.length,
-      //           itemBuilder: (context, index) {
-      //             final room = rooms[index];
-      //             return ListTile(
-      //               title: Text(room.name),
-      //               onTap: () {
-      //                 setState(() {
-      //                   ChatRoomVariable.updateChatRoomId = room.id;
-      //                   _chatController = ReviZaChatRoomController(
-      //                       chatRoomId: ChatRoomVariable.chatRoomId);
-      //                   _chatSession = _model.startChat(
-      //                     history: _chatController!.messages
-      //                         .whereType<TextMessage>()
-      //                         .map((message) => Content.text(message.text))
-      //                         .toList(),
-      //                   );
-      //                 });
-
-      //                 Navigator.pop(context); // Close drawer
-      //               },
-      //             );
-      //           },
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
-      //
       body: GestureDetector(
         onTap: () {
           if (Scaffold.of(context).isDrawerOpen) {
@@ -165,21 +122,23 @@ class AIChatScreenState extends State<AIChatScreen> {
             },
             imageMessageBuilder: (context, message, index) =>
                 FlyerChatImageMessage(message: message, index: index),
-            inputBuilder: (context) => ChatInput(
-              topWidget: InputActionBar(
-                buttons: [
-                  InputActionButton(
-                    icon: Icons.delete_sweep,
-                    title: 'Clear all',
-                    onPressed: () {
-                      _chatController!.set([]);
-                      _chatSession = _model.startChat();
-                    },
-                    destructive: true,
-                  ),
-                ],
-              ),
-            ),
+            inputBuilder: (context) {
+              return ChatInput(
+                topWidget: InputActionBar(
+                  buttons: [
+                    InputActionButton(
+                      icon: Icons.delete_sweep,
+                      title: 'Clear all',
+                      onPressed: () {
+                        _chatController!.set([]);
+                        _chatSession = _model.startChat();
+                      },
+                      destructive: true,
+                    ),
+                  ],
+                ),
+              );
+            },
             textMessageBuilder: (context, message, index) =>
                 FlyerChatTextMessage(message: message, index: index),
           ),

@@ -61,6 +61,28 @@ class HiveStudyMaterialApiImplementation implements StudyMaterialApi {
   }
 
   @override
+  Future<void> annotateStudyMaterial({
+    required String id,
+    required String course,
+    String? titile,
+    String? description,
+  }) async {
+    await _ensureInitialized();
+    String courseFolderKey = getCourseFolderKey(course);
+
+    List<StudyMaterial> materialsList = List<StudyMaterial>.from(
+        _box?.get(courseFolderKey, defaultValue: <StudyMaterial>[]) ?? []);
+
+    int index = materialsList.indexWhere((item) => item.id == id);
+    if (index != -1) {
+      StudyMaterial updatedMaterial = materialsList[index]
+          .copyWith(title: titile, description: description);
+      materialsList[index] = updatedMaterial;
+      await _box?.put(courseFolderKey, materialsList);
+    }
+  }
+
+  @override
   Future<void> deleteStudyMaterial(StudyMaterial material) async {
     await _ensureInitialized();
     String courseFolderKey = getCourseFolderKey(material.subjectName);

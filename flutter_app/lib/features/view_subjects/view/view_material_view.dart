@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:reviza/cache/student_cache.dart';
 import 'package:reviza/features/view_subjects/view/widgets/list_generator.dart';
 import 'package:reviza/features/view_subjects/view/widgets/custom_view.dart';
 import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
@@ -36,22 +37,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
   void initState() {
     super.initState();
 
-    ///when the screen just loads fetched the data
-    if (widget.isDownloadedView) {
-      context.read<ViewMaterialBloc>().add(
-            FetchCourseMaterials(
-              course: null,
-              online: false,
-            ),
-          );
-    } else {
-      context.read<ViewMaterialBloc>().add(
-            FetchCourseMaterials(
-              course: widget.courseName,
-              online: true,
-            ),
-          );
-    }
     _tabController = TabController(length: 4, vsync: this);
     _deleteMode = false;
     _tabController.addListener(() {
@@ -69,90 +54,103 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
 
   @override
   void dispose() {
-    // context.read<ViewMaterialBloc>().close();
     _deleteMode = false;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ViewMaterialBloc, ViewMaterialState>(
-      listener: (context, state) {},
+    return BlocBuilder<ViewMaterialBloc, ViewMaterialState>(
       builder: (context, state) {
-        if (state is MaterialsFetchedState) {
-          Widget generateCardByTypeSelector(Types? type, {String? course}) {
-            return generateCards(
-                context,
-                widget.uid,
-                course ?? widget.courseName,
-                type,
-                state,
-                () {
-                  setState(() {
-                    _deleteMode = true;
-                  });
-                },
-                _deleteMode,
-                () {
-                  setState(() {
-                    _deleteMode = false;
-                  });
-                },
-                (path) {
-                  setState(() {
-                    if (_pathsToDelete.contains(path)) {
-                      _pathsToDelete.remove(path);
-                    } else {
-                      _pathsToDelete.add(path);
-                    }
-                  });
-                },
-                _pathsToDelete,
-                () {
-                  setState(() {
-                    _deleteMode = false;
-                    _pathsToDelete = [];
-                  });
-                },
-                state.courseToMaterialsMap);
-          }
+        Widget generateCardByTypeSelector(Types? type, {String? course}) {
+          return generateCards(
+              context,
+              widget.uid,
+              course ?? widget.courseName,
+              type,
+              () {
+                setState(() {
+                  _deleteMode = true;
+                });
+              },
+              _deleteMode,
+              () {
+                setState(() {
+                  _deleteMode = false;
+                });
+              },
+              (path) {
+                setState(() {
+                  if (_pathsToDelete.contains(path)) {
+                    _pathsToDelete.remove(path);
+                  } else {
+                    _pathsToDelete.add(path);
+                  }
+                });
+              },
+              _pathsToDelete,
+              () {
+                setState(() {
+                  _deleteMode = false;
+                  _pathsToDelete = [];
+                });
+              },
+              widget.isDownloadedView ? StudentCache.localStudyMaterial : {});
+        }
 
-          if (!widget.isDownloadedView) {
-            return Scaffold(
-              appBar: cloudAppBar(context),
-              body: TabBarView(controller: _tabController, children: <Widget>[
-                generateCardByTypeSelector(Types.notes),
-                generateCardByTypeSelector(Types.papers),
-                generateCardByTypeSelector(Types.books),
-                generateCardByTypeSelector(Types.links),
-              ]),
-            );
-          } else {
-            return Scaffold(
-              appBar: localAppBar(context),
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Select Course:',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+        if (!widget.isDownloadedView) {
+          return Scaffold(
+            appBar: cloudAppBar(context),
+            body: TabBarView(controller: _tabController, children: <Widget>[
+              generateCardByTypeSelector(Types.notes,
+                  course: widget.courseName),
+              generateCardByTypeSelector(Types.papers,
+                  course: widget.courseName),
+              generateCardByTypeSelector(Types.books,
+                  course: widget.courseName),
+              generateCardByTypeSelector(Types.links,
+                  course: widget.courseName),
+            ]),
+          );
+        } else {
+          return Scaffold(
+            appBar: localAppBar(context),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Select Course:',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Wrap(
-                          spacing: 8.0,
-                          children: [
-                            for (String course
-                                in state.courseToMaterialsMap.keys.toList())
+                      ),
+                      Wrap(
+                        spacing: 8.0,
+                        children: [
+                          for (String course
+                              in StudentCache.localStudyMaterial.keys.toList())
+                            if (_selectedCourse.isNotEmpty &&
+                                _selectedCourse == course)
+                              FilterChip(
+                                label: Text(course.split('-').first),
+                                selected: _selectedCourse == course,
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    _selectedCourse = selected ? course : '';
+                                    _selectedFilter = null;
+                                  });
+                                },
+                              )
+                            else if (_selectedCourse.isEmpty)
                               FilterChip(
                                 label: Text(course.split('-').first),
                                 selected: _selectedCourse == course,
@@ -163,25 +161,38 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                                   });
                                 },
                               ),
-                          ],
-                        ),
-                        (_selectedCourse.isNotEmpty)
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Select Type:',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                        ],
+                      ),
+                      (_selectedCourse.isNotEmpty)
+                          ? Wrap(
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Select Type:',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  Wrap(
-                                    spacing: 8.0,
-                                    children: [
-                                      for (Types filter in Types.values)
+                                ),
+                                Wrap(
+                                  spacing: 8.0,
+                                  children: [
+                                    for (Types filter in Types.values)
+                                      if (_selectedFilter != null &&
+                                          _selectedFilter == filter)
+                                        FilterChip(
+                                          label: Text(filter.name),
+                                          selected: _selectedFilter == filter,
+                                          onSelected: (bool selected) {
+                                            setState(() {
+                                              _selectedFilter =
+                                                  selected ? filter : null;
+                                            });
+                                          },
+                                        )
+                                      else if (_selectedFilter == null)
                                         FilterChip(
                                           label: Text(filter.name),
                                           selected: _selectedFilter == filter,
@@ -192,25 +203,25 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                                             });
                                           },
                                         ),
-                                    ],
-                                  ),
-                                ],
-                              )
-                            : const SizedBox(height: 20),
-                      ],
-                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                          : const SizedBox(height: 20),
+                    ],
                   ),
-                  Expanded(
-                    child: generateCardByTypeSelector(
-                      _selectedFilter,
-                      course: _selectedCourse,
-                    ),
+                ),
+                Expanded(
+                  child: generateCardByTypeSelector(
+                    _selectedFilter,
+                    course: _selectedCourse,
                   ),
-                ],
-              ),
-            );
-          }
+                ),
+              ],
+            ),
+          );
         }
+
         if (state is LoadingState) {
           return Scaffold(
             appBar: appBarSelector(context),
@@ -300,7 +311,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
               return false;
             },
             child: CustomPDFViewer(
-              state: state,
+              material: state.originalStudyMaterial,
               viewOnline: true,
               onUpVote: () {
                 context.read<ViewMaterialBloc>().add(
@@ -444,12 +455,12 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
     Icons.note,
     Icons.question_answer,
     Icons.book,
-    Icons.link,
+    Icons.video_collection,
   ];
   final List<String> _labels = [
     "Notes",
     "Papers",
     "Books",
-    "Links",
+    "Videos",
   ];
 }

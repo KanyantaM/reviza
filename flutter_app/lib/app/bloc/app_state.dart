@@ -12,22 +12,22 @@ class AppState extends Equatable {
     required this.theme,
   });
 
-  const AppState.authenticated(User user, ThemeData theme)
-      : this._(status: AppStatus.authenticated, user: user, theme: theme);
+  AppState.authenticated(User user, bool theme)
+      : this._(status: AppStatus.authenticated, user: user, theme: user.theme);
 
-  AppState.unauthenticated()
-      : this._(status: AppStatus.unauthenticated, theme: ReviZaTheme.light);
+  const AppState.unauthenticated()
+      : this._(status: AppStatus.unauthenticated, theme: true);
 
   final AppStatus status;
   final User user;
-  final ThemeData theme;
+  final bool theme;
 
   @override
   List<Object> get props => [status, user, theme];
 
   AppState copyWith({
     User? user,
-    ThemeData? theme,
+    bool? theme,
   }) {
     return AppState._(
       status: status,

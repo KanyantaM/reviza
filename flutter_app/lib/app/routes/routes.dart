@@ -10,12 +10,13 @@ List<Page<dynamic>> onGenerateAppViewPages(
   AppState state,
   List<Page<dynamic>> pages,
 ) {
-  FlutterNativeSplash.remove();
   switch (state.status) {
     case AppStatus.authenticated:
       StudentCache.initCache(uid: state.user.id);
+      FlutterNativeSplash.remove();
       return [IntroductionPage.page(state.user.id)];
     case AppStatus.unauthenticated:
+      FlutterNativeSplash.remove();
       return [LoginPage.page()];
   }
 }

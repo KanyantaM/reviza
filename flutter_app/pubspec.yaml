@@ -53,7 +53,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   package_info_plus: ^8.1.4
   path: ^1.9.0
-  syncfusion_flutter_pdfviewer: ^28.2.4
+  syncfusion_flutter_pdfviewer: ^28.2.6
   sign_in_button: ^3.2.0
   flutter_chat_ui: ^2.0.0-dev.4
   flutter_chat_types: ^3.6.2

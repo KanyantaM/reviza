@@ -37,7 +37,7 @@ dependencies:
     path: packages/crud_packages/student_repository
   chat_repository:
     path: packages/crud_packages/chat_repository
-  animate_do: ^3.1.2
+  animate_do: ^4.1.1
   hive_flutter: ^1.1.0
   dotted_border: ^2.1.0
   file_picker: ^8.3.1

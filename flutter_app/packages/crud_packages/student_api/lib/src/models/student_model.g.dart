@@ -19,17 +19,26 @@ class StudentAdapter extends TypeAdapter<Student> {
     return Student(
       userId: fields[0] as String,
       myCourses: (fields[1] as List).cast<String>(),
+      uploadCount: fields[2] as int,
+      downloadCount: fields[3] as int,
+      badUploadCount: fields[4] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, Student obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.userId)
       ..writeByte(1)
-      ..write(obj.myCourses);
+      ..write(obj.myCourses)
+      ..writeByte(2)
+      ..write(obj.uploadCount)
+      ..writeByte(3)
+      ..write(obj.downloadCount)
+      ..writeByte(4)
+      ..write(obj.badUploadCount);
   }
 
   @override

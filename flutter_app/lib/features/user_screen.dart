@@ -1,11 +1,15 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/app/bloc/app_bloc.dart';
+import 'package:reviza/cache/student_cache.dart';
 import 'package:reviza/features/login/login.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:reviza/features/upload_pdf/uplead_pdf_bloc/upload_pdf_bloc.dart';
+import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
+import 'package:reviza/utilities/dialogues/comming_soon.dart';
+// import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -31,38 +35,6 @@ class UserScreen extends StatelessWidget {
     }
   }
 
-  void showAboutUsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('About Us'),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Welcome to ReviZa,\n\nReviZa facilitates seamless collaboration among students, '
-                'enabling them to share study materials such as past papers and school notes. '
-                'The app also features an AI chatbot for quick assistance with study-related questions.',
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Thank you for downloading - Kanyanta M. (Founder ReviZa)',
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton.icon(
-                onPressed: () => _launchURL('https://reviza.info'),
-                label: Icon(CupertinoIcons.compass))
-          ],
-        );
-      },
-    );
-  }
-
   Future<String> getAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.version;
@@ -71,52 +43,34 @@ class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User Screen'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('User Screen'),
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+                onPressed: () {
+                  context.read<AppBloc>().add(const AppLogoutRequested());
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                },
+                icon: Icon(Icons.logout)),
+          )
+        ],
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: ListView(
           children: [
-            BlocBuilder<AppBloc, AppState>(
-              builder: (context, state) {
-                return ListTile(
-                  leading: const Icon(Icons.brightness_6),
-                  title: const Text('Switch Theme'),
-                  trailing: Switch(
-                    value: state.theme,
-                    onChanged: (bool value) {
-                      context.read<AppBloc>().add(ChangeTheme(theme: value));
-                    },
-                  ),
-                );
-              },
-            ),
+            UserStatsCard(),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.feedback),
               title: const Text('Feedback'),
               onTap: () => _showContactOptions(context),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.star),
-              title: const Text('Rate this App'),
-              onTap: () => launchAppStoreForRating(context),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('About Us'),
-              onTap: () => showAboutUsDialog(context),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.person_add),
-              title: const Text('Tell a Friend'),
-              onTap: () {
-                const String shareText =
-                    'Download ReviZa:\nhttps://reviza.info/download';
-                Share.share(shareText);
-              },
             ),
             const Divider(),
             ListTile(
@@ -128,18 +82,6 @@ class UserScreen extends StatelessWidget {
                   return Text(snapshot.data ?? 'Loading...');
                 },
               ),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.exit_to_app),
-              title: const Text('Logout'),
-              onTap: () {
-                context.read<AppBloc>().add(const AppLogoutRequested());
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              },
             ),
           ],
         ),
@@ -160,18 +102,18 @@ class UserScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.feedback),
+                leading: const Icon(Icons.web),
                 title: const Text('Feedback'),
-                onTap: () => _launchURL('https://wa.me/+260761951544/'),
+                onTap: () => _launchURL('https://reviza.info/'),
               ),
               ListTile(
                 leading: const Icon(Icons.email),
-                title: const Text('Email Us 📧'),
+                title: const Text('Email Us'),
                 onTap: () => _launchURL('mailto:support@reviza.info'),
               ),
               ListTile(
                 leading: const Icon(Icons.chat),
-                title: const Text('WhatsApp Us 📞'),
+                title: const Text('WhatsApp Us'),
                 onTap: () => _launchURL('https://wa.me/+260761951544/'),
               ),
               const Divider(),
@@ -183,6 +125,149 @@ class UserScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class UserStatsCard extends StatelessWidget {
+  const UserStatsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildCard("Total Activity", [
+          _buildStatRow([
+            BlocBuilder<UploadPdfBloc, UploadPdfState>(
+              builder: (context, state) {
+                return _buildStatItem(Icons.upload, "Uploads",
+                    StudentCache.tempStudent.uploadCount.toString());
+              },
+            ),
+            BlocBuilder<ViewMaterialBloc, ViewMaterialState>(
+              builder: (context, state) {
+                return _buildStatItem(Icons.download, "Downloads",
+                    StudentCache.tempStudent.downloadCount.toString());
+              },
+            ),
+          ]),
+        ]),
+        const SizedBox(height: 12),
+        _buildCard("Subscription", [
+          _buildStatRow([
+            _buildStatItem(
+                Icons.account_balance_wallet, "Account Type", "Premium"),
+            BlocBuilder<ViewMaterialBloc, ViewMaterialState>(
+              builder: (context, state) {
+                return _buildStatItem(Icons.calendar_month, "Month",
+                    "${StudentCache.tempStudent.downloadCount} / ∞");
+              },
+            ),
+          ]),
+          const SizedBox(height: 8),
+          Center(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                // TODO: Show subscription options
+                commingSoon(context);
+              },
+              icon: const Icon(Icons.shopping_cart, color: Colors.blueAccent),
+              label: const Text("Get More Downloads"),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Center(
+            child: const Text(
+              "Earn a free download by uploading material!",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12),
+            ),
+          ),
+        ]),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildStatItem(Icons.warning, "Bad Uploads",
+                "${StudentCache.tempStudent.badUploadCount.toString()}/5",
+                isWarning: true),
+            BlocBuilder<AppBloc, AppState>(
+              builder: (context, state) {
+                return Row(
+                  children: [
+                    const Icon(Icons.brightness_6),
+                    const SizedBox(width: 8),
+                    const Text('Theme'),
+                    const SizedBox(width: 8),
+                    Switch(
+                      value: state.theme,
+                      onChanged: (bool value) {
+                        context.read<AppBloc>().add(ChangeTheme(theme: value));
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget _buildCard(String title, List<Widget> children) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatRow(List<Widget> children) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: children,
+    );
+  }
+
+  Widget _buildStatItem(IconData icon, String title, String value,
+      {bool isWarning = false}) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isWarning
+            ? Colors.redAccent.withAlpha(100)
+            : Colors.green.withAlpha(100),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 24),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontSize: 14)),
+              Text(value,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

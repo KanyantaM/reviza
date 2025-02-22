@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:student_repository/student_repository.dart';
 import 'package:study_material_api/study_material_api.dart';
 
 class FiresbaseStudyMaterialImplementation implements StudyMaterialApi {
@@ -28,10 +29,6 @@ class FiresbaseStudyMaterialImplementation implements StudyMaterialApi {
       await _firestore.collection(course).doc(id).update({
         'description': description,
       });
-    } else {
-      await _firestore.collection(course).doc(id).update({
-        'title': titile,
-      });
     }
   }
 
@@ -59,6 +56,16 @@ class FiresbaseStudyMaterialImplementation implements StudyMaterialApi {
           .doc(material.id)
           .delete();
 
+      final StudentRepository studentRepo = StudentRepository();
+      final Student? uploader =
+          await studentRepo.getUserById(material.uploaderId);
+
+      if (uploader != null) {
+        int badUploadCount = uploader.badUploadCount + 1;
+        final Student reportedUploader =
+            uploader.copyWith(badUploadCount: badUploadCount);
+        studentRepo.updateUser(reportedUploader);
+      }
       throw Exception('File deleted successfully');
     } catch (e) {
       throw Exception('Error deleting file: $e');

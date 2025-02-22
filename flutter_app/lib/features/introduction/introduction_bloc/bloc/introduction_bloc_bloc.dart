@@ -30,8 +30,12 @@ class IntroductionBloc extends Bloc<IntroductionEvent, IntroductionState> {
       (event, emit) async {
         emit(IntroductionRegisteringCourses());
         try {
-          Student user =
-              Student(userId: event.studentId, myCourses: event.courses);
+          Student user = Student(
+              userId: event.studentId,
+              myCourses: event.courses,
+              uploadCount: 0,
+              downloadCount: 0,
+              badUploadCount: 0);
           await _studentRepository.addUser(user);
           emit(IntroductionIntroduced());
         } catch (e) {

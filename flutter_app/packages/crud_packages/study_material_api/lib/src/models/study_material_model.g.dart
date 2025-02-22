@@ -17,6 +17,8 @@ class StudyMaterialAdapter extends TypeAdapter<StudyMaterial> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return StudyMaterial(
+      downloads: fields[12] as int,
+      uploaderId: fields[11] as String,
       subjectName: fields[2] as String,
       type: fields[0] as String,
       id: fields[1] as String,
@@ -34,7 +36,7 @@ class StudyMaterialAdapter extends TypeAdapter<StudyMaterial> {
   @override
   void write(BinaryWriter writer, StudyMaterial obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
@@ -56,7 +58,11 @@ class StudyMaterialAdapter extends TypeAdapter<StudyMaterial> {
       ..writeByte(9)
       ..write(obj.size)
       ..writeByte(10)
-      ..write(obj.localPath);
+      ..write(obj.localPath)
+      ..writeByte(11)
+      ..write(obj.uploaderId)
+      ..writeByte(12)
+      ..write(obj.downloads);
   }
 
   @override

@@ -195,7 +195,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
               PolarTabItem(
                 index: 1,
                 title:
-                    "History ${StudentCache.seenUploads.isNotEmpty ? '(${StudentCache.seenUploads.length})' : ''}",
+                    "Recent ${StudentCache.seenUploads.isNotEmpty ? '(${StudentCache.seenUploads.length})' : ''}",
                 page: PolarTabPage(
                   child: Column(
                     children: [

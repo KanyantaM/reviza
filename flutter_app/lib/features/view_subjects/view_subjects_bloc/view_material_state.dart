@@ -46,3 +46,9 @@ final class ErrorState extends ViewMaterialState {
 }
 
 final class MaterialBanedState extends ViewMaterialState {}
+
+final class VotedState extends ViewMaterialState {
+  final bool? vote;
+
+  VotedState({required this.vote});
+}

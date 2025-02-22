@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reviza/cache/student_cache.dart';
 import 'package:reviza/features/edit_courses/bloc/edit_my_courses_bloc.dart';
 import 'package:reviza/features/edit_courses/view/my_subjects/view/my_subject_view.dart';
 import 'package:student_repository/student_repository.dart';
@@ -10,6 +11,7 @@ class MySubjectsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    StudentCache.initCache(uid: userId.userId);
     return BlocProvider(
       create: (context) => EditMyCoursesBloc(repo: StudentRepository()),
       child: MySubjectsView(

@@ -37,7 +37,7 @@ class EditMyCoursesBloc extends Bloc<EditMyCoursesEvent, EditMyCoursesState> {
           for (String course in event.coursesToDelete) {
             event.student.myCourses.remove(course);
             StudyMaterialRepo(uid: event.student.userId)
-                .deleteLocalCourseMaterial(courseId: course);
+                .deleteLocalCourseMaterial(course: course);
           }
           StudentCache.setCourses(event.student.myCourses);
           await _studentRepository.updateUser(event.student);

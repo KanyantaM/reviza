@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:student_repository/student_repository.dart';
 import 'package:study_material_api/study_material_api.dart';
-import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 
 class StudyMaterialRepo {
@@ -67,45 +66,56 @@ class StudyMaterialRepo {
     // Implement sharing logic here
   }
 
-  Stream<double> downloadMaterial(
-    StudyMaterial studyMaterial,
-  ) async* {
+  Stream<String> downloadMaterial({
+    required StudyMaterial studyMaterial,
+    required String pathToDownload,
+  }) {
     if (studyMaterial.onlinePath == null) {
       throw Exception('No online path available for download.');
     }
 
-    final filePath =
-        await _getFilePath(studyMaterial.id, studyMaterial.subjectName);
-    final downloadedMaterial = studyMaterial.copyWith(localPath: filePath);
+    final stateController = StreamController<String>();
+    final studyMaterialRef =
+        FirebaseStorage.instance.refFromURL(studyMaterial.onlinePath!);
+    final file = File(pathToDownload);
 
-    if (studyMaterial.isInBox) {
-      yield 1.0;
-      return;
-    }
+    final downloadTask = studyMaterialRef.writeToFile(file);
 
-    final StreamController<double> controller = StreamController();
+    downloadTask.snapshotEvents.listen((taskSnapshot) async {
+      try {
+        switch (taskSnapshot.state) {
+          case TaskState.running:
+            final progress = 100.0 *
+                (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+            stateController.add("${progress.toStringAsFixed(2)} %");
+            break;
+          case TaskState.paused:
+            stateController.add('⏸️');
+            break;
+          case TaskState.canceled:
+            stateController.add('❌');
+            break;
+          case TaskState.error:
+            stateController.addError('❗ Download failed.');
+            break;
+          case TaskState.success:
+            final StudyMaterial downloadedMaterial =
+                studyMaterial.copyWith(localPath: pathToDownload);
+            await _localStorage.addStudyMaterial(downloadedMaterial);
+            stateController.add('✅');
+            await stateController.close();
+            break;
+        }
+      } catch (e) {
+        stateController.addError(e.toString());
+        await stateController.close();
+      }
+    }, onError: (error) {
+      stateController.addError(error.toString());
+      stateController.close();
+    }, cancelOnError: true);
 
-    try {
-      await Dio().download(
-        studyMaterial.onlinePath!,
-        filePath,
-        onReceiveProgress: (received, total) {
-          final double progress = total > 0 ? received / total : 0.0;
-          controller.add(
-            progress,
-          );
-        },
-      );
-
-      controller.add(1.0);
-      await _localStorage.addStudyMaterial(downloadedMaterial);
-    } catch (e) {
-      controller.addError(Exception('Download failed: $e'));
-    } finally {
-      await controller.close();
-    }
-
-    yield* controller.stream; // Stream the updates
+    return stateController.stream;
   }
 
   Future<void> annotateMaterial(
@@ -218,11 +228,6 @@ class StudyMaterialRepo {
     return _cloudStorage.getStudyMaterials([course]);
   }
 
-  Future<String> _getFilePath(String fileId, String subjectName) async {
-    final dir = await getApplicationDocumentsDirectory();
-    return "${dir.path}/$subjectName/$fileId";
-  }
-
   Future<Student> _fetchCurrentStudent() async {
     return await StudentRepository().getUserById(uid) ??
         Student(
@@ -231,8 +236,20 @@ class StudyMaterialRepo {
         );
   }
 
-  Future<void> deleteLocalCourseMaterial({required String courseId}) async {
-    await _localStorage.deleteStudyMaterialsByCourse(courseId);
+  Future<void> deleteLocalCourseMaterial({required String course}) async {
+    try {
+      await _localStorage.deleteStudyMaterialsByCourse(course);
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> deleteLocalMaterial({required StudyMaterial material}) async {
+    try {
+      await _localStorage.deleteStudyMaterial(material);
+    } on Exception catch (e) {
+      throw Exception(e);
+    }
   }
 
   Future<void> cancelUpload({required StudyMaterial material}) async {

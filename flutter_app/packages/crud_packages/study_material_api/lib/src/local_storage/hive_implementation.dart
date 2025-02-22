@@ -95,11 +95,13 @@ class HiveStudyMaterialApiImplementation implements StudyMaterialApi {
         if (item.localPath != null && File(item.localPath!).existsSync()) {
           try {
             File(item.localPath!).deleteSync();
+            return true;
           } catch (e) {
             throw Exception('Error deleting file: $e');
           }
+        } else {
+          return false;
         }
-        return true;
       }
       return false;
     });

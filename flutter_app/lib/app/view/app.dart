@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/app/bloc/app_bloc.dart';
 import 'package:reviza/app/routes/routes.dart';
 import 'package:reviza/features/upload_pdf/uplead_pdf_bloc/upload_pdf_bloc.dart';
-import 'package:reviza/features/upload_pdf/view/components/upload_snack_bar.dart';
+import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/ui/theme.dart';
 import 'package:study_material_repository/study_material_repository.dart';
 
@@ -36,6 +36,13 @@ class App extends StatelessWidget {
                         .currentUser
                         .id)),
           ),
+          BlocProvider(
+              create: (context) => ViewMaterialBloc(
+                  studyMaterial: StudyMaterialRepo(
+                      uid: context
+                          .read<AuthenticationRepository>()
+                          .currentUser
+                          .id)))
         ],
         child: const AppView(),
       ),

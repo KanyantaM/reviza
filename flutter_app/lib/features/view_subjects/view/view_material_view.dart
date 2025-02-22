@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:reviza/cache/student_cache.dart';
+import 'package:reviza/features/view_subjects/view/repo.dart';
 import 'package:reviza/features/view_subjects/view/widgets/list_generator.dart';
-import 'package:reviza/features/view_subjects/view/widgets/custom_view.dart';
-import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:study_material_repository/study_material_repository.dart';
 
@@ -60,26 +57,29 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ViewMaterialBloc, ViewMaterialState>(
+    return FutureBuilder<Map<String, List<StudyMaterial>>>(
+      future: fetchMaterials(
+          isOnline: !widget.isDownloadedView, course: widget.courseName),
       builder: (context, state) {
         Widget generateCardByTypeSelector(Types? type, {String? course}) {
           return generateCards(
-              context,
-              widget.uid,
-              course ?? widget.courseName,
-              type,
-              () {
-                setState(() {
-                  _deleteMode = true;
-                });
-              },
-              _deleteMode,
-              () {
+              context: context,
+              course: course ?? widget.courseName,
+              type: type,
+              onLongPress: widget.isDownloadedView
+                  ? () {
+                      setState(() {
+                        _deleteMode = true;
+                      });
+                    }
+                  : () {},
+              deleteMode: _deleteMode,
+              onCancel: () {
                 setState(() {
                   _deleteMode = false;
                 });
               },
-              (path) {
+              onAddToDeleteList: (path) {
                 setState(() {
                   if (_pathsToDelete.contains(path)) {
                     _pathsToDelete.remove(path);
@@ -88,14 +88,15 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
                   }
                 });
               },
-              _pathsToDelete,
-              () {
+              pathsToDelete: _pathsToDelete,
+              onDelete: () {
+                StudentCache.initCache(uid: widget.uid);
                 setState(() {
                   _deleteMode = false;
                   _pathsToDelete = [];
                 });
               },
-              widget.isDownloadedView ? StudentCache.localStudyMaterial : {});
+              materials: state.data ?? {});
         }
 
         if (!widget.isDownloadedView) {
@@ -221,156 +222,6 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
             ),
           );
         }
-
-        if (state is LoadingState) {
-          return Scaffold(
-            appBar: appBarSelector(context),
-            body: const SizedBox(
-                child: Center(child: CircularProgressIndicator())),
-          );
-        }
-        if (state is DownloadingCourses) {
-          // Show download progress UI
-          return Scaffold(
-              appBar: appBarSelector(context),
-              body: SizedBox(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width *
-                              0.7, // Responsive width
-                          height: MediaQuery.of(context).size.height *
-                              0.3, // Responsive height
-                          child: LottieBuilder.asset(
-                            'assets/lottie/downloading_cloud.json',
-                            fit: BoxFit.contain, // Prevent overflow
-                          ),
-                        ),
-                        BlocBuilder(
-                            bloc: downLoadProgressCubit,
-                            builder: (context, ownloadProgressCubit) {
-                              return Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width * 0.9,
-                                  ),
-                                  child: FittedBox(
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.8,
-                                          child: LinearProgressIndicator(
-                                            value: downLoadProgressCubit.state,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          '${(downLoadProgressCubit.state * 100).toStringAsFixed(1)} %',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ],
-                    ),
-                  ),
-                ),
-              ));
-        }
-        if (state is StudyMaterialOpened) {
-          return WillPopScope(
-            onWillPop: () async {
-              // Show a confirmation dialog before allowing the pop.
-              if (widget.isDownloadedView) {
-                context.read<ViewMaterialBloc>().add(
-                      FetchCourseMaterials(
-                        course: null,
-                        online: false,
-                      ),
-                    );
-              } else {
-                context.read<ViewMaterialBloc>().add(
-                      FetchCourseMaterials(
-                        course: widget.courseName,
-                        online: true,
-                      ),
-                    );
-              }
-              return false;
-            },
-            child: CustomPDFViewer(
-              material: state.originalStudyMaterial,
-              viewOnline: true,
-              onUpVote: () {
-                context.read<ViewMaterialBloc>().add(
-                      VoteMaterial(
-                        material: state.originalStudyMaterial,
-                        vote: true,
-                      ),
-                    );
-              },
-              onDownVote: () {
-                context.read<ViewMaterialBloc>().add(
-                      VoteMaterial(
-                        material: state.originalStudyMaterial,
-                        vote: false,
-                      ),
-                    );
-              },
-              onReport: () {
-                context.read<ViewMaterialBloc>().add(
-                      ReportMaterial(
-                        material: state.originalStudyMaterial,
-                      ),
-                    );
-              },
-              uid: widget.uid,
-            ),
-          );
-        }
-
-        return Scaffold(
-          appBar: appBarSelector(context),
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  (!widget.isDownloadedView)
-                      ? ((state is ErrorState &&
-                              state.message.contains('[connection error]'))
-                          ? const Icon(
-                              Icons.cloud_off_outlined,
-                              size: 120,
-                            )
-                          : Image.asset('assets/images/error404.png'))
-                      : const CircularProgressIndicator.adaptive(),
-                  (state is ErrorState)
-                      ? ((state.message.contains('[connection error]'))
-                          ? const Text(
-                              'Failed to download due to poor or bad network connectivity',
-                              style: TextStyle(
-                                  fontSize: 13, fontWeight: FontWeight.w700))
-                          : Text(state.message))
-                      : const Text(''),
-                ],
-              ),
-            ),
-          ),
-        );
       },
     );
   }

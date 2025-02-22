@@ -37,7 +37,13 @@ class StudyMaterial extends HiveObject {
   final int size;
 
   @HiveField(10)
-  String? localPath;
+  final String? localPath;
+
+  @HiveField(11)
+  final String uploaderId;
+
+  @HiveField(12)
+  final List<String> downloaders;
 
   final double? downloadProgress;
 
@@ -45,6 +51,8 @@ class StudyMaterial extends HiveObject {
       await _getFilePath(id, subjectName);
 
   StudyMaterial({
+    required this.downloaders,
+    required this.uploaderId,
     required this.subjectName,
     required this.type,
     required this.id,
@@ -71,23 +79,28 @@ class StudyMaterial extends HiveObject {
       haters: List<String>.from(json['haters'] ?? []),
       reports: List<String>.from(json['reports'] ?? []),
       size: json['size'] ?? 0,
-      localPath: json['local_path'],
+      localPath: json['local_path'] ?? '',
+      uploaderId: json['uploader_id'] ?? '',
+      downloaders: List<String>.from(json['downloaders'] ?? []),
     );
   }
 
   factory StudyMaterial.fromOnlineJson(Map<String, dynamic> json) {
     return StudyMaterial(
-        id: json['id'] ?? '',
-        title: json['title'] ?? 'Untitled',
-        description: json['description'] ?? '',
-        onlinePath: json['online_path'],
-        subjectName: json['subject_name'] ?? 'Unknown Subject',
-        type: json['type'] ?? 'Unknown Type',
-        fans: List<String>.from(json['fans'] ?? []),
-        haters: List<String>.from(json['haters'] ?? []),
-        reports: List<String>.from(json['reports'] ?? []),
-        size: json['size'] ?? 0,
-        localPath: json['local_path'] ?? '');
+      id: json['id'] ?? '',
+      title: json['title'] ?? 'Untitled',
+      description: json['description'] ?? '',
+      onlinePath: json['online_path'],
+      subjectName: json['subject_name'] ?? 'Unknown Subject',
+      type: json['type'] ?? 'Unknown Type',
+      fans: List<String>.from(json['fans'] ?? []),
+      haters: List<String>.from(json['haters'] ?? []),
+      reports: List<String>.from(json['reports'] ?? []),
+      size: json['size'] ?? 0,
+      localPath: json['local_path'] ?? '',
+      uploaderId: json['uploader_id'] ?? '',
+      downloaders: List<String>.from(json['downloaders'] ?? []),
+    );
   }
 
   Map<String, dynamic> toOnline() {
@@ -102,7 +115,9 @@ class StudyMaterial extends HiveObject {
       'reports': reports,
       'size': size,
       'online_path': onlinePath,
-      'local_path': localPath
+      // 'local_path': localPath,
+      'uploader_id': uploaderId,
+      'downloaders': downloaders,
     };
 
     return map;
@@ -121,6 +136,9 @@ class StudyMaterial extends HiveObject {
       'size': size,
       'filePath': onlinePath,
       'local_path': localPath,
+      'uploader_id': uploaderId,
+      'downloaders': downloaders,
+      'online_path': onlinePath,
     };
 
     return map;
@@ -144,6 +162,7 @@ class StudyMaterial extends HiveObject {
     int? size,
     String? localPath,
     double? downloadProgress,
+    List<String>? downloaders,
   }) {
     return StudyMaterial(
       type: type ?? this.type,
@@ -158,6 +177,8 @@ class StudyMaterial extends HiveObject {
       size: size ?? this.size,
       localPath: localPath ?? this.localPath,
       downloadProgress: downloadProgress ?? this.downloadProgress,
+      downloaders: downloaders ?? this.downloaders,
+      uploaderId: uploaderId,
     );
   }
 }

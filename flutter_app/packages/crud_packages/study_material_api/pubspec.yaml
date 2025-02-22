@@ -2,6 +2,7 @@ name: study_material_api
 description: A new Flutter package project.
 version: 0.0.1
 # homepage:
+publish_to: none
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
@@ -16,6 +17,8 @@ dependencies:
   hive_flutter: ^1.1.0
   path: ^1.9.0
   path_provider: ^2.1.5
+  student_repository:
+    path: ../student_repository
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reviza/cache/student_cache.dart';
-import 'package:reviza/features/view_subjects/utils/important_functions.dart';
 import 'package:reviza/features/view_subjects/view/widgets/custom_view.dart';
-import 'package:reviza/features/view_subjects/view_subjects_bloc/view_material_bloc.dart';
 import 'package:reviza/utilities/dialogues/comming_soon.dart';
 import 'package:study_material_repository/study_material_repository.dart';
 
@@ -32,31 +30,39 @@ class StudyMaterialCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-      child: GestureDetector(
-        onLongPress: () => onLongPress(),
-        onTap: () {
-          if (isDeleteMode) {
-            onAddToDeleteList(studyMaterial);
-          } else {
-            _showMaterialOptionsSheet(context);
-          }
-        },
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (isDeleteMode)
-                      FutureBuilder(
-                        future: getPathToDelete(studyMaterial),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                            return Padding(
+      child: FutureBuilder<bool>(
+          future: studyMaterial.isOnDevice,
+          builder: (context, snapshot) {
+            return GestureDetector(
+              onLongPress: () => onLongPress(),
+              onTap: () async {
+                if (isDeleteMode) {
+                  onAddToDeleteList(studyMaterial);
+                } else {
+                  if (!(snapshot.data ?? true)) {
+                    _showMaterialOptionsSheet(context);
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CustomPDFViewer(
+                                  material: studyMaterial,
+                                )));
+                  }
+                }
+              },
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if (isDeleteMode)
+                            Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: Icon(
                                 shouldBeDeleted.contains(studyMaterial)
@@ -66,121 +72,120 @@ class StudyMaterialCard extends StatelessWidget {
                                     ? Colors.green
                                     : Colors.grey,
                               ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    Text('🗒️', textScaler: TextScaler.linear(2)),
-                    const SizedBox(width: 10),
+                            ),
+                          Text('🗒️', textScaler: TextScaler.linear(2)),
+                          const SizedBox(width: 10),
 
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            studyMaterial.title,
-                            style: TextStyle(
-                              fontSize: textSize,
-                              fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  studyMaterial.title,
+                                  style: TextStyle(
+                                    fontSize: textSize,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  studyMaterial.description,
+                                  style: TextStyle(
+                                    fontSize: textSize - 2,
+                                    color: Colors.grey[700],
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            studyMaterial.description,
-                            style: TextStyle(
-                              fontSize: textSize - 2,
-                              color: Colors.grey[700],
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+
+                          /// **Share Button**
+                          IconButton(
+                            onPressed: () => commingSoon(context),
+                            icon:
+                                const Icon(Icons.share, color: Colors.blueGrey),
+                            constraints: const BoxConstraints(),
+                            padding: EdgeInsets.zero,
                           ),
                         ],
                       ),
-                    ),
-
-                    /// **Share Button**
-                    IconButton(
-                      onPressed: () => commingSoon(context),
-                      icon: const Icon(Icons.share, color: Colors.blueGrey),
-                      constraints: const BoxConstraints(),
-                      padding: EdgeInsets.zero,
-                    ),
-                  ],
-                ),
-                const Divider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            studyMaterial.fans.length >=
-                                    studyMaterial.haters.length
-                                ? Icons.thumb_up_alt_rounded
-                                : Icons.thumb_down_alt_rounded,
-                            size: 16,
-                            color: studyMaterial.fans.length >=
-                                    studyMaterial.haters.length
-                                ? Colors.green
-                                : Colors.red,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            "${((studyMaterial.fans.length >= studyMaterial.haters.length ? studyMaterial.fans.length : studyMaterial.haters.length) / (studyMaterial.fans.length + studyMaterial.haters.length)).toStringAsFixed(1)}% (${studyMaterial.fans.length + studyMaterial.haters.length})",
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                              color: studyMaterial.fans.length >=
-                                      studyMaterial.haters.length
-                                  ? Colors.green
-                                  : Colors.red,
+                      const Divider(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  studyMaterial.fans.length >=
+                                          studyMaterial.haters.length
+                                      ? Icons.thumb_up_alt_rounded
+                                      : Icons.thumb_down_alt_rounded,
+                                  size: 16,
+                                  color: studyMaterial.fans.length >=
+                                          studyMaterial.haters.length
+                                      ? Colors.green
+                                      : Colors.red,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "${((studyMaterial.fans.length >= studyMaterial.haters.length ? studyMaterial.fans.length : studyMaterial.haters.length) / (studyMaterial.fans.length + studyMaterial.haters.length)).toStringAsFixed(1)}% (${studyMaterial.fans.length + studyMaterial.haters.length})",
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: studyMaterial.fans.length >=
+                                            studyMaterial.haters.length
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
 
-                      /// **File Status & Size**
-                      Row(
-                        children: [
-                          FutureBuilder(
-                            future: studyMaterial.isOnDevice,
-                            builder: (context, snapshot) {
-                              return Icon(
-                                snapshot.data ?? false
-                                    ? Icons.phone_android
-                                    : Icons.cloud_download_outlined,
-                                size: 16,
-                                color: snapshot.data ?? false
-                                    ? Colors.blue
-                                    : Colors.grey,
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            studyMaterial.size <= 1000
-                                ? ' ${studyMaterial.size} KB'
-                                : ' ${(studyMaterial.size / 1000).toStringAsFixed(2)} MB',
-                            style: const TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
+                            /// **File Status & Size**
+                            Row(
+                              children: [
+                                FutureBuilder(
+                                  future: studyMaterial.isOnDevice,
+                                  builder: (context, snapshot) {
+                                    log(snapshot.data.toString());
+                                    return Icon(
+                                      snapshot.data ?? false
+                                          ? Icons.phone_android
+                                          : Icons.cloud_download_outlined,
+                                      size: 16,
+                                      color: snapshot.data ?? false
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                    );
+                                  },
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  studyMaterial.size <= 1000
+                                      ? ' ${studyMaterial.size} KB'
+                                      : ' ${(studyMaterial.size / 1000).toStringAsFixed(2)} MB',
+                                  style: const TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
+              ),
+            );
+          }),
     );
   }
 
@@ -209,36 +214,13 @@ class StudyMaterialCard extends StatelessWidget {
               const SizedBox(height: 24),
               ElevatedButton.icon(
                 onPressed: () {
+                  Navigator.pop(context);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CustomPDFViewer(
-                              material: studyMaterial,
-                              viewOnline: true,
-                              onUpVote: () {
-                                context.read<ViewMaterialBloc>().add(
-                                      VoteMaterial(
-                                        material: studyMaterial,
-                                        vote: true,
-                                      ),
-                                    );
-                              },
-                              onDownVote: () {
-                                context.read<ViewMaterialBloc>().add(
-                                      VoteMaterial(
-                                        material: studyMaterial,
-                                        vote: false,
-                                      ),
-                                    );
-                              },
-                              onReport: () {
-                                context.read<ViewMaterialBloc>().add(
-                                      ReportMaterial(
-                                        material: studyMaterial,
-                                      ),
-                                    );
-                              },
-                              uid: StudentCache.tempStudent.userId)));
+                                material: studyMaterial,
+                              )));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue.shade50,
@@ -257,6 +239,7 @@ class StudyMaterialCard extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: () {
+                  Navigator.pop(context);
                   onTap(studyMaterial);
                 },
                 style: ElevatedButton.styleFrom(

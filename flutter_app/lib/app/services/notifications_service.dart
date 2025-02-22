@@ -163,7 +163,7 @@ class NotificationService {
 
     await _notificationsPlugin.show(
       fileId.hashCode,
-      'Download Faile💔❗',
+      'Download Failed 💔❗',
       '$fileName failed to download',
       platformChannelSpecifics,
       payload: 'download_failed',

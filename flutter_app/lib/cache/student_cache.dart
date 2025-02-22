@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'package:chat_repository/chat_repository.dart';
 import 'package:reviza/features/upload_pdf/uplead_pdf_bloc/upload_pdf_bloc.dart';
 import 'package:student_repository/student_repository.dart';
@@ -8,7 +9,7 @@ class StudentCache {
 
   static List<String> _courses = [];
   static List<Future<void>> uploadTasks = [];
-  static Map<String, List<StudyMaterial>> _cloudMaterial = {};
+  static final Map<String, List<StudyMaterial>> _cloudMaterial = {};
   static Map<String, List<StudyMaterial>> _localMaterial = {};
   static List<Uploads> _unseenUploads = [];
   static List<Uploads> _seenUploads = [];
@@ -20,48 +21,55 @@ class StudentCache {
   static Future<void> initCache({required String uid}) async {
     _studentId = uid;
     Student? student = await StudentRepository().getUserById(_studentId);
-    _courses = student?.myCourses ?? [];
+    _courses = student?.myCourses ?? []; // Ensure _courses is never null
     _localMaterial = await StudyMaterialRepo(uid: _studentId).fetchDownloads();
+
     _chatRooms = await ChatRepository(
       localChat: HiveImplementation(),
       onlineChat: FirestoreImplementation(),
     ).fetchAllChatRooms(uid);
   }
 
+  /// Getters for read-only access
   static List<Uploads> get unseenUploads => _unseenUploads;
-
   static List<Uploads> get seenUploads => _seenUploads;
-
-  static List<String> get courses => _courses;
-
+  static UnmodifiableListView<String> get courses =>
+      UnmodifiableListView(_courses);
   static Student get tempStudent =>
       Student(userId: _studentId, myCourses: _courses);
-
   static List<ChatRoom> get chatRooms => _chatRooms;
-
-  static List<Future<void>> get notifications => _notifications;
-
+  static UnmodifiableListView<Future<void>> get notifications =>
+      UnmodifiableListView(_notifications);
   static Map<String, List<StudyMaterial>> get localStudyMaterial =>
       _localMaterial;
+  static Map<String, List<StudyMaterial>> get cloudStudyMaterial =>
+      _cloudMaterial;
+
+  /// Methods to update cache
+  static void updateCloudStudyMaterial(
+      String course, List<StudyMaterial> materials) {
+    _cloudMaterial[course] = materials;
+  }
 
   static void setUnseenUploads(List<Uploads> uploads) =>
       _unseenUploads = uploads;
 
   static void setCourses(List<String> newList) => _courses = newList;
 
-  static void updateLocaldownlods(Map<String, List<StudyMaterial>> update) =>
-      _localMaterial = update;
+  static void updateCourseLocalMaterial(
+      {required String course, required List<StudyMaterial> materials}) {
+    _localMaterial[course] = materials;
+  }
+
+  static void updateCourseCloudMaterial(
+      {required String course, required List<StudyMaterial> materials}) {
+    _cloudMaterial[course] = materials;
+  }
 
   static void updateLocalMaterial(Map<String, List<StudyMaterial>> update) =>
       _localMaterial = update;
-
-  static void updateCloudMaterial(Map<String, List<StudyMaterial>> update) =>
-      _cloudMaterial = update;
-
-  static void setSeenUploads(List<Uploads> completedUploads) {
-    _seenUploads = completedUploads;
-  }
-
+  static void setSeenUploads(List<Uploads> completedUploads) =>
+      _seenUploads = completedUploads;
   static void addNotifications(Future<void> localNotification) =>
       _notifications.add(localNotification);
 }

@@ -54,3 +54,9 @@ class ReadStudyMaterial extends ViewMaterialEvent {
     required this.online,
   });
 }
+
+class DeleteMaterials extends ViewMaterialEvent {
+  final List<StudyMaterial> materials;
+
+  const DeleteMaterials({required this.materials});
+}

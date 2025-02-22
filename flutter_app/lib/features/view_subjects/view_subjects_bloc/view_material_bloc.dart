@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:reviza/app/services/notifications_service.dart';
@@ -11,141 +14,166 @@ class ViewMaterialBloc extends Bloc<ViewMaterialEvent, ViewMaterialState> {
   ViewMaterialBloc({required StudyMaterialRepo studyMaterial})
       : _materialRepository = studyMaterial,
         super(ViewMaterialInitial()) {
-    on<FetchCourseMaterials>((event, emit) async {
-      Map<String, List<StudyMaterial>> map = {};
-      emit(FetchingMaterialsState());
-      emit(LoadingState());
-      try {
-        if (event.online) {
-          map = await _materialRepository.fetchUploadedMaterial(
-              course: event.course ?? '');
-        } else {
-          map = await _materialRepository.fetchDownloads();
-        }
-        emit(MaterialsFetchedState(courseToMaterialsMap: map));
-      } catch (e) {
-        emit(ErrorState(message: 'Failed to fetch study material\n $e'));
-      }
-    });
-
     on<DownLoadMaterial>(_downloadMaterial);
-
-    on<DownLoadMaterial>((event, emit) async {
-      try {
-        await for (final progress
-            in _materialRepository.downloadMaterial(event.course)) {
-          emit(DownloadingCourses());
-
-          if (progress == 1.0) {
-            emit(MaterialDownloadedSuccesfully());
-          }
-        }
-      } catch (e) {
-        emit(ErrorState(message: 'Failed to download material\n $e'));
+    on<VoteMaterial>(_voteMaterial);
+    on<ReportMaterial>(_reportMaterial);
+    on<DeleteMaterials>((event, emit) async {
+      for (StudyMaterial path in event.materials) {
+        await StudyMaterialRepo(uid: StudentCache.tempStudent.userId)
+            .deleteLocalMaterial(material: path);
       }
+      emit(ViewMaterialInitial());
     });
-
-    on<VoteMaterial>(
-      (event, emit) async {
-        try {
-          await _materialRepository.upvoteMaterial(
-              vote: event.vote, studyMaterial: event.material);
-        } on Exception catch (e) {
-          emit(ErrorState(message: 'Voting failed\n ERROR: $e'));
-        }
-      },
-    );
-
-    on<ReportMaterial>(
-      (event, emit) async {
-        try {
-          _materialRepository.reportMaterial(studyMaterial: event.material);
-        } on Exception catch (e) {
-          emit(ErrorState(message: 'Voting failed\n ERROR: $e'));
-        }
-      },
-    );
   }
 
-  /// Handles multiple file uploads concurrently
-  Future<void> _downloadMaterial(
-      DownLoadMaterial event, Emitter<DownloadingCourses> emit) async {
-    // List<Future<void>> StudentCache.uploadTasks = [];
+  final StudyMaterialRepo _materialRepository;
 
-    for (StudyMaterial material in StudentCache.currentDownload) {
-      if (!(await material.isOnDevice)) {
-        StudentCache.currentDownloadTasks
-            .add(_downloadSingleFile(material, event, emit));
+  /// Handles material voting (upvote/downvote) and updates cache
+  Future<void> _voteMaterial(
+      VoteMaterial event, Emitter<ViewMaterialState> emit) async {
+    try {
+      await _materialRepository.upvoteMaterial(
+          vote: event.vote, studyMaterial: event.material);
+
+      // Update cache
+      final course = event.material.subjectName;
+      final updatedMaterials = List<StudyMaterial>.from(
+          StudentCache.localStudyMaterial[course] ?? []);
+      final index =
+          updatedMaterials.indexWhere((mat) => mat.id == event.material.id);
+      if (index != -1) {
+        event.material.fans.remove(StudentCache.tempStudent.userId);
+        event.material.haters.remove(StudentCache.tempStudent.userId);
+
+        if (event.vote == true) {
+          event.material.fans.add(StudentCache.tempStudent.userId);
+        } else if (event.vote == false) {
+          event.material.haters.add(StudentCache.tempStudent.userId);
+        }
+        updatedMaterials[index] = event.material
+            .copyWith(fans: event.material.fans, haters: event.material.haters);
+        StudentCache.updateCourseLocalMaterial(
+            course: course, materials: updatedMaterials);
       }
+      emit(ViewMaterialInitial());
+    } on Exception catch (e) {
+      emit(ErrorState(message: 'Voting failed\n ERROR: $e'));
+    }
+  }
+
+  /// Handles reporting a material and updates cache
+  Future<void> _reportMaterial(
+      ReportMaterial event, Emitter<ViewMaterialState> emit) async {
+    try {
+      _materialRepository.reportMaterial(studyMaterial: event.material);
+
+      // Update cache: Remove reported material (if necessary)
+      final course = event.material.subjectName;
+      final updatedMaterials = List<StudyMaterial>.from(
+          StudentCache.localStudyMaterial[course] ?? []);
+      updatedMaterials.removeWhere((mat) => mat.id == event.material.id);
+      StudentCache.updateLocalMaterial({course: updatedMaterials});
+      emit(ViewMaterialInitial());
+    } on Exception catch (e) {
+      emit(ErrorState(message: 'Reporting failed\n ERROR: $e'));
+    }
+  }
+
+  /// Handles downloading materials and updating cache
+  Future<void> _downloadMaterial(
+      DownLoadMaterial event, Emitter<ViewMaterialState> emit) async {
+    if (await event.course.isOnDevice) {
+      emit(ErrorState(message: '${event.course.title} already downloaded'));
+      return;
     }
 
-    await Future.wait(StudentCache.currentDownloadTasks);
+    final StudyMaterial material = event.course;
+    StudentCache.currentDownloadTasks
+        .add(_downloadSingleFile(material, event, emit));
 
+    await Future.wait(StudentCache.currentDownloadTasks);
     emit(DownloadingCourses());
   }
 
-  Future<void> _downloadSingleFile(
-    StudyMaterial material,
-    DownLoadMaterial event,
-    Emitter<DownloadingCourses> emit,
-  ) async {
+  /// Handles the actual file download and updates StudentCache
+  Future<void> _downloadSingleFile(StudyMaterial material,
+      DownLoadMaterial event, Emitter<ViewMaterialState> emit) async {
     if (material.onlinePath == null) {
-      throw Exception('Please give ${material.title} a document type');
+      emit(
+          ErrorState(message: 'Please give ${material.title} a document type'));
+      return;
+    }
+
+    String pathToSaveDownload =
+        await getFilePath(event.course.id, event.course.subjectName);
+
+    if (File(pathToSaveDownload).existsSync()) {
+      File(pathToSaveDownload).deleteSync();
     }
 
     try {
-      Stream<double> dowloadStatus =
-          _materialRepository.downloadMaterial(material);
+      log(pathToSaveDownload);
+      Stream<String> downloadStatus = _materialRepository.downloadMaterial(
+        studyMaterial: material,
+        pathToDownload: pathToSaveDownload,
+      );
 
-      // Show notification that upload has started
+      // Show notification that download has started
       final notificationTask =
           NotificationService.showDownloadProgressNotification(
               0, material.title, material.id);
       StudentCache.addNotifications(notificationTask);
 
-      await emit.forEach<double>(
-        dowloadStatus,
+      await emit.forEach<String>(
+        downloadStatus,
         onError: (error, stackTrace) {
           StudentCache.currentDownload
-              .removeWhere((up) => material.id == up.id);
-
+              .removeWhere((mat) => material.id == mat.id);
           NotificationService.showDownloadErrorNotification(
-              material.title, material.id);
-
-          return DownloadingCourses();
+              material.id, material.title);
+          return ErrorState(message: error.toString());
         },
         onData: (status) {
-          if (status < 1) {
-            final StudyMaterial newUpload =
-                material.copyWith(downloadProgress: status);
+          if (status.contains('%')) {
+            final double progress =
+                double.tryParse(status.replaceAll('%', '')) ?? 0;
+            final updatedMaterial =
+                material.copyWith(downloadProgress: progress);
             StudentCache.currentDownload
-                .removeWhere((up) => material.id == up.id);
-            StudentCache.currentDownload.add(newUpload);
+                .removeWhere((mat) => material.id == mat.id);
+            StudentCache.currentDownload.add(updatedMaterial);
 
             NotificationService.showDownloadProgressNotification(
-                status, material.title, material.id);
-
-            return DownloadingCourses();
+                progress, material.title, material.id);
           }
 
-          if (status == 1) {
+          if (status == '✅') {
             NotificationService.showDownloadCompletionNotification(
                 material.title, material.id);
+            final course = material.subjectName;
+            final updatedMaterials = List<StudyMaterial>.from(
+                StudentCache.localStudyMaterial[course] ?? []);
+            updatedMaterials.add(material.copyWith(
+                downloadProgress: 1, localPath: pathToSaveDownload));
+            StudentCache.updateLocalMaterial({course: updatedMaterials});
 
+            StudentCache.initCache(uid: StudentCache.tempStudent.userId);
             return DownloadingCourses();
           }
-
           return DownloadingCourses();
         },
       );
     } catch (e) {
-      // Cancel notification on error
-
       emit(ErrorState(
-        message: 'Upload failed for ${material.title}: ${e.toString()}',
+        message: 'Download failed for ${material.title}: ${e.toString()}',
       ));
     }
   }
 
-  final StudyMaterialRepo _materialRepository;
+  Future<String> getFilePath(String fileId, String subjectName) async {
+    final Directory dir = await getApplicationDocumentsDirectory();
+    final String path = '${dir.path}/$subjectName';
+    await Directory(path).create(recursive: true); // Ensure directory exists
+    return '$path/$fileId';
+  }
 }

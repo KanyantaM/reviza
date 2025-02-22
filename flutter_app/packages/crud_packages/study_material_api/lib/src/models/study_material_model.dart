@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'study_material_model.g.dart'; // Generated file for Hive TypeAdapter
 
@@ -40,6 +41,9 @@ class StudyMaterial extends HiveObject {
 
   final double? downloadProgress;
 
+  Future<String?> get revizaStorage async =>
+      await _getFilePath(id, subjectName);
+
   StudyMaterial({
     required this.subjectName,
     required this.type,
@@ -51,7 +55,7 @@ class StudyMaterial extends HiveObject {
     required this.haters,
     required this.reports,
     required this.size,
-    this.localPath,
+    required this.localPath,
     this.downloadProgress,
   });
 
@@ -73,17 +77,17 @@ class StudyMaterial extends HiveObject {
 
   factory StudyMaterial.fromOnlineJson(Map<String, dynamic> json) {
     return StudyMaterial(
-      id: json['id'] ?? '',
-      title: json['title'] ?? 'Untitled',
-      description: json['description'] ?? '',
-      onlinePath: json['filePath'],
-      subjectName: json['subject_name'] ?? 'Unknown Subject',
-      type: json['type'] ?? 'Unknown Type',
-      fans: List<String>.from(json['fans'] ?? []),
-      haters: List<String>.from(json['haters'] ?? []),
-      reports: List<String>.from(json['reports'] ?? []),
-      size: json['size'] ?? 0,
-    );
+        id: json['id'] ?? '',
+        title: json['title'] ?? 'Untitled',
+        description: json['description'] ?? '',
+        onlinePath: json['online_path'],
+        subjectName: json['subject_name'] ?? 'Unknown Subject',
+        type: json['type'] ?? 'Unknown Type',
+        fans: List<String>.from(json['fans'] ?? []),
+        haters: List<String>.from(json['haters'] ?? []),
+        reports: List<String>.from(json['reports'] ?? []),
+        size: json['size'] ?? 0,
+        localPath: json['local_path'] ?? '');
   }
 
   Map<String, dynamic> toOnline() {
@@ -97,7 +101,8 @@ class StudyMaterial extends HiveObject {
       'haters': haters,
       'reports': reports,
       'size': size,
-      'filePath': onlinePath,
+      'online_path': onlinePath,
+      'local_path': localPath
     };
 
     return map;
@@ -122,8 +127,8 @@ class StudyMaterial extends HiveObject {
   }
 
   Future<bool> get isOnDevice async {
-    if (localPath == null) return false;
-    return File(localPath!).existsSync();
+    final String cloudLocal = await _getFilePath(id, subjectName);
+    return (File(localPath!).existsSync() || File(cloudLocal).existsSync());
   }
 
   StudyMaterial copyWith({
@@ -155,4 +160,9 @@ class StudyMaterial extends HiveObject {
       downloadProgress: downloadProgress ?? this.downloadProgress,
     );
   }
+}
+
+Future<String> _getFilePath(String fileId, String subjectName) async {
+  final dir = await getApplicationDocumentsDirectory();
+  return "${dir.path}/$subjectName/$fileId";
 }

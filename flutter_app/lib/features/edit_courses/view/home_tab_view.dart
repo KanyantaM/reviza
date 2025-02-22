@@ -27,32 +27,30 @@ class HomeTabView extends StatelessWidget {
       },
       builder: (context, state) {
         return Scaffold(
-          floatingActionButton: state is CoursesFetchedState
-              ? FloatingActionButton(
-                  onPressed: () {
-                    Scaffold.of(context).showBottomSheet(
-                      (context) {
-                        return HomeBottomSheetView(
-                          student: (state).student,
-                          onSave: (selectedCourses) {
-                            for (var course in selectedCourses) {
-                              if (!state.student.myCourses.contains(course)) {
-                                state.student.myCourses.add(course);
-                              }
-                            }
-                            widgetBloc.add(AddMyCourse(
-                                student: state.student,
-                                courses: state.student.myCourses));
-                          },
-                        );
-                      },
-                      // isScrollControlled: true,
-                    );
-                  },
-                  tooltip: 'Increment',
-                  child: const Icon(Icons.add),
-                )
-              : const Wrap(),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Scaffold.of(context).showBottomSheet(
+                (context) {
+                  return HomeBottomSheetView(
+                    student: StudentCache.tempStudent,
+                    onSave: (selectedCourses) {
+                      for (var course in selectedCourses) {
+                        if (!StudentCache.courses.contains(course)) {
+                          StudentCache.courses.add(course);
+                        }
+                      }
+                      widgetBloc.add(AddMyCourse(
+                          student: StudentCache.tempStudent,
+                          courses: StudentCache.courses));
+                    },
+                  );
+                },
+                // isScrollControlled: true,
+              );
+            },
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
           body: _buildBody(state, context),
         );
       },

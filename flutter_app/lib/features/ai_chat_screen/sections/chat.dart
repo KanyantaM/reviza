@@ -57,6 +57,8 @@ class AIChatScreenState extends State<AIChatScreen> {
           .map((message) => Content.text(message.text))
           .toList(),
     );
+
+    setState(() {});
   }
 
   @override

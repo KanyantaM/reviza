@@ -101,7 +101,7 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
 
         if (!widget.isDownloadedView) {
           return Scaffold(
-            appBar: cloudAppBar(context),
+            appBar: cloudAppBar(context, widget.courseName!.split('-').first),
             body: TabBarView(controller: _tabController, children: <Widget>[
               generateCardByTypeSelector(Types.notes,
                   course: widget.courseName),
@@ -226,9 +226,9 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
     );
   }
 
-  AppBar appBarSelector(BuildContext context) {
+  AppBar appBarSelector(BuildContext context, String? courseName) {
     return (!widget.isDownloadedView)
-        ? cloudAppBar(context)
+        ? cloudAppBar(context, courseName)
         : localAppBar(context);
   }
 
@@ -241,10 +241,10 @@ class _SubjectDetailsScreenState extends State<ViewMaterialsView>
   }
 
   /// Custom AppBar with Smooth Animated Tabs
-  AppBar cloudAppBar(BuildContext context) {
+  AppBar cloudAppBar(BuildContext context, String? courseName) {
     return AppBar(
       centerTitle: true,
-      title: const Text('ReviZa'),
+      title: Text(courseName ?? 'ReviZa'),
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(50),
         child: Padding(

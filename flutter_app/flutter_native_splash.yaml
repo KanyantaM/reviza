@@ -1,0 +1,19 @@
+flutter_native_splash:
+  color: "#ffffff"  # White background for a clean look
+  image: assets/icon/reviza_icon.png  # Use your uploaded logo
+  color_dark: "#121212"  # Dark mode background
+  image_dark: assets/logo/logo.jpeg  # Same logo for dark mode
+
+  android_12:
+    image: assets/icon/reviza_icon.png  # Logo for Android 12+
+    color: "#ffffff"  # Background for Android 12+
+    icon_background_color: "#ffffff"  # Keep icon background clean
+    image_dark: assets/icon/reviza_icon.png  # Dark mode logo
+    color_dark: "#121212"  # Dark mode background
+    icon_background_color_dark: "#121212"  # Dark mode icon background
+
+  android_gravity: center  # Center the image
+  ios_content_mode: center  # Center the image on iOS
+  web_image_mode: contain  # Ensure full visibility on web
+
+  fullscreen: true  # Hide notification bar for a more immersive look

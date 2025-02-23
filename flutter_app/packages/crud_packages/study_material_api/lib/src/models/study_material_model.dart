@@ -40,10 +40,10 @@ class StudyMaterial extends HiveObject {
   final String? localPath;
 
   @HiveField(11)
-  final String uploaderId;
+  final String? uploaderId;
 
   @HiveField(12)
-  final int downloads;
+  final int? downloads;
 
   final double? downloadProgress;
 
@@ -51,7 +51,7 @@ class StudyMaterial extends HiveObject {
       await _getFilePath(id, subjectName);
 
   StudyMaterial({
-    required this.downloads,
+    this.downloads = 0,
     required this.uploaderId,
     required this.subjectName,
     required this.type,
@@ -146,7 +146,10 @@ class StudyMaterial extends HiveObject {
 
   Future<bool> get isOnDevice async {
     final String cloudLocal = await _getFilePath(id, subjectName);
-    return (File(localPath!).existsSync() || File(cloudLocal).existsSync());
+    if (localPath == null || (localPath?.isEmpty ?? true)) {
+      return File(cloudLocal).existsSync();
+    }
+    return (File(localPath!).existsSync());
   }
 
   StudyMaterial copyWith({
@@ -177,7 +180,7 @@ class StudyMaterial extends HiveObject {
       size: size ?? this.size,
       localPath: localPath ?? this.localPath,
       downloadProgress: downloadProgress ?? this.downloadProgress,
-      downloads: downloaders ?? this.downloads,
+      downloads: downloaders ?? downloads,
       uploaderId: uploaderId,
     );
   }

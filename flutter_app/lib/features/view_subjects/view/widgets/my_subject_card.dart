@@ -33,6 +33,7 @@ class StudyMaterialCard extends StatelessWidget {
       child: FutureBuilder<bool>(
           future: studyMaterial.isOnDevice,
           builder: (context, snapshot) {
+            log(snapshot.data.toString());
             return GestureDetector(
               onLongPress: () => onLongPress(),
               onTap: () async {

@@ -36,7 +36,7 @@ class HomeTabView extends StatelessWidget {
                     onSave: (selectedCourses) {
                       for (var course in selectedCourses) {
                         if (!StudentCache.courses.contains(course)) {
-                          StudentCache.courses.add(course);
+                          StudentCache.addCourse(course);
                         }
                       }
                       widgetBloc.add(AddMyCourse(

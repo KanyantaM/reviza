@@ -134,90 +134,81 @@ class UserStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildCard("Total Activity", [
-          _buildStatRow([
-            BlocBuilder<UploadPdfBloc, UploadPdfState>(
-              builder: (context, state) {
-                return _buildStatItem(Icons.upload, "Uploads",
-                    StudentCache.tempStudent.uploadCount.toString());
-              },
-            ),
-            BlocBuilder<ViewMaterialBloc, ViewMaterialState>(
-              builder: (context, state) {
-                return _buildStatItem(Icons.download, "Downloads",
-                    StudentCache.tempStudent.downloadCount.toString());
-              },
-            ),
-          ]),
-        ]),
-        const SizedBox(height: 12),
-        _buildCard("Subscription", [
-          _buildStatRow([
-            _buildStatItem(
-                Icons.account_balance_wallet, "Account Type", "Premium"),
-            BlocBuilder<ViewMaterialBloc, ViewMaterialState>(
-              builder: (context, state) {
-                return _buildStatItem(Icons.calendar_month, "Month",
-                    "${StudentCache.tempStudent.downloadCount} / ∞");
-              },
-            ),
-          ]),
-          const SizedBox(height: 8),
-          Center(
-            child: ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Show subscription options
-                commingSoon(context);
-              },
-              icon: const Icon(Icons.shopping_cart, color: Colors.blueAccent),
-              label: const Text("Get More Downloads"),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Center(
-            child: const Text(
-              "Earn a free download by uploading material!",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12),
-            ),
-          ),
-        ]),
-        const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildStatItem(Icons.warning, "Bad Uploads",
-                "${StudentCache.tempStudent.badUploadCount.toString()}/5",
-                isWarning: true),
-            BlocBuilder<AppBloc, AppState>(
-              builder: (context, state) {
-                return Row(
-                  children: [
-                    const Icon(Icons.brightness_6),
-                    const SizedBox(width: 8),
-                    const Text('Theme'),
-                    const SizedBox(width: 8),
-                    Switch(
-                      value: state.theme,
-                      onChanged: (bool value) {
-                        context.read<AppBloc>().add(ChangeTheme(theme: value));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool isWideScreen = constraints.maxWidth > 800;
+
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+                maxWidth: 800), // Limits width on large screens
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildCard("Total Activity", [
+                  _buildStatRow([
+                    BlocBuilder<UploadPdfBloc, UploadPdfState>(
+                      builder: (context, state) {
+                        return _buildStatItem(Icons.upload, "Uploads",
+                            StudentCache.tempStudent.uploadCount.toString());
                       },
                     ),
-                  ],
-                );
-              },
+                    BlocBuilder<ViewMaterialBloc, ViewMaterialState>(
+                      builder: (context, state) {
+                        return _buildStatItem(Icons.download, "Downloads",
+                            StudentCache.tempStudent.downloadCount.toString());
+                      },
+                    ),
+                  ], isWideScreen),
+                ]),
+                const SizedBox(height: 12),
+                _buildCard("Subscription", [
+                  _buildStatRow([
+                    _buildStatItem(Icons.account_balance_wallet, "Account Type",
+                        "Premium"),
+                    BlocBuilder<ViewMaterialBloc, ViewMaterialState>(
+                      builder: (context, state) {
+                        return _buildStatItem(Icons.calendar_month, "Month",
+                            "${StudentCache.tempStudent.downloadCount} / ∞");
+                      },
+                    ),
+                  ], isWideScreen),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        commingSoon(context);
+                      },
+                      icon: const Icon(Icons.shopping_cart,
+                          color: Colors.blueAccent),
+                      label: const Text("Get More Downloads"),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Center(
+                    child: const Text(
+                      "Earn a free download by uploading material!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ]),
+                const SizedBox(height: 12),
+                _buildBottomRow(isWideScreen),
+              ],
             ),
-          ],
-        )
-      ],
+          ),
+        );
+      },
     );
   }
 
   Widget _buildCard(String title, List<Widget> children) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 3,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -235,10 +226,15 @@ class UserStatsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatRow(List<Widget> children) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: children,
+  Widget _buildStatRow(List<Widget> children, bool isWideScreen) {
+    return Wrap(
+      spacing: 16,
+      runSpacing: 8,
+      alignment: WrapAlignment.center, // Centers on large screens
+      children: children
+          .map((e) =>
+              SizedBox(width: isWideScreen ? 350 : double.infinity, child: e))
+          .toList(),
     );
   }
 
@@ -268,6 +264,37 @@ class UserStatsCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBottomRow(bool isWideScreen) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatItem(Icons.warning, "Bad Uploads",
+              "${StudentCache.tempStudent.badUploadCount}/5",
+              isWarning: true),
+        ),
+        const SizedBox(width: 16),
+        BlocBuilder<AppBloc, AppState>(
+          builder: (context, state) {
+            return Row(
+              children: [
+                const Icon(Icons.brightness_6),
+                const SizedBox(width: 8),
+                const Text('Theme'),
+                const SizedBox(width: 8),
+                Switch(
+                  value: state.theme,
+                  onChanged: (bool value) {
+                    context.read<AppBloc>().add(ChangeTheme(theme: value));
+                  },
+                ),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 }

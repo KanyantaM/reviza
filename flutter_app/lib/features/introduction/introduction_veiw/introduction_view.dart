@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reviza/ui/home_screen/app_home.dart';
@@ -37,6 +39,7 @@ class _IntroductionViewState extends State<IntroductionView> {
     context
         .read<IntroductionBloc>()
         .add(CheckIntroductionStatus(studentId: widget.studentId));
+
     return BlocBuilder<IntroductionBloc, IntroductionState>(
       builder: (context, state) {
         if (state is IntroductionCheckingStatus) {
@@ -46,6 +49,13 @@ class _IntroductionViewState extends State<IntroductionView> {
         } else if (state is IntroductionErrorState) {
           return NoDataCuate(issue: state.message);
         } else if (state is IntroductionNotIntroduced) {
+          // Skip introduction screen for non-mobile platforms
+          if (!Platform.isAndroid && !Platform.isIOS) {
+            return CourseSelectionWidget(
+              data: data,
+              studentId: widget.studentId,
+            );
+          }
           return _introductionView(context);
         }
         return Scaffold(

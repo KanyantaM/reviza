@@ -102,9 +102,9 @@ class StudyMaterialRepo {
           case TaskState.success:
             final StudyMaterial downloadedMaterial = studyMaterial.copyWith(
                 localPath: pathToDownload,
-                downloaders: studyMaterial.downloads + 1);
+                downloaders: (studyMaterial.downloads ?? 0) + 1);
             final Student updatedStudent = downloader.copyWith(
-                uploadCount: (downloader.downloadCount) + 1);
+                downloadCount: (downloader.downloadCount ?? 0) + 1);
 
             await StudentRepository().updateUser(updatedStudent);
             await _cloudStorage.addStudyMaterial(downloadedMaterial);
@@ -209,8 +209,8 @@ class StudyMaterialRepo {
               uploaderId: uploader?.userId ?? '',
             );
 
-            final Student updatedStudent =
-                uploader!.copyWith(uploadCount: (uploader.uploadCount) + 1);
+            final Student updatedStudent = uploader!
+                .copyWith(uploadCount: (uploader.uploadCount ?? 0) + 1);
 
             await StudentRepository().updateUser(updatedStudent);
 

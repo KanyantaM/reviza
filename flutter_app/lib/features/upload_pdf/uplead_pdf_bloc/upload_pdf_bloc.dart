@@ -113,7 +113,7 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
 
             NotificationService.showUploadCompletionNotification(
                 upload.name, upload.id ?? '');
-
+            StudentCache.initCache(uid: StudentCache.tempStudent.userId);
             return UploadingPdfState(
               currentUploads: StudentCache.unseenUploads,
               completedUploads: StudentCache.seenUploads,

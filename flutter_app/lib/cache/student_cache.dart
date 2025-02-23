@@ -63,6 +63,8 @@ class StudentCache {
 
   static void setCourses(List<String> newList) => _courses = newList;
 
+  static void addCourse(String course) => _courses.add(course);
+
   static void updateCourseLocalMaterial(
       {required String course, required List<StudyMaterial> materials}) {
     _localMaterial[course] = materials;

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -6,6 +7,8 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   static Future<void> initialize() async {
+    if (!(Platform.isAndroid || Platform.isIOS)) return;
+
     const initializationSettingsAndroid = AndroidInitializationSettings(
       '@mipmap/ic_stat_notification_icon',
     );
@@ -22,6 +25,8 @@ class NotificationService {
 
   static Future<void> showUploadProgressNotification(
       double progress, String fileName, String uploadId) async {
+    if (!(Platform.isAndroid || Platform.isIOS)) return;
+
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       uploadId,
@@ -50,6 +55,8 @@ class NotificationService {
 
   static Future<void> showUploadCompletionNotification(
       String fileName, String uploadId) async {
+    if (!(Platform.isAndroid || Platform.isIOS)) return;
+
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       uploadId,
@@ -74,6 +81,8 @@ class NotificationService {
 
   static Future<void> showUploadErrorNotification(
       String uploadId, String fileName) async {
+    if (!(Platform.isAndroid || Platform.isIOS)) return;
+
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       uploadId,
@@ -97,6 +106,8 @@ class NotificationService {
 
   static Future<void> showDownloadProgressNotification(
       double progress, String fileName, String fileId) async {
+    if (!(Platform.isAndroid || Platform.isIOS)) return;
+
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       fileId,
@@ -108,7 +119,7 @@ class NotificationService {
       showProgress: true,
       maxProgress: 100,
       onlyAlertOnce: true,
-      color: Colors.teal[2],
+      color: Colors.teal[200],
     );
 
     final NotificationDetails platformChannelSpecifics =
@@ -125,6 +136,8 @@ class NotificationService {
 
   static Future<void> showDownloadCompletionNotification(
       String fileName, String uploadId) async {
+    if (!(Platform.isAndroid || Platform.isIOS)) return;
+
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       uploadId,
@@ -132,7 +145,7 @@ class NotificationService {
       channelDescription: 'Shows progress of download completions',
       importance: Importance.high,
       priority: Priority.high,
-      color: Colors.teal[2],
+      color: Colors.teal[200],
     );
 
     final NotificationDetails platformChannelSpecifics =
@@ -149,6 +162,8 @@ class NotificationService {
 
   static Future<void> showDownloadErrorNotification(
       String fileId, String fileName) async {
+    if (!(Platform.isAndroid || Platform.isIOS)) return;
+
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       fileId,

@@ -19,9 +19,9 @@ class StudentAdapter extends TypeAdapter<Student> {
     return Student(
       userId: fields[0] as String,
       myCourses: (fields[1] as List).cast<String>(),
-      uploadCount: fields[2] as int,
-      downloadCount: fields[3] as int,
-      badUploadCount: fields[4] as int,
+      uploadCount: fields[2] as int?,
+      downloadCount: fields[3] as int?,
+      badUploadCount: fields[4] as int?,
     );
   }
 

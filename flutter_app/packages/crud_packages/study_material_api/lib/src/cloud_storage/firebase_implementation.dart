@@ -58,10 +58,10 @@ class FiresbaseStudyMaterialImplementation implements StudyMaterialApi {
 
       final StudentRepository studentRepo = StudentRepository();
       final Student? uploader =
-          await studentRepo.getUserById(material.uploaderId);
+          await studentRepo.getUserById(material.uploaderId!);
 
       if (uploader != null) {
-        int badUploadCount = uploader.badUploadCount + 1;
+        int badUploadCount = (uploader.badUploadCount ?? 0) + 1;
         final Student reportedUploader =
             uploader.copyWith(badUploadCount: badUploadCount);
         studentRepo.updateUser(reportedUploader);

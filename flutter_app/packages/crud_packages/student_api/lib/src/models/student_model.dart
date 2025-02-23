@@ -11,20 +11,20 @@ class Student extends HiveObject {
   List<String> myCourses;
 
   @HiveField(2)
-  int uploadCount;
+  int? uploadCount;
 
   @HiveField(3)
-  int downloadCount;
+  int? downloadCount;
 
   @HiveField(4)
-  int badUploadCount;
+  int? badUploadCount;
 
   Student({
     required this.userId,
     required this.myCourses,
-    required this.uploadCount,
-    required this.downloadCount,
-    required this.badUploadCount,
+    this.uploadCount = 0,
+    this.downloadCount = 0,
+    this.badUploadCount = 0,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) {

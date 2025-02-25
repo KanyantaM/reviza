@@ -11,6 +11,7 @@ class ForgotPasswordForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
+        listenWhen: (previous, current) => (previous.email == current.email),
         listener: (context, state) {
           if (!state.status.isSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(

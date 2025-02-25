@@ -7,6 +7,7 @@ import 'package:reviza/app/services/notifications_service.dart';
 import 'package:reviza/cache/student_cache.dart';
 import 'package:reviza/features/upload_pdf/view/utils/type_description_generator.dart';
 import 'package:study_material_repository/study_material_repository.dart';
+import 'package:pool/pool.dart';
 
 part 'upload_pdf_event.dart';
 part 'upload_pdf_state.dart';
@@ -25,18 +26,26 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
   final List<Uploads> _completedUploads = StudentCache.seenUploads;
 
   /// Handles multiple file uploads concurrently
+
   Future<void> _onUploadPdf(
       UploadPdf event, Emitter<UploadPdfState> emit) async {
-    // List<Future<void>> StudentCache.uploadTasks = [];
+    List<Future<void>> uploadTasks = [];
+    if (Platform.isWindows) {
+      final pool = Pool(1);
 
-    for (Uploads upload in StudentCache.unseenUploads) {
-      if (upload.status == null) {
-        StudentCache.uploadTasks.add(_uploadSingleFile(upload, event, emit));
-      }
+      uploadTasks = StudentCache.unseenUploads
+          .where((upload) => upload.status == null)
+          .map((upload) =>
+              pool.withResource(() => _uploadSingleFile(upload, event, emit)))
+          .toList();
+    } else {
+      uploadTasks = StudentCache.unseenUploads
+          .where((upload) => upload.status == null)
+          .map((upload) => _uploadSingleFile(upload, event, emit))
+          .toList();
     }
 
-    await Future.wait(StudentCache.uploadTasks);
-
+    await Future.wait(uploadTasks);
     emit(FetchedUploadsPdf(
       currentUploads: List.from(_currentUploads),
       completedUploads: List.from(_completedUploads),
@@ -64,12 +73,13 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
         materialId: upload.id,
         uploader: StudentCache.tempStudent,
       );
-
-      // Show notification that upload has started
-      final notificationTask =
-          NotificationService.showUploadProgressNotification(
-              0, upload.name, upload.id ?? '');
-      StudentCache.addNotifications(notificationTask);
+      if ((Platform.isAndroid || Platform.isIOS)) {
+        // Show notification that upload has started
+        final notificationTask =
+            NotificationService.showUploadProgressNotification(
+                0, upload.name, upload.id ?? '');
+        StudentCache.addNotifications(notificationTask);
+      }
 
       await emit.forEach<String>(
         uploadStatus,
@@ -79,8 +89,10 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
           _currentUploads.add(newUpload);
           _updateCache();
 
-          NotificationService.showUploadErrorNotification(
-              upload.name, upload.id ?? '');
+          if ((Platform.isAndroid || Platform.isIOS)) {
+            NotificationService.showUploadErrorNotification(
+                upload.name, upload.id ?? '');
+          }
 
           return UploadingPdfState(
             currentUploads: StudentCache.unseenUploads,
@@ -97,8 +109,10 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
             // Extract percentage and update the notification
             final double progress =
                 double.tryParse(status.replaceAll('%', '')) ?? 0;
-            NotificationService.showUploadProgressNotification(
-                progress, upload.name, upload.id ?? '');
+            if ((Platform.isAndroid || Platform.isIOS)) {
+              NotificationService.showUploadProgressNotification(
+                  progress, upload.name, upload.id ?? '');
+            }
 
             return UploadingPdfState(
               currentUploads: StudentCache.unseenUploads,
@@ -111,8 +125,10 @@ class UploadPdfBloc extends Bloc<UploadPdfEvent, UploadPdfState> {
             _completedUploads.add(newUpload);
             _updateCache();
 
-            NotificationService.showUploadCompletionNotification(
-                upload.name, upload.id ?? '');
+            if ((Platform.isAndroid || Platform.isIOS)) {
+              NotificationService.showUploadCompletionNotification(
+                  upload.name, upload.id ?? '');
+            }
             StudentCache.initCache(uid: StudentCache.tempStudent.userId);
             return UploadingPdfState(
               currentUploads: StudentCache.unseenUploads,

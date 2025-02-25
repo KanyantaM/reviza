@@ -10,6 +10,9 @@ class SignUpForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignUpCubit, SignUpState>(
+      listenWhen: (previous, current) =>
+          (previous.email == current.email) &&
+          (previous.password == current.password),
       listener: (context, state) {
         if (state.status.isSuccess) {
           Navigator.of(context).pop();

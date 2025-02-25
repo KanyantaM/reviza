@@ -32,7 +32,7 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
     with SingleTickerProviderStateMixin {
   List<String> _myCourses = [];
   bool isuploaded = false;
-  PlatformFile? _platformFile;
+
   Types? _type;
   String _selectedCourse = '';
   String _materialId = Uuid().v4();
@@ -117,9 +117,8 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
                                     context.read<UploadPdfBloc>().add(UploadPdf(
                                         uploads: List<Uploads>.from(
                                             StudentCache.unseenUploads)));
-                                    setState(() {
-                                      _platformFile = null;
-                                    });
+                                    setState(() {});
+                                    //todo: check my changes
                                     // _annotateBottomSheet(context, null);
                                   },
                                 ),
@@ -367,21 +366,25 @@ class _CreateUpdateNoteViewState extends State<UploadPdfView>
   }
 
   Future<void> _pickFile(BuildContext context) async {
-    final result = await FilePicker.platform
-        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+      allowMultiple: true,
+    );
     if (result != null) {
       setState(() {
         _materialId = Uuid().v4();
-        _platformFile = result.files.first;
-        _updateCache(Uploads(
-          id: Uuid().v4(),
-          courseName: _selectedCourse,
-          type: _type,
-          name: basename(normalize(_platformFile!.path!)),
-          file: File(_platformFile?.path ?? ''),
-          status: null,
-          description: null,
-        ));
+        for (PlatformFile file in result.files) {
+          _updateCache(Uploads(
+            id: Uuid().v4(),
+            courseName: _selectedCourse,
+            type: _type,
+            name: basename(normalize(file.path!)),
+            file: File(file.path ?? ''),
+            status: null,
+            description: null,
+          ));
+        }
       });
     }
   }

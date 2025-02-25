@@ -13,6 +13,9 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: BlocListener<LoginCubit, LoginState>(
+        listenWhen: (previous, current) =>
+            (previous.email == current.email) &&
+            (previous.password == current.password),
         listener: (context, state) {
           if (state.status.isFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -92,7 +95,7 @@ class _EmailInput extends StatelessWidget {
             prefixIcon: const Icon(Icons.email_outlined),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             // errorText:
-            //     state.email.displayError != null ? 'Invalid email' : null,
+            // state.email.displayError != null ? 'Invalid email' : null,
           ),
         );
       },
@@ -143,9 +146,7 @@ class _LoginButton extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: state.isValid
-                ? () => context.read<LoginCubit>().logInWithCredentials()
-                : null,
+            onPressed: () => context.read<LoginCubit>().logInWithCredentials(),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
             ),

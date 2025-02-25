@@ -65,6 +65,7 @@ dependencies:
   uuid: ^4.5.1
   polar_tab_bar: ^0.0.2
   flutter_local_notifications: ^18.0.1
+  pool: ^1.5.1
 
 
 

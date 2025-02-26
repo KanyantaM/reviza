@@ -60,7 +60,7 @@ dependencies:
   flyer_chat_image_message: ^0.0.5
   flyer_chat_text_message: ^0.0.5
   cross_cache: ^0.0.5
-  flutter_native_splash: ^2.4.4
+  flutter_native_splash: ^2.4.5
   shared_preferences: ^2.5.2
   uuid: ^4.5.1
   polar_tab_bar: ^0.0.2

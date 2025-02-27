@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Popup extends StatelessWidget {
   final String title;
@@ -55,7 +54,7 @@ class Popup extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               title,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: (13),
                 fontWeight: FontWeight.w600,
                 // color: AppColors.textColor,
@@ -65,7 +64,7 @@ class Popup extends StatelessWidget {
                 ? Container()
                 : Text(
                     description!,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: (8),
                       // color: AppColors.textColor2,
                     ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:reviza/widgets/popup.dart';
 
 commingSoon(BuildContext context) {
@@ -17,7 +16,7 @@ commingSoon(BuildContext context) {
             },
             child: Text(
               'Okay, thank you',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: (10),
               ),
             ),

@@ -52,7 +52,6 @@ class _IntroductionViewState extends State<IntroductionView> {
         } else if (state is IntroductionErrorState) {
           return NoDataCuate(issue: state.message);
         } else if (state is IntroductionNotIntroduced) {
-          // Skip introduction screen for non-mobile platforms
           if (!Platform.isAndroid && !Platform.isIOS) {
             return CourseSelectionWidget(
               data: data,

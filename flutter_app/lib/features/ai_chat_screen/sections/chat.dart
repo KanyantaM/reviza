@@ -30,7 +30,7 @@ class AIChatScreenState extends State<AIChatScreen> {
   final _scrollController = ScrollController();
 
   final _currentUser = const User(id: 'me');
-  final _agent = const User(id: 'ReviZa AI');
+  final _agent = const User(id: 'ReviZa AI', firstName: "ReviZa AI");
 
   ChatController? _chatController;
   late final GenerativeModel _model;

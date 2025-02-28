@@ -163,6 +163,11 @@ const config: Config = {
           position: "left",
         },
         {
+          href: "/ambassadors",
+          label: "Student Ambassador",
+          position: "left",
+        },
+        {
           type: "docSidebar",
           sidebarId: "tutorialSidebar",
           position: "left",

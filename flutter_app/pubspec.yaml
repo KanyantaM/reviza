@@ -50,7 +50,7 @@ dependencies:
   rename_app: ^1.6.2
   flutter_dotenv: ^5.2.1
   package_info_plus: ^8.2.1
-  path: ^1.9.0
+  path: ^1.9.1
   syncfusion_flutter_pdfviewer: ^28.2.6
   sign_in_button: ^3.2.0
   flutter_chat_ui: ^2.0.0-dev.4

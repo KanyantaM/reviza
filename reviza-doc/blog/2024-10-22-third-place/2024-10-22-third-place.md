@@ -2,7 +2,7 @@
 slug: reviza-prize
 title: ✨Wining the Zambia@60 National Hackathon!✨
 authors: [yande]
-tags: [reviza, education, competions, business-strategy, zambia@60, pitches]
+tags: [reviza, education, competitions, business-strategy, zambia@60, pitches]
 ---
 
 Over the past few weeks, we competed in three intense rounds against 89 of the country's brightest innovators and emerged with a victory. I've always had a passion for public speaking, but this experience pushed me beyond what I thought I could accomplish.

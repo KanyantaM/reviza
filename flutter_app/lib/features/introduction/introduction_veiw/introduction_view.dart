@@ -36,11 +36,14 @@ class _IntroductionViewState extends State<IntroductionView> {
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<IntroductionBloc>()
-        .add(CheckIntroductionStatus(studentId: widget.studentId));
-
-    return BlocBuilder<IntroductionBloc, IntroductionState>(
+    return BlocConsumer<IntroductionBloc, IntroductionState>(
+      listener: (context, state) {
+        while (state is IntroductionInitial) {
+          context
+              .read<IntroductionBloc>()
+              .add(CheckIntroductionStatus(studentId: widget.studentId));
+        }
+      },
       builder: (context, state) {
         if (state is IntroductionCheckingStatus) {
           return _buildLoadingState(context);
@@ -49,7 +52,6 @@ class _IntroductionViewState extends State<IntroductionView> {
         } else if (state is IntroductionErrorState) {
           return NoDataCuate(issue: state.message);
         } else if (state is IntroductionNotIntroduced) {
-          // Skip introduction screen for non-mobile platforms
           if (!Platform.isAndroid && !Platform.isIOS) {
             return CourseSelectionWidget(
               data: data,
@@ -58,6 +60,9 @@ class _IntroductionViewState extends State<IntroductionView> {
           }
           return _introductionView(context);
         }
+        context
+            .read<IntroductionBloc>()
+            .add(CheckIntroductionStatus(studentId: widget.studentId));
         return Scaffold(
           body: const Center(
             child: CircularProgressIndicator(),

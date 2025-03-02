@@ -3,7 +3,7 @@ title: "ReviZa Test Launch: Advancing Engineering Education"
 description: "ReviZa is preparing for a test launch, providing second-year engineering students at UNZA with streamlined access to past papers, notes, and critical study materials."
 authors: [kanyanta]
 slug: "/reviza-test-launch"
-tags: ["UNZA", "past papers", "B.Eng", "ReviZa", "notes", "engineering"]
+tags: ["unza", "pastpapers", "beng", "reviza", "notes", "engineering"]
 ---
 
 

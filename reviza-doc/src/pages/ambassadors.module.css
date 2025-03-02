@@ -1,0 +1,55 @@
+.heroBanner {
+    background: linear-gradient(135deg, #004d40, #00796b);
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.heroTitle {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.heroSubtitle {
+    font-size: 1.2rem;
+    color: #e0f2f1;
+}
+
+.applySection {
+    padding: 3rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.formContainer {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+.formIframe {
+    width: 100%;
+    height: 1354px;
+    border: none;
+}
+
+.button--primary {
+    background: #00796b;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.button--primary:hover {
+    background: #004d40;
+}

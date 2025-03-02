@@ -73,3 +73,7 @@ notes:
   permalink: /notes
   description: Posts sharing lecture notes and academic materials for students.
 
+engineering:
+  label: Engineering
+  permalink: /engineering
+  description: These are the ReviZa posts meant for those interested in engineering and related topics
